@@ -100,9 +100,7 @@ void EgWindowsImport(ecs_world_t *world)
 	ecs_struct(world,
 	{.entity = ecs_id(EgWindowsWindow),
 	.members = {
-	{.name = "object", .type = ecs_id(ecs_uptr_t)},
-	{.name = "w", .type = ecs_id(ecs_i32_t)},
-	{.name = "h", .type = ecs_id(ecs_i32_t)},
+	{.name = "object", .type = ecs_id(ecs_uptr_t)}
 	}});
 
 	ecs_struct(world,

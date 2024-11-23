@@ -48,7 +48,7 @@ static SDL_EnumerationResult SDLCALL enum_callback(ecs_world_t *world, const cha
 	snprintf(buf, 1024, "%s", fullpath);
 	str_replace_ab(buf, '.', 'X'); // Fix this
 	str_replace_ab(buf, '-', 'Y'); // Fix this
-	printf("File: %s\n", buf);
+	//printf("File: %s\n", buf);
 	ecs_entity_t e = ecs_entity_init(world, &(ecs_entity_desc_t){.name = buf, .sep = "/"});
 	char * rel = strrchr(fullpath, '/');
 	if (rel) {

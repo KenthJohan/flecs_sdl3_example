@@ -29,7 +29,7 @@ static void private_list_modes(ecs_world_t *world, ecs_entity_t parent, SDL_Disp
 		ecs_entity_t e = ecs_entity_init(world, &(ecs_entity_desc_t){.name = buf, .parent = parent});
 		snprintf(buf, sizeof(buf), "%i: %dx%d@%gx %gHz, %d bits-per-pixel (%s)", j, mode->w, mode->h, mode->pixel_density, mode->refresh_rate, bpp, SDL_GetPixelFormatName(mode->format));
 		ecs_doc_set_name(world, e, buf);
-		SDL_Log("Mode %d: %dx%d@%gx %gHz, %d bits-per-pixel (%s)\n", j, mode->w, mode->h, mode->pixel_density, mode->refresh_rate, bpp, SDL_GetPixelFormatName(mode->format));
+		//SDL_Log("Mode %d: %dx%d@%gx %gHz, %d bits-per-pixel (%s)\n", j, mode->w, mode->h, mode->pixel_density, mode->refresh_rate, bpp, SDL_GetPixelFormatName(mode->format));
 	}
 
 	SDL_free(modes);
