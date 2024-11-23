@@ -1,0 +1,38 @@
+{
+	"id": "example_sdl3_flecs",
+	"type": "application",
+	"value": {
+		"language": "c",
+		"public": false,
+		"use": [
+			"flecs",
+			"egmath",
+			"egbase",
+			"egmisc",
+			"egcameras",
+			"egspatials"
+		]
+	},
+	"lang.c": {
+		"c-standard": "gnu99",
+		"defines": [],
+		"lib": [
+			"flecs",
+			"egbase",
+			"egmisc",
+			"egcameras",
+			"egspatials",
+			"egmath",
+			"SDL3",
+			"m"
+		],
+		"cflags": [
+			"-Werror",
+			"-Wall",
+			"-Wno-pedantic",
+			"-Wextra",
+			"-Wno-error=unused-variable",
+			"-Wno-error=unused-function"
+		]
+	}
+}

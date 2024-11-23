@@ -1,0 +1,5 @@
+# editor-agnostic settings, see https://editorconfig.org/
+root = true
+
+[*]
+end_of_line = lf

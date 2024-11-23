@@ -1,0 +1,54 @@
+module hello
+
+
+default_gpu {
+	eg.gpu.DeviceCreateInfo : {debug: true}
+	eg.base.Update
+
+	window1 {
+		eg.windows.WindowCreateInfo : {debug: true}
+		eg.base.Update
+	}
+
+	@brief "shaders/cube"
+	shader_fragment {
+		eg.gpu.ShaderFragmentCreateInfo : {stage: 0}
+		eg.base.Update
+	}
+
+	@brief "shaders/cube"
+	shader_vertex {
+		eg.gpu.ShaderVertexCreateInfo : {stage: 1}
+		eg.base.Update
+	}
+
+	pipeline {
+		eg.gpu.PipelineCreateInfo : {sample_count:0, target_info_has_depth_stencil_target:true}
+		(flecs.core.DependsOn, shader_fragment)
+		(flecs.core.DependsOn, shader_vertex)
+		eg.base.Update
+	}
+	
+	vert1 {
+		eg.gpu.BufferCreateInfo : {usage: 0}
+		eg.base.Update
+	}
+
+}
+
+drawobjs
+{
+	c1 {
+		eg.gpu.DrawCube
+		eg.spatials.EgRotateOrder1
+		eg.spatials.Transformation
+		eg.spatials.Position3World
+		eg.spatials.Orientation
+		eg.spatials.OrientationWorld
+		eg.spatials.Scale3 : {x: 1, y: 1, z: 1}
+		eg.spatials.Position3 : {x: 0, y: 0, z: 0}
+		eg.spatials.Rotate3 : {dx: 1, dy: 1, dz: 1}
+	}
+}
+
+
