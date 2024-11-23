@@ -5,11 +5,14 @@
 
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_gpu.h>
+#include <SDL3/SDL_mouse.h>
 
 #include <EgShapes.h>
+#include <EgSpatials.h>
 
 ECS_COMPONENT_DECLARE(EgWindowsWindow);
 ECS_COMPONENT_DECLARE(EgWindowsWindowCreateInfo);
+ECS_COMPONENT_DECLARE(EgWindowsMouse);
 
 static void System_EgWindowsWindow_Create(ecs_iter_t *it)
 {
@@ -45,7 +48,6 @@ static void System_EgWindowsWindow_Create(ecs_iter_t *it)
 	ecs_log_set_level(0);
 }
 
-
 static void System_EgWindowsWindow_Rectangle(ecs_iter_t *it)
 {
 	EgWindowsWindow *cw = ecs_field(it, EgWindowsWindow, 0);
@@ -59,6 +61,33 @@ static void System_EgWindowsWindow_Rectangle(ecs_iter_t *it)
 	}
 }
 
+static void System_EgWindowsWindow_Position(ecs_iter_t *it)
+{
+	EgWindowsWindow *cw = ecs_field(it, EgWindowsWindow, 0); // self, in
+	Position2 *cp = ecs_field(it, Position2, 1);             // self, out
+	for (int i = 0; i < it->count; ++i) {
+		int x;
+		int y;
+		SDL_GetWindowPosition(cw[i].object, (int *)&x, (int *)&y);
+		cp[i].x = x;
+		cp[i].y = y;
+	}
+}
+
+static void System_EgWindowsWindow_Mouse(ecs_iter_t *it)
+{
+	Position2 *cp0 = ecs_field(it, Position2, 0); // parent
+	Position2 *cp1 = ecs_field(it, Position2, 1); // self
+	// EgWindowsMouse *cm = ecs_field(it, EgWindowsMouse, 2); // self
+	for (int i = 0; i < it->count; ++i) {
+		float x;
+		float y;
+		SDL_GetGlobalMouseState(&x, &y);
+		cp1[i].x = x - cp0->x;
+		cp1[i].y = y - cp0->y;
+	}
+}
+
 void EgWindowsImport(ecs_world_t *world)
 {
 	ECS_MODULE(world, EgWindows);
@@ -66,6 +95,7 @@ void EgWindowsImport(ecs_world_t *world)
 
 	ECS_COMPONENT_DEFINE(world, EgWindowsWindow);
 	ECS_COMPONENT_DEFINE(world, EgWindowsWindowCreateInfo);
+	ECS_COMPONENT_DEFINE(world, EgWindowsMouse);
 
 	ecs_struct(world,
 	{.entity = ecs_id(EgWindowsWindow),
@@ -81,6 +111,12 @@ void EgWindowsImport(ecs_world_t *world)
 	{.name = "debug", .type = ecs_id(ecs_bool_t)},
 	}});
 
+	ecs_struct(world,
+	{.entity = ecs_id(EgWindowsMouse),
+	.members = {
+	{.name = "dummy", .type = ecs_id(ecs_i32_t)},
+	}});
+
 	ecs_system(world,
 	{.entity = ecs_entity(world, {.name = "System_EgWindowsWindow_Create", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = System_EgWindowsWindow_Create,
@@ -90,7 +126,6 @@ void EgWindowsImport(ecs_world_t *world)
 	{.id = ecs_id(EgWindowsWindow), .oper = EcsNot}, // Adds this
 	}});
 
-
 	ecs_system(world,
 	{.entity = ecs_entity(world, {.name = "System_EgWindowsWindow_Rectangle", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = System_EgWindowsWindow_Rectangle,
@@ -98,5 +133,24 @@ void EgWindowsImport(ecs_world_t *world)
 	{
 	{.id = ecs_id(EgWindowsWindow), .src.id = EcsSelf},
 	{.id = ecs_id(EgShapesRectangle), .src.id = EcsSelf},
+	}});
+
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "System_EgWindowsWindow_Position", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = System_EgWindowsWindow_Position,
+	.query.terms =
+	{
+	{.id = ecs_id(EgWindowsWindow), .src.id = EcsSelf, .inout = EcsIn},
+	{.id = ecs_id(Position2), .src.id = EcsSelf, .inout = EcsOut},
+	}});
+
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "System_EgWindowsWindow_Mouse", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = System_EgWindowsWindow_Mouse,
+	.query.terms =
+	{
+	{.id = ecs_id(Position2), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(Position2), .src.id = EcsSelf, .inout = EcsOut},
+	{.id = ecs_id(EgWindowsMouse), .src.id = EcsSelf, .inout = EcsIn},
 	}});
 }

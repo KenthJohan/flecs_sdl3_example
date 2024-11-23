@@ -9,6 +9,11 @@ default_gpu {
 		eg.windows.WindowCreateInfo : {debug: true}
 		eg.base.Update
 		eg.shapes.Rectangle
+		eg.spatials.Position2
+		mouse1 {
+			eg.windows.Mouse
+			eg.spatials.Position2
+		}
 	}
 
 	@brief "shaders/cube"
