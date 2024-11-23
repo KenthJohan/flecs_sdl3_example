@@ -1,0 +1,17 @@
+{
+	"id": "EgBase",
+	"type": "package",
+	"value": {
+		"language": "c",
+		"public": true,
+		"use": []
+	},
+	"lang.c": {
+		"c-standard": "c11",
+		"export-symbols": true,
+		"static": true,
+		"defines": [],
+		"cflags": [],
+		"lib": []
+	}
+}

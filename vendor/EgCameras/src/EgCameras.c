@@ -1,6 +1,6 @@
-#include "egcameras.h"
+#include "EgCameras.h"
 
-#include <egspatials.h>
+#include <EgSpatials.h>
 #include <egwindows.h>
 #include <egmath.h>
 #include <assert.h>

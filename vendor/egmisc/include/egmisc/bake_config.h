@@ -14,25 +14,25 @@
  * dependencies will automatically show up in this file. Include bake_config.h
  * in your main project file. Do not edit! */
 
-#ifndef EGSPATIALS_BAKE_CONFIG_H
-#define EGSPATIALS_BAKE_CONFIG_H
+#ifndef EGMISC_BAKE_CONFIG_H
+#define EGMISC_BAKE_CONFIG_H
 
 /* Headers of public dependencies */
-#include <egmath.h>
+/* No dependencies */
 
 /* Convenience macro for exporting symbols */
-#ifndef egspatials_STATIC
-#if defined(egspatials_EXPORTS) && (defined(_MSC_VER) || defined(__MINGW32__))
-  #define EGSPATIALS_API __declspec(dllexport)
-#elif defined(egspatials_EXPORTS)
-  #define EGSPATIALS_API __attribute__((__visibility__("default")))
+#ifndef egmisc_STATIC
+#if defined(egmisc_EXPORTS) && (defined(_MSC_VER) || defined(__MINGW32__))
+  #define EGMISC_API __declspec(dllexport)
+#elif defined(egmisc_EXPORTS)
+  #define EGMISC_API __attribute__((__visibility__("default")))
 #elif defined(_MSC_VER)
-  #define EGSPATIALS_API __declspec(dllimport)
+  #define EGMISC_API __declspec(dllimport)
 #else
-  #define EGSPATIALS_API
+  #define EGMISC_API
 #endif
 #else
-  #define EGSPATIALS_API
+  #define EGMISC_API
 #endif
 
 #endif

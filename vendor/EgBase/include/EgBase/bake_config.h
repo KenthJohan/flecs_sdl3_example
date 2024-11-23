@@ -14,25 +14,25 @@
  * dependencies will automatically show up in this file. Include bake_config.h
  * in your main project file. Do not edit! */
 
-#ifndef EGCAMERAS_BAKE_CONFIG_H
-#define EGCAMERAS_BAKE_CONFIG_H
+#ifndef EGBASE_BAKE_CONFIG_H
+#define EGBASE_BAKE_CONFIG_H
 
 /* Headers of public dependencies */
-#include <egmath.h>
+/* No dependencies */
 
 /* Convenience macro for exporting symbols */
-#ifndef egcameras_STATIC
-#if defined(egcameras_EXPORTS) && (defined(_MSC_VER) || defined(__MINGW32__))
-  #define EGCAMERAS_API __declspec(dllexport)
-#elif defined(egcameras_EXPORTS)
-  #define EGCAMERAS_API __attribute__((__visibility__("default")))
+#ifndef EgBase_STATIC
+#if defined(EgBase_EXPORTS) && (defined(_MSC_VER) || defined(__MINGW32__))
+  #define EGBASE_API __declspec(dllexport)
+#elif defined(EgBase_EXPORTS)
+  #define EGBASE_API __attribute__((__visibility__("default")))
 #elif defined(_MSC_VER)
-  #define EGCAMERAS_API __declspec(dllimport)
+  #define EGBASE_API __declspec(dllimport)
 #else
-  #define EGCAMERAS_API
+  #define EGBASE_API
 #endif
 #else
-  #define EGCAMERAS_API
+  #define EGBASE_API
 #endif
 
 #endif

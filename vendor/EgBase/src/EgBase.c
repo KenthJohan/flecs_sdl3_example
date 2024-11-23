@@ -1,4 +1,4 @@
-#include "egbase.h"
+#include "EgBase.h"
 
 ECS_COMPONENT_DECLARE(EgBaseMemoryGPU);
 ECS_COMPONENT_DECLARE(EgBaseShapeBuffer);

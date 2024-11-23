@@ -21,9 +21,9 @@
 #include <stdio.h>
 #include <flecs.h>
 
-#include <egbase.h>
-#include <egspatials.h>
-#include <egcameras.h>
+#include <EgBase.h>
+#include <EgSpatials.h>
+#include <EgCameras.h>
 
 /* Regenerate the shaders with testgpu/build-shaders.sh */
 #include "../shaders/testgpu_spirv.h"

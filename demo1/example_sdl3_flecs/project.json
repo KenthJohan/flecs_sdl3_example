@@ -6,11 +6,11 @@
 		"public": false,
 		"use": [
 			"flecs",
-			"egmath",
-			"egbase",
 			"egmisc",
-			"egcameras",
-			"egspatials"
+			"egmath",
+			"EgBase",
+			"EgCameras",
+			"EgSpatials"
 		]
 	},
 	"lang.c": {
@@ -18,10 +18,10 @@
 		"defines": [],
 		"lib": [
 			"flecs",
-			"egbase",
 			"egmisc",
-			"egcameras",
-			"egspatials",
+			"EgBase",
+			"EgCameras",
+			"EgSpatials",
 			"egmath",
 			"SDL3",
 			"m"

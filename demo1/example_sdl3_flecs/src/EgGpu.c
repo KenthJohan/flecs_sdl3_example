@@ -1,5 +1,5 @@
 #include "EgGpu.h"
-#include <egbase.h>
+#include <EgBase.h>
 
 #include "EgGpu_System_EgGpuShader.h"
 #include "EgGpu_System_EgGpuPipeline.h"

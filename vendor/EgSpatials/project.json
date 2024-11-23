@@ -1,10 +1,12 @@
 {
-	"id": "egbase",
+	"id": "EgSpatials",
 	"type": "package",
 	"value": {
 		"language": "c",
 		"public": true,
-		"use": []
+		"use": [
+			"egmath"
+		]
 	},
 	"lang.c": {
 		"c-standard": "c11",
@@ -12,6 +14,8 @@
 		"static": true,
 		"defines": [],
 		"cflags": [],
-		"lib": []
+		"lib": [
+			"egmath"
+		]
 	}
 }

@@ -1,5 +1,5 @@
-#include "egspatials.h"
-#include <egbase.h>
+#include "EgSpatials.h"
+#include <EgBase.h>
 
 ECS_COMPONENT_DECLARE(Position2);
 ECS_COMPONENT_DECLARE(Position3);

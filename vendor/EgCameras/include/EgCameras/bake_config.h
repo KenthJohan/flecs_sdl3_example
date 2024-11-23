@@ -14,15 +14,26 @@
  * dependencies will automatically show up in this file. Include bake_config.h
  * in your main project file. Do not edit! */
 
-#ifndef EXAMPLE_SDL3_FLECS_BAKE_CONFIG_H
-#define EXAMPLE_SDL3_FLECS_BAKE_CONFIG_H
+#ifndef EGCAMERAS_BAKE_CONFIG_H
+#define EGCAMERAS_BAKE_CONFIG_H
 
 /* Headers of public dependencies */
-#include <flecs.h>
 #include <egmath.h>
-#include <EgBase.h>
-#include <EgCameras.h>
-#include <EgSpatials.h>
+
+/* Convenience macro for exporting symbols */
+#ifndef EgCameras_STATIC
+#if defined(EgCameras_EXPORTS) && (defined(_MSC_VER) || defined(__MINGW32__))
+  #define EGCAMERAS_API __declspec(dllexport)
+#elif defined(EgCameras_EXPORTS)
+  #define EGCAMERAS_API __attribute__((__visibility__("default")))
+#elif defined(_MSC_VER)
+  #define EGCAMERAS_API __declspec(dllimport)
+#else
+  #define EGCAMERAS_API
+#endif
+#else
+  #define EGCAMERAS_API
+#endif
 
 #endif
 

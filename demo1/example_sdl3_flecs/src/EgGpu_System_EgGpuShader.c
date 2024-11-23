@@ -6,7 +6,7 @@
 
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_gpu.h>
-#include <egbase.h>
+#include <EgBase.h>
 
 #include "shader_spirv.h"
 #include "vertex.h"

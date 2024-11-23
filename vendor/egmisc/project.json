@@ -1,21 +1,17 @@
 {
-	"id": "egcameras",
+	"id": "egmisc",
 	"type": "package",
 	"value": {
 		"language": "c",
 		"public": true,
-		"use": [
-			"egmath"
-		]
+		"use": []
 	},
 	"lang.c": {
-		"c-standard": "c11",
+		"c-standard": "gnu99",
 		"export-symbols": true,
 		"static": true,
 		"defines": [],
 		"cflags": [],
-		"lib": [
-			"egmath"
-		]
+		"lib": []
 	}
 }
