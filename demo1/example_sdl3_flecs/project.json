@@ -10,7 +10,9 @@
 			"egmath",
 			"EgBase",
 			"EgCameras",
-			"EgSpatials"
+			"EgShapes",
+			"EgSpatials",
+			"EgWindows"
 		]
 	},
 	"lang.c": {
@@ -21,7 +23,9 @@
 			"egmisc",
 			"EgBase",
 			"EgCameras",
+			"EgShapes",
 			"EgSpatials",
+			"EgWindows",
 			"egmath",
 			"SDL3",
 			"m"

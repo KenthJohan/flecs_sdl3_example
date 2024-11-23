@@ -6,6 +6,8 @@
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_gpu.h>
 
+#include <EgShapes.h>
+
 ECS_COMPONENT_DECLARE(EgWindowsWindow);
 ECS_COMPONENT_DECLARE(EgWindowsWindowCreateInfo);
 
@@ -43,6 +45,20 @@ static void System_EgWindowsWindow_Create(ecs_iter_t *it)
 	ecs_log_set_level(0);
 }
 
+
+static void System_EgWindowsWindow_Rectangle(ecs_iter_t *it)
+{
+	EgWindowsWindow *cw = ecs_field(it, EgWindowsWindow, 0);
+	EgShapesRectangle *cr = ecs_field(it, EgShapesRectangle, 1);
+	for (int i = 0; i < it->count; ++i) {
+		Uint32 w;
+		Uint32 h;
+		SDL_GetWindowSizeInPixels(cw[i].object, (int *)&w, (int *)&h);
+		cr[i].w = w;
+		cr[i].h = h;
+	}
+}
+
 void EgWindowsImport(ecs_world_t *world)
 {
 	ECS_MODULE(world, EgWindows);
@@ -55,6 +71,8 @@ void EgWindowsImport(ecs_world_t *world)
 	{.entity = ecs_id(EgWindowsWindow),
 	.members = {
 	{.name = "object", .type = ecs_id(ecs_uptr_t)},
+	{.name = "w", .type = ecs_id(ecs_i32_t)},
+	{.name = "h", .type = ecs_id(ecs_i32_t)},
 	}});
 
 	ecs_struct(world,
@@ -70,5 +88,15 @@ void EgWindowsImport(ecs_world_t *world)
 	{
 	{.id = ecs_id(EgWindowsWindowCreateInfo), .src.id = EcsSelf},
 	{.id = ecs_id(EgWindowsWindow), .oper = EcsNot}, // Adds this
+	}});
+
+
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "System_EgWindowsWindow_Rectangle", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = System_EgWindowsWindow_Rectangle,
+	.query.terms =
+	{
+	{.id = ecs_id(EgWindowsWindow), .src.id = EcsSelf},
+	{.id = ecs_id(EgShapesRectangle), .src.id = EcsSelf},
 	}});
 }

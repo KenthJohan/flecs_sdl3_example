@@ -14,7 +14,6 @@ int eg_popen(const char *command, int *out_exit_code, ecs_strbuf_t *str)
 		ecs_err("popen() returns NULL");
 		return -1;
 	}
-	static int line = 0;
 	char buffer[128];
 	while (1) {
 		char *r = fgets(buffer, sizeof(buffer) - 1, f);

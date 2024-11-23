@@ -83,7 +83,8 @@
 		"span": "c",
 		"egcameras.h": "c",
 		"eggpu_system_eggpubuffer.h": "c",
-		"numbers": "c"
+		"numbers": "c",
+		"egmath.h": "c"
 	},
 	"terminal.integrated.env.linux": {
 		"GTK_PATH": ""

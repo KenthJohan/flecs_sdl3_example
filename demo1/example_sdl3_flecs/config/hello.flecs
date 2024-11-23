@@ -8,6 +8,7 @@ default_gpu {
 	window1 {
 		eg.windows.WindowCreateInfo : {debug: true}
 		eg.base.Update
+		eg.shapes.Rectangle
 	}
 
 	@brief "shaders/cube"

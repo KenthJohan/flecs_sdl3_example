@@ -24,6 +24,7 @@
 #include <EgBase.h>
 #include <EgSpatials.h>
 #include <EgCameras.h>
+#include <EgShapes.h>
 
 /* Regenerate the shaders with testgpu/build-shaders.sh */
 #include "../shaders/testgpu_spirv.h"
@@ -56,6 +57,10 @@ int main(int argc, char *argv[])
 	ECS_IMPORT(world, FlecsDoc);
 	ECS_IMPORT(world, EgBase);
 	ECS_IMPORT(world, EgSpatials);
+	ECS_IMPORT(world, EgShapes);
+	ECS_IMPORT(world, EgCameras);
+	
+	
 	ecs_set(world, EcsWorld, EcsRest, {.port = 0});
 	printf("Remote: %s\n", "https://www.flecs.dev/explorer/?remote=true");
 
