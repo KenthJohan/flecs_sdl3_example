@@ -9,7 +9,8 @@ void main_render(
 	const int windownum, 
 	SDL_GPUGraphicsPipeline *pipeline, 
 	SDL_GPUBuffer *buf_vertex,
-	SDL_GPUTexture *tex_depth
+	SDL_GPUTexture *tex_depth,
+	float const * mvp
 	);
 
 

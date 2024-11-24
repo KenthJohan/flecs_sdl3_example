@@ -100,12 +100,14 @@ int main(int argc, char *argv[])
 	ecs_entity_t e_vert1 = ecs_lookup(world, "hello.default_gpu.vert1");
 	ecs_entity_t e_texd = ecs_lookup(world, "hello.default_gpu.window1.tex_depth");
 	ecs_entity_t e_win = ecs_lookup(world, "hello.default_gpu.window1");
+	ecs_entity_t e_cam = ecs_lookup(world, "hello.default_gpu.window1.cam");
 
 	EgGpuPipeline const *c_pipeline = NULL;
 	EgGpuDevice const *c_gpu = NULL;
 	EgGpuBuffer const *c_buf = NULL;
 	EgGpuTexture const *c_texd = NULL;
 	EgWindowsWindow const *c_win = NULL;
+	EgCamerasState const *c_cam = NULL;
 	while (1) {
 		ecs_progress(world, 0.0f);
 		c_pipeline = ecs_get(world, e_pipeline, EgGpuPipeline);
@@ -113,6 +115,7 @@ int main(int argc, char *argv[])
 		c_buf = ecs_get(world, e_vert1, EgGpuBuffer);
 		c_texd = ecs_get(world, e_texd, EgGpuTexture);
 		c_win = ecs_get(world, e_win, EgWindowsWindow);
+		c_cam = ecs_get(world, e_cam, EgCamerasState);
 		if (c_pipeline == NULL) {
 			continue;
 		}
@@ -126,6 +129,9 @@ int main(int argc, char *argv[])
 			continue;
 		}
 		if (c_win == NULL) {
+			continue;
+		}
+		if (c_cam == NULL) {
 			continue;
 		}
 		break;
@@ -176,8 +182,9 @@ int main(int argc, char *argv[])
 			break;
 		}
 		*/
+		c_cam = ecs_get(world, e_cam, EgCamerasState);
 		for (int i = 0; i < state->num_windows; ++i) {
-			main_render(c_win->object, c_gpu->device, window_states, i, c_pipeline->object, c_buf->object, c_texd->object);
+			main_render(c_win->object, c_gpu->device, window_states, i, c_pipeline->object, c_buf->object, c_texd->object, (float*)&c_cam->vp);
 		}
 	}
 

@@ -107,6 +107,7 @@ void EgCamerasImport(ecs_world_t *world)
 	ECS_IMPORT(world, EgSpatials);
 	ECS_IMPORT(world, EgShapes);
 	ECS_IMPORT(world, EgWindows);
+	ecs_set_name_prefix(world, "EgCameras");
 
 	ECS_COMPONENT_DEFINE(world, EgCamerasState);
 	ECS_COMPONENT_DEFINE(world, EgCamerasKeyBindings);
@@ -149,7 +150,7 @@ void EgCamerasImport(ecs_world_t *world)
 	                  {.id = ecs_id(EgCamerasState), .src.id = EcsSelf},
 	                  {.id = ecs_id(Position3), .src.id = EcsSelf},
 	                  {.id = ecs_id(Orientation), .src.id = EcsSelf},
-	                  {.id = ecs_id(EgShapesRectangle), .trav = EcsDependsOn, .src.id = EcsUp},
+	                  {.id = ecs_id(EgShapesRectangle), .trav = EcsChildOf, .src.id = EcsUp},
 	                  }});
 
 	/*

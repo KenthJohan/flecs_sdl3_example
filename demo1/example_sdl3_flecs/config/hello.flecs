@@ -19,6 +19,12 @@ default_gpu {
 			eg.base.Update
 		}
 		eg.gpu.Texture
+		cam {
+			eg.cameras.State
+			// Set the order of the operands, changes how {Orientation} rotates
+			eg.spatials.Position3 : {3, -4, 4}
+			eg.spatials.Orientation : {-0.4, -0.1, -0.2, 0.8}
+		}
 	}
 
 	@brief "shaders/cube"
@@ -46,6 +52,9 @@ default_gpu {
 	}
 
 }
+
+
+
 
 drawobjs
 {

@@ -39,14 +39,14 @@ SDL_GPUTexture * CreateDepthTexture(SDL_GPUSampleCount sample_count, SDLTest_Com
 
 
 
-void draw_function(SDL_GPUCommandBuffer *cmd, SDL_GPURenderPass *pass, const SDL_GPUBufferBinding *bindings, float mat[16])
+void draw_function(SDL_GPUCommandBuffer *cmd, SDL_GPURenderPass *pass, const SDL_GPUBufferBinding *bindings, float const mat[16])
 {
-	for (int i = 0; i < 16; i++) {
-		mat[15] = i;
+	//for (int i = 0; i < 16; i++) {
+		//mat[15] = i;
 		SDL_PushGPUVertexUniformData(cmd, 0, mat, sizeof(float)*16);
 		SDL_BindGPUVertexBuffers(pass, 0, bindings, 1);
 		SDL_DrawGPUPrimitives(pass, 36, 1, 0, 0);
-	}
+	//}
 }
 
 
@@ -61,7 +61,8 @@ void main_render(
 	const int windownum, 
 	SDL_GPUGraphicsPipeline *pipeline, 
 	SDL_GPUBuffer *buf_vertex,
-	SDL_GPUTexture *tex_depth
+	SDL_GPUTexture *tex_depth,
+	float const * mvp
 )
 {
 	WindowState *winstate = &window_states[windownum];
@@ -157,7 +158,10 @@ void main_render(
 	SDL_BindGPUGraphicsPipeline(pass, pipeline);
 
 	// draw
-	draw_function(cmd, pass, &vertex_binding, (float *)&matrix_final);
+	//draw_function(cmd, pass, &vertex_binding, (float *)&matrix_final);
+	draw_function(cmd, pass, &vertex_binding, mvp);
+
+	
 
 	SDL_EndGPURenderPass(pass);
 
