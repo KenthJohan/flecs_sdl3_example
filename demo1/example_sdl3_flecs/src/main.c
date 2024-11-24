@@ -148,10 +148,10 @@ int main(int argc, char *argv[])
 
 
 
-	EgKeyboardsKeys const * keys = ecs_singleton_get(world, EgKeyboardsKeys);
+	EgKeyboardsState const * board = ecs_singleton_get(world, EgKeyboardsState);
 
 	while (1) {
-		if (keys->state[SDLK_ESCAPE]) {
+		if (board->scancode[SDL_SCANCODE_ESCAPE]) {
 			break;
 		}
 		ecs_progress(world, 0.0f);

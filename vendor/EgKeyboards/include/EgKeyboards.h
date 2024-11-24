@@ -5,14 +5,14 @@
 
 typedef struct
 {
-	uint8_t state[EG_KEYBOARDS_KEYS_MAX];
-} EgKeyboardsKeys;
+	uint8_t scancode[EG_KEYBOARDS_KEYS_MAX];
+	uint8_t keycode[EG_KEYBOARDS_KEYS_MAX];
+} EgKeyboardsState;
 
 
 
 
-
-extern ECS_COMPONENT_DECLARE(EgKeyboardsKeys);
+extern ECS_COMPONENT_DECLARE(EgKeyboardsState);
 
 void EgKeyboardsImport(ecs_world_t *world);
 
