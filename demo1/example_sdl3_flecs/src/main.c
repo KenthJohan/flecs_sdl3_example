@@ -33,8 +33,6 @@
 #include "EgDisplay.h"
 #include "EgGpu.h"
 
-#include "main_render.h"
-
 static void ControllerRotate(ecs_iter_t *it)
 {
 	EgCamerasKeyBindings *controller = ecs_field(it, EgCamerasKeyBindings, 0);
@@ -76,12 +74,60 @@ static void System_Draw(ecs_iter_t *it)
 	EgCamerasState *c_cam = ecs_field(it, EgCamerasState, 5);    // shared
 	// EgGpuDrawCube *c_cube = ecs_field(it, EgGpuDrawCube, 6);     // self
 	Transformation *c_trans = ecs_field(it, Transformation, 7); // self
+	Uint32 drawablew, drawableh;
 
-	for (int i = 0; i < it->count; ++i) {
+	SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(c_gpu->device);
+	if (!cmd) {
+		SDL_Log("Failed to acquire command buffer :%s", SDL_GetError());
+		return;
+	}
+
+	SDL_GPUTexture *swapchainTexture;
+	if (!SDL_AcquireGPUSwapchainTexture(cmd, c_win->object, &swapchainTexture, &drawablew, &drawableh)) {
+		SDL_Log("Failed to acquire swapchain texture: %s", SDL_GetError());
+		return;
+	}
+
+	if (swapchainTexture == NULL) {
+		// No swapchain was acquired, probably too many frames in flight
+		SDL_SubmitGPUCommandBuffer(cmd);
+		return;
+	}
+
+	SDL_GPUColorTargetInfo color_target;
+	SDL_zero(color_target);
+	color_target.clear_color.a = 1.0f;
+	color_target.load_op = SDL_GPU_LOADOP_CLEAR;
+	color_target.store_op = SDL_GPU_STOREOP_STORE;
+	color_target.texture = swapchainTexture;
+
+	SDL_GPUDepthStencilTargetInfo depth_target;
+	SDL_zero(depth_target);
+	depth_target.clear_depth = 1.0f;
+	depth_target.load_op = SDL_GPU_LOADOP_CLEAR;
+	depth_target.store_op = SDL_GPU_STOREOP_DONT_CARE;
+	depth_target.stencil_load_op = SDL_GPU_LOADOP_DONT_CARE;
+	depth_target.stencil_store_op = SDL_GPU_STOREOP_DONT_CARE;
+	depth_target.texture = c_texd->object;
+	depth_target.cycle = true;
+
+	SDL_GPUBufferBinding vertex_binding;
+	vertex_binding.buffer = c_buf->object;
+	vertex_binding.offset = 0;
+
+	SDL_GPURenderPass *pass = SDL_BeginGPURenderPass(cmd, &color_target, 1, &depth_target);
+	SDL_BindGPUGraphicsPipeline(pass, c_pipeline->object);
+
+	for (int i = 0; i < it->count; ++i, ++c_trans) {
 		m4f32 mvp;
 		m4f32_mul(&mvp, &c_cam->vp, &c_trans->matrix);
-		main_render(c_win->object, c_gpu->device, c_pipeline->object, c_buf->object, c_texd->object, (float *)&mvp);
+		SDL_PushGPUVertexUniformData(cmd, 0, &mvp, sizeof(float) * 16);
+		SDL_BindGPUVertexBuffers(pass, 0, &vertex_binding, 1);
+		SDL_DrawGPUPrimitives(pass, 36, 1, 0, 0);
 	}
+
+	SDL_EndGPURenderPass(pass);
+	SDL_SubmitGPUCommandBuffer(cmd);
 }
 
 int main(int argc, char *argv[])
