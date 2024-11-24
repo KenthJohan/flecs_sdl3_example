@@ -60,6 +60,17 @@ typedef struct
 	uint32_t usage;
 } EgGpuBufferCreateInfo;
 
+
+typedef struct
+{
+	void * object;
+} EgGpuTexture;
+
+typedef struct
+{
+	uint32_t sample_count;
+} EgGpuTextureCreateInfo;
+
 extern ECS_COMPONENT_DECLARE(EgGpuDevice);
 extern ECS_COMPONENT_DECLARE(EgGpuDeviceCreateInfo);
 extern ECS_COMPONENT_DECLARE(EgGpuShaderVertex);
@@ -71,6 +82,8 @@ extern ECS_COMPONENT_DECLARE(EgGpuPipelineCreateInfo);
 extern ECS_COMPONENT_DECLARE(EgGpuDrawCube);
 extern ECS_COMPONENT_DECLARE(EgGpuBuffer);
 extern ECS_COMPONENT_DECLARE(EgGpuBufferCreateInfo);
+extern ECS_COMPONENT_DECLARE(EgGpuTexture);
+extern ECS_COMPONENT_DECLARE(EgGpuTextureCreateInfo);
 
 void EgGpuImport(ecs_world_t *world);
 

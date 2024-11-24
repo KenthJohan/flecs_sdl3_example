@@ -14,6 +14,11 @@ default_gpu {
 			eg.windows.Mouse
 			eg.spatials.Position2
 		}
+		tex_depth {
+			eg.gpu.TextureCreateInfo : {sample_count:0}
+			eg.base.Update
+		}
+		eg.gpu.Texture
 	}
 
 	@brief "shaders/cube"

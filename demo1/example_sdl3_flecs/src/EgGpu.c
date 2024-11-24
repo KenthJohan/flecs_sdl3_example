@@ -1,10 +1,12 @@
 #include "EgGpu.h"
 #include <EgBase.h>
+#include <EgShapes.h>
 
 #include "EgGpu_System_EgGpuShader.h"
 #include "EgGpu_System_EgGpuPipeline.h"
 #include "EgGpu_System_EgGpuDevice.h"
 #include "EgGpu_System_EgGpuBuffer.h"
+#include "EgGpu_System_EgGpuTexture.h"
 
 ECS_COMPONENT_DECLARE(EgGpuDevice);
 ECS_COMPONENT_DECLARE(EgGpuDeviceCreateInfo);
@@ -17,11 +19,14 @@ ECS_COMPONENT_DECLARE(EgGpuPipelineCreateInfo);
 ECS_COMPONENT_DECLARE(EgGpuDrawCube);
 ECS_COMPONENT_DECLARE(EgGpuBuffer);
 ECS_COMPONENT_DECLARE(EgGpuBufferCreateInfo);
+ECS_COMPONENT_DECLARE(EgGpuTexture);
+ECS_COMPONENT_DECLARE(EgGpuTextureCreateInfo);
 
 void EgGpuImport(ecs_world_t *world)
 {
 	ECS_MODULE(world, EgGpu);
 	ECS_IMPORT(world, EgBase);
+	ECS_IMPORT(world, EgShapes);
 	ecs_set_name_prefix(world, "EgGpu");
 
 	ECS_COMPONENT_DEFINE(world, EgGpuDevice);
@@ -35,6 +40,8 @@ void EgGpuImport(ecs_world_t *world)
 	ECS_COMPONENT_DEFINE(world, EgGpuDrawCube);
 	ECS_COMPONENT_DEFINE(world, EgGpuBuffer);
 	ECS_COMPONENT_DEFINE(world, EgGpuBufferCreateInfo);
+	ECS_COMPONENT_DEFINE(world, EgGpuTexture);
+	ECS_COMPONENT_DEFINE(world, EgGpuTextureCreateInfo);
 
 	ecs_struct(world,
 	{.entity = ecs_id(EgGpuDeviceCreateInfo),
@@ -97,6 +104,18 @@ void EgGpuImport(ecs_world_t *world)
 	{.name = "usage", .type = ecs_id(ecs_u32_t)},
 	}});
 
+	ecs_struct(world,
+	{.entity = ecs_id(EgGpuTexture),
+	.members = {
+	{.name = "object", .type = ecs_id(ecs_uptr_t)},
+	}});
+
+	ecs_struct(world,
+	{.entity = ecs_id(EgGpuTextureCreateInfo),
+	.members = {
+	{.name = "sample_count", .type = ecs_id(ecs_u32_t)},
+	}});
+
 	ecs_system(world,
 	{.entity = ecs_entity(world, {.name = "System_EgGpuDevice_Create", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = System_EgGpuDevice_Create,
@@ -152,6 +171,18 @@ void EgGpuImport(ecs_world_t *world)
 	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuBufferCreateInfo), .src.id = EcsSelf},
 	{.id = ecs_id(EgGpuBuffer), .oper = EcsNot}, // Adds this
+	{.id = EgBaseUpdate},
+	{.id = EgBaseError, .oper = EcsNot}
+	}});
+
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "System_EgGpuTexture_Create", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = System_EgGpuTexture_Create,
+	.query.terms = {
+	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgShapesRectangle), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgGpuTextureCreateInfo), .src.id = EcsSelf},
+	{.id = ecs_id(EgGpuTexture), .oper = EcsNot}, // Adds this
 	{.id = EgBaseUpdate},
 	{.id = EgBaseError, .oper = EcsNot}
 	}});
