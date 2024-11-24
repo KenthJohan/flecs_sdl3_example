@@ -1,5 +1,83 @@
 module hello
 
+const SDL_SCANCODE_A = 4
+const SDL_SCANCODE_B = 5
+const SDL_SCANCODE_C = 6
+const SDL_SCANCODE_D = 7
+const SDL_SCANCODE_E = 8
+const SDL_SCANCODE_F = 9
+const SDL_SCANCODE_G = 10
+const SDL_SCANCODE_H = 11
+const SDL_SCANCODE_I = 12
+const SDL_SCANCODE_J = 13
+const SDL_SCANCODE_K = 14
+const SDL_SCANCODE_L = 15
+const SDL_SCANCODE_M = 16
+const SDL_SCANCODE_N = 17
+const SDL_SCANCODE_O = 18
+const SDL_SCANCODE_P = 19
+const SDL_SCANCODE_Q = 20
+const SDL_SCANCODE_R = 21
+const SDL_SCANCODE_S = 22
+const SDL_SCANCODE_T = 23
+const SDL_SCANCODE_U = 24
+const SDL_SCANCODE_V = 25
+const SDL_SCANCODE_W = 26
+const SDL_SCANCODE_X = 27
+const SDL_SCANCODE_Y = 28
+const SDL_SCANCODE_Z = 29
+const SDL_SCANCODE_1 = 30
+const SDL_SCANCODE_2 = 31
+const SDL_SCANCODE_3 = 32
+const SDL_SCANCODE_4 = 33
+const SDL_SCANCODE_5 = 34
+const SDL_SCANCODE_6 = 35
+const SDL_SCANCODE_7 = 36
+const SDL_SCANCODE_8 = 37
+const SDL_SCANCODE_9 = 38
+const SDL_SCANCODE_0 = 39
+
+const SDL_SCANCODE_RETURN = 40
+const SDL_SCANCODE_ESCAPE = 41
+const SDL_SCANCODE_BACKSPACE = 42
+const SDL_SCANCODE_TAB = 43
+const SDL_SCANCODE_SPACE = 44
+
+const SDL_SCANCODE_HOME = 74
+const SDL_SCANCODE_PAGEUP = 75
+const SDL_SCANCODE_DELETE = 76
+const SDL_SCANCODE_END = 77
+const SDL_SCANCODE_PAGEDOWN = 78
+const SDL_SCANCODE_RIGHT = 79
+const SDL_SCANCODE_LEFT = 80
+const SDL_SCANCODE_DOWN = 81
+const SDL_SCANCODE_UP = 82
+
+const SDL_SCANCODE_KP_DIVIDE = 84
+const SDL_SCANCODE_KP_MULTIPLY = 85
+const SDL_SCANCODE_KP_MINUS = 86
+const SDL_SCANCODE_KP_PLUS = 87
+const SDL_SCANCODE_KP_ENTER = 88
+const SDL_SCANCODE_KP_1 = 89
+const SDL_SCANCODE_KP_2 = 90
+const SDL_SCANCODE_KP_3 = 91
+const SDL_SCANCODE_KP_4 = 92
+const SDL_SCANCODE_KP_5 = 93
+const SDL_SCANCODE_KP_6 = 94
+const SDL_SCANCODE_KP_7 = 95
+const SDL_SCANCODE_KP_8 = 96
+const SDL_SCANCODE_KP_9 = 97
+const SDL_SCANCODE_KP_0 = 98
+const SDL_SCANCODE_KP_PERIOD = 99
+
+const SDL_SCANCODE_LCTRL = 224
+const SDL_SCANCODE_LSHIFT = 225
+const SDL_SCANCODE_LALT = 226
+const SDL_SCANCODE_LGUI = 227
+const SDL_SCANCODE_RCTRL = 228
+const SDL_SCANCODE_RSHIFT = 229
+const SDL_SCANCODE_RALT = 230
+const SDL_SCANCODE_RGUI = 231
 
 default_gpu {
 	eg.gpu.DeviceCreateInfo : {debug: true}
@@ -22,8 +100,28 @@ default_gpu {
 		cam {
 			eg.cameras.State
 			// Set the order of the operands, changes how {Orientation} rotates
+			eg.spatials.EgRotateOrder2
 			eg.spatials.Position3 : {3, -4, 4}
 			eg.spatials.Orientation : {-0.4, -0.1, -0.2, 0.8}
+			eg.spatials.Rotate3 : {0, 0, 0}
+			eg.spatials.Velocity3 : {0, 0, 0}
+			eg.cameras.KeyBindings : {
+				key_rotate_dx_plus:$SDL_SCANCODE_UP, 
+				key_rotate_dx_minus:$SDL_SCANCODE_DOWN, 
+				key_rotate_dy_plus:$SDL_SCANCODE_RIGHT, 
+				key_rotate_dy_minus:$SDL_SCANCODE_LEFT, 
+				key_rotate_dz_plus:$SDL_SCANCODE_E, 
+				key_rotate_dz_minus:$SDL_SCANCODE_Q,
+				key_move_dx_plus:$SDL_SCANCODE_A, 
+				key_move_dx_minus:$SDL_SCANCODE_D, 
+				key_move_dy_plus:$SDL_SCANCODE_LCTRL, 
+				key_move_dy_minus:$SDL_SCANCODE_SPACE, 
+				key_move_dz_plus:$SDL_SCANCODE_W, 
+				key_move_dz_minus:$SDL_SCANCODE_S, 
+				key_fov_reset:$SDL_SCANCODE_KP_0, 
+				key_fov_plus:$SDL_SCANCODE_KP_1, 
+				key_fov_minus:$SDL_SCANCODE_KP_2, 
+			}
 		}
 	}
 

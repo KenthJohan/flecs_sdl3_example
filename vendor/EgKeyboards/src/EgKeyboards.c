@@ -21,11 +21,11 @@ static void System_EgKeyboardsState(ecs_iter_t *it)
 		// SDLTest_CommonEvent(state, &event, &done);
 		switch (event.type) {
 		case SDL_EVENT_KEY_DOWN:
-			create->keycode[event.key.key] = 1;
+			//create->keycode[event.key.key] = 1;
 			create->scancode[event.key.scancode] = 1;
 			break;
 		case SDL_EVENT_KEY_UP:
-			create->keycode[event.key.key] = 0;
+			//create->keycode[event.key.key] = 0;
 			create->scancode[event.key.scancode] = 0;
 			break;
 		}

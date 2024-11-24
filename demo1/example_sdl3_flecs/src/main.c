@@ -39,6 +39,40 @@
 
 
 
+static void ControllerRotate(ecs_iter_t *it)
+{
+	EgCamerasKeyBindings *controller = ecs_field(it, EgCamerasKeyBindings, 0);
+	Rotate3 *rotate = ecs_field(it, Rotate3, 1);
+	EgKeyboardsState *ckey = ecs_field(it, EgKeyboardsState, 2); // singleton
+	uint8_t *keys = ckey->scancode;
+	float k = 0.8f * it->delta_time;
+	for (int i = 0; i < it->count; ++i, ++rotate) {
+		rotate->dx = keys[controller->key_rotate_dx_plus] - keys[controller->key_rotate_dx_minus];
+		rotate->dy = keys[controller->key_rotate_dy_plus] - keys[controller->key_rotate_dy_minus];
+		rotate->dz = keys[controller->key_rotate_dz_plus] - keys[controller->key_rotate_dz_minus];
+		v3f32_mul((float *)rotate, (float *)rotate, k);
+	}
+}
+
+static void ControllerMove(ecs_iter_t *it)
+{
+	EgCamerasKeyBindings *controller = ecs_field(it, EgCamerasKeyBindings, 0);
+	Velocity3 *vel = ecs_field(it, Velocity3, 1);
+	EgKeyboardsState *ckey = ecs_field(it, EgKeyboardsState, 2);
+	uint8_t *keys = ckey->scancode;
+	float moving_speed = 1.1f;
+	float k = it->delta_time * moving_speed;
+	for (int i = 0; i < it->count; i++) {
+		vel->x = -(keys[controller->key_move_dx_plus] - keys[controller->key_move_dx_minus]);
+		vel->y = -(keys[controller->key_move_dy_plus] - keys[controller->key_move_dy_minus]);
+		vel->z = -(keys[controller->key_move_dz_plus] - keys[controller->key_move_dz_minus]);
+		v3f32_mul((float *)vel, (float *)vel, k);
+	}
+}
+
+
+
+
 int main(int argc, char *argv[])
 {
 
@@ -71,6 +105,30 @@ int main(int argc, char *argv[])
 	ecs_log_set_level(0);
 	ecs_script_run_file(world, "config/hello.flecs");
 	ecs_log_set_level(-1);
+
+
+	ecs_system(world,{
+	.entity = ecs_entity(world, {.name = "ControllerRotate", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = ControllerRotate,
+	.query.terms =
+	{
+	{.id = ecs_id(EgCamerasKeyBindings), .src.id = EcsSelf},
+	{.id = ecs_id(Rotate3), .src.id = EcsSelf},
+	{.id = ecs_id(EgKeyboardsState), .src.id = ecs_id(EgKeyboardsState)},
+	}});
+
+
+	//ECS_SYSTEM(world, ControllerMove, EcsOnUpdate, KeyboardController, Velocity3, Window($));
+	ecs_system(world,{
+	.entity = ecs_entity(world, {.name = "ControllerMove", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = ControllerMove,
+	.query.terms =
+	{
+	{.id = ecs_id(EgCamerasKeyBindings), .src.id = EcsSelf},
+	{.id = ecs_id(Velocity3), .src.id = EcsSelf},
+	{.id = ecs_id(EgKeyboardsState), .src.id = ecs_id(EgKeyboardsState)},
+	}});
+
 
 	ecs_entity_t e_gpu = ecs_lookup(world, "hello.default_gpu");
 	ecs_entity_t e_pipeline = ecs_lookup(world, "hello.default_gpu.pipeline");
