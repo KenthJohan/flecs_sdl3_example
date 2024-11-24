@@ -98,15 +98,21 @@ int main(int argc, char *argv[])
 	ecs_entity_t e_gpu = ecs_lookup(world, "hello.default_gpu");
 	ecs_entity_t e_pipeline = ecs_lookup(world, "hello.default_gpu.pipeline");
 	ecs_entity_t e_vert1 = ecs_lookup(world, "hello.default_gpu.vert1");
+	ecs_entity_t e_texd = ecs_lookup(world, "hello.default_gpu.window1.tex_depth");
+	ecs_entity_t e_win = ecs_lookup(world, "hello.default_gpu.window1");
 
 	EgGpuPipeline const *c_pipeline = NULL;
 	EgGpuDevice const *c_gpu = NULL;
 	EgGpuBuffer const *c_buf = NULL;
+	EgGpuTexture const *c_texd = NULL;
+	EgWindowsWindow const *c_win = NULL;
 	while (1) {
 		ecs_progress(world, 0.0f);
 		c_pipeline = ecs_get(world, e_pipeline, EgGpuPipeline);
 		c_gpu = ecs_get(world, e_gpu, EgGpuDevice);
 		c_buf = ecs_get(world, e_vert1, EgGpuBuffer);
+		c_texd = ecs_get(world, e_texd, EgGpuTexture);
+		c_win = ecs_get(world, e_win, EgWindowsWindow);
 		if (c_pipeline == NULL) {
 			continue;
 		}
@@ -114,6 +120,12 @@ int main(int argc, char *argv[])
 			continue;
 		}
 		if (c_buf == NULL) {
+			continue;
+		}
+		if (c_texd == NULL) {
+			continue;
+		}
+		if (c_win == NULL) {
 			continue;
 		}
 		break;
@@ -133,8 +145,6 @@ int main(int argc, char *argv[])
 		Uint32 drawablew, drawableh;
 		SDL_GetWindowSizeInPixels(state->windows[i], (int *)&drawablew, (int *)&drawableh);
 		winstate->tex_depth = CreateDepthTexture(SDL_GPU_SAMPLECOUNT_1, state, c_gpu->device, drawablew, drawableh);
-		winstate->tex_msaa = CreateMSAATexture(SDL_GPU_SAMPLECOUNT_1, state, c_gpu->device, drawablew, drawableh);
-		winstate->tex_resolve = CreateResolveTexture(SDL_GPU_SAMPLECOUNT_1, state, c_gpu->device, drawablew, drawableh);
 		/* make each window different */
 		winstate->angle_x = (i * 10) % 360;
 		winstate->angle_y = (i * 20) % 360;
@@ -145,6 +155,7 @@ int main(int argc, char *argv[])
 	for (int i = 0; i < state->num_windows; i++) {
 		SDL_ClaimWindowForGPUDevice(c_gpu->device, state->windows[i]);
 	}
+	SDL_ClaimWindowForGPUDevice(c_gpu->device, c_win->object);
 
 
 
@@ -166,7 +177,7 @@ int main(int argc, char *argv[])
 		}
 		*/
 		for (int i = 0; i < state->num_windows; ++i) {
-			main_render(state, state->windows, c_gpu->device, window_states, i, c_pipeline->object, c_buf->object);
+			main_render(c_win->object, c_gpu->device, window_states, i, c_pipeline->object, c_buf->object, c_texd->object);
 		}
 	}
 
