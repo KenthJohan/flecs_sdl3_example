@@ -25,6 +25,8 @@
 #include <EgSpatials.h>
 #include <EgCameras.h>
 #include <EgShapes.h>
+#include <EgKeyboards.h>
+
 
 /* Regenerate the shaders with testgpu/build-shaders.sh */
 #include "../shaders/testgpu_spirv.h"
@@ -83,6 +85,7 @@ int main(int argc, char *argv[])
 	ECS_IMPORT(world, EgDisplay);
 	ECS_IMPORT(world, EgGpu);
 	ECS_IMPORT(world, EgWindows);
+	ECS_IMPORT(world, EgKeyboards);
 
 	ecs_log_set_level(0);
 	ecs_script_run_file(world, "config/hello.flecs");
@@ -143,12 +146,17 @@ int main(int argc, char *argv[])
 		SDL_ClaimWindowForGPUDevice(c_gpu->device, state->windows[i]);
 	}
 
-	while (1) {
-		ecs_progress(world, 0.0f);
-		SDL_Event event;
-		int i;
 
-		/* Check for events */
+
+	EgKeyboardsKeys const * keys = ecs_singleton_get(world, EgKeyboardsKeys);
+
+	while (1) {
+		if (keys->state[SDLK_ESCAPE]) {
+			break;
+		}
+		ecs_progress(world, 0.0f);
+		/*
+		SDL_Event event;
 		int done = 0;
 		while (SDL_PollEvent(&event) && !done) {
 			SDLTest_CommonEvent(state, &event, &done);
@@ -156,7 +164,8 @@ int main(int argc, char *argv[])
 		if (done) {
 			break;
 		}
-		for (i = 0; i < state->num_windows; ++i) {
+		*/
+		for (int i = 0; i < state->num_windows; ++i) {
 			main_render(state, state->windows, c_gpu->device, window_states, i, c_pipeline->object, c_buf->object);
 		}
 	}

@@ -12,6 +12,7 @@
 			"EgCameras",
 			"EgShapes",
 			"EgSpatials",
+			"EgKeyboards",
 			"EgWindows"
 		]
 	},
@@ -26,6 +27,7 @@
 			"EgShapes",
 			"EgSpatials",
 			"EgWindows",
+			"EgKeyboards",
 			"egmath",
 			"SDL3",
 			"m"

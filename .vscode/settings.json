@@ -84,7 +84,10 @@
 		"egcameras.h": "c",
 		"eggpu_system_eggpubuffer.h": "c",
 		"numbers": "c",
-		"egmath.h": "c"
+		"egmath.h": "c",
+		"sdl_keyboard.h": "c",
+		"sdl_events.h": "c",
+		"egkeyboards.h": "c"
 	},
 	"terminal.integrated.env.linux": {
 		"GTK_PATH": ""
