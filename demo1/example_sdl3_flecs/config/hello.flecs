@@ -96,7 +96,6 @@ default_gpu {
 			eg.gpu.TextureCreateInfo : {sample_count:0}
 			eg.base.Update
 		}
-		eg.gpu.Texture
 		cam {
 			eg.cameras.State
 			// Set the order of the operands, changes how {Orientation} rotates
@@ -152,21 +151,5 @@ default_gpu {
 }
 
 
-
-
-drawobjs
-{
-	c1 {
-		eg.gpu.DrawCube
-		eg.spatials.EgRotateOrder1
-		eg.spatials.Transformation
-		eg.spatials.Position3World
-		eg.spatials.Orientation
-		eg.spatials.OrientationWorld
-		eg.spatials.Scale3 : {x: 1, y: 1, z: 1}
-		eg.spatials.Position3 : {x: 0, y: 0, z: 0}
-		eg.spatials.Rotate3 : {dx: 1, dy: 1, dz: 1}
-	}
-}
 
 

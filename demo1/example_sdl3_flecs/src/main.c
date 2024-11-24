@@ -29,15 +29,11 @@
 #include <EgKeyboards.h>
 #include <EgWindows.h>
 
-
 #include "EgFs.h"
 #include "EgDisplay.h"
 #include "EgGpu.h"
 
 #include "main_render.h"
-
-
-
 
 static void ControllerRotate(ecs_iter_t *it)
 {
@@ -70,8 +66,23 @@ static void ControllerMove(ecs_iter_t *it)
 	}
 }
 
+static void System_Draw(ecs_iter_t *it)
+{
+	EgGpuDevice *c_gpu = ecs_field(it, EgGpuDevice, 0);          // shared
+	EgGpuPipeline *c_pipeline = ecs_field(it, EgGpuPipeline, 1); // shared
+	EgGpuBuffer *c_buf = ecs_field(it, EgGpuBuffer, 2);          // shared
+	EgGpuTexture *c_texd = ecs_field(it, EgGpuTexture, 3);       // shared
+	EgWindowsWindow *c_win = ecs_field(it, EgWindowsWindow, 4);  // shared
+	EgCamerasState *c_cam = ecs_field(it, EgCamerasState, 5);    // shared
+	// EgGpuDrawCube *c_cube = ecs_field(it, EgGpuDrawCube, 6);     // self
+	Transformation *c_trans = ecs_field(it, Transformation, 7); // self
 
-
+	for (int i = 0; i < it->count; ++i) {
+		m4f32 mvp;
+		m4f32_mul(&mvp, &c_cam->vp, &c_trans->matrix);
+		main_render(c_win->object, c_gpu->device, c_pipeline->object, c_buf->object, c_texd->object, (float *)&mvp);
+	}
+}
 
 int main(int argc, char *argv[])
 {
@@ -106,30 +117,40 @@ int main(int argc, char *argv[])
 	ecs_script_run_file(world, "config/hello.flecs");
 	ecs_log_set_level(-1);
 
-
-	ecs_system(world,{
-	.entity = ecs_entity(world, {.name = "ControllerRotate", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "ControllerRotate", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = ControllerRotate,
-	.query.terms =
-	{
+	.query.terms = {
 	{.id = ecs_id(EgCamerasKeyBindings), .src.id = EcsSelf},
 	{.id = ecs_id(Rotate3), .src.id = EcsSelf},
 	{.id = ecs_id(EgKeyboardsState), .src.id = ecs_id(EgKeyboardsState)},
 	}});
 
-
-	//ECS_SYSTEM(world, ControllerMove, EcsOnUpdate, KeyboardController, Velocity3, Window($));
-	ecs_system(world,{
-	.entity = ecs_entity(world, {.name = "ControllerMove", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	// ECS_SYSTEM(world, ControllerMove, EcsOnUpdate, KeyboardController, Velocity3, Window($));
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "ControllerMove", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = ControllerMove,
-	.query.terms =
-	{
+	.query.terms = {
 	{.id = ecs_id(EgCamerasKeyBindings), .src.id = EcsSelf},
 	{.id = ecs_id(Velocity3), .src.id = EcsSelf},
 	{.id = ecs_id(EgKeyboardsState), .src.id = ecs_id(EgKeyboardsState)},
 	}});
 
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "System_Draw", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = System_Draw,
+	.query.terms = {
+	{.id = ecs_id(EgGpuDevice), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgGpuPipeline), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgGpuBuffer), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgGpuTexture), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgWindowsWindow), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgCamerasState), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgGpuDrawCube), .src.id = EcsSelf},
+	{.id = ecs_id(Transformation), .src.id = EcsSelf},
+	}});
 
+	// Temporary solution:
 	ecs_entity_t e_gpu = ecs_lookup(world, "hello.default_gpu");
 	ecs_entity_t e_pipeline = ecs_lookup(world, "hello.default_gpu.pipeline");
 	ecs_entity_t e_vert1 = ecs_lookup(world, "hello.default_gpu.vert1");
@@ -174,6 +195,10 @@ int main(int argc, char *argv[])
 
 	SDL_ClaimWindowForGPUDevice(c_gpu->device, c_win->object);
 
+	ecs_log_set_level(0);
+	ecs_script_run_file(world, "config/app.flecs");
+	ecs_log_set_level(-1);
+
 	EgKeyboardsState const *board = ecs_singleton_get(world, EgKeyboardsState);
 
 	while (1) {
@@ -181,8 +206,8 @@ int main(int argc, char *argv[])
 			break;
 		}
 		ecs_progress(world, 0.0f);
-		c_cam = ecs_get(world, e_cam, EgCamerasState);
-		main_render(c_win->object, c_gpu->device, c_pipeline->object, c_buf->object, c_texd->object, (float *)&c_cam->vp);
+		// c_cam = ecs_get(world, e_cam, EgCamerasState);
+		// main_render(c_win->object, c_gpu->device, c_pipeline->object, c_buf->object, c_texd->object, (float *)&c_cam->vp);
 	}
 
 	return 0;

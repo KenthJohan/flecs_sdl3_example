@@ -22,6 +22,10 @@ ECS_COMPONENT_DECLARE(EgGpuBufferCreateInfo);
 ECS_COMPONENT_DECLARE(EgGpuTexture);
 ECS_COMPONENT_DECLARE(EgGpuTextureCreateInfo);
 
+
+
+
+
 void EgGpuImport(ecs_world_t *world)
 {
 	ECS_MODULE(world, EgGpu);
@@ -187,17 +191,7 @@ void EgGpuImport(ecs_world_t *world)
 	{.id = EgBaseError, .oper = EcsNot}
 	}});
 
-/*
-	ecs_system(world,
-	{.entity = ecs_entity(world, {.name = "System_Draw", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
-	.callback = System_Draw,
-	.query.terms = {
-	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
-	{.id = ecs_id(EgShapesRectangle), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
-	{.id = ecs_id(EgGpuTextureCreateInfo), .src.id = EcsSelf},
-	{.id = ecs_id(EgGpuTexture), .oper = EcsNot}, // Adds this
-	{.id = EgBaseUpdate},
-	{.id = EgBaseError, .oper = EcsNot}
-	}});
-	*/
+
+
+
 }
