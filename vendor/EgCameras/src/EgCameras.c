@@ -150,7 +150,7 @@ void EgCamerasImport(ecs_world_t *world)
 	                  {.id = ecs_id(EgCamerasState), .src.id = EcsSelf},
 	                  {.id = ecs_id(Position3), .src.id = EcsSelf},
 	                  {.id = ecs_id(Orientation), .src.id = EcsSelf},
-	                  {.id = ecs_id(EgShapesRectangle), .trav = EcsChildOf, .src.id = EcsUp},
+	                  {.id = ecs_id(EgShapesRectangle), .trav = EcsDependsOn, .src.id = EcsUp},
 	                  }});
 
 	/*

@@ -79,50 +79,53 @@ const SDL_SCANCODE_RSHIFT = 229
 const SDL_SCANCODE_RALT = 230
 const SDL_SCANCODE_RGUI = 231
 
+
+
+
+window1 {
+	eg.windows.WindowCreateInfo : {debug: true}
+	eg.base.Update
+	eg.shapes.Rectangle
+	eg.spatials.Position2
+	mouse1 {
+		eg.windows.Mouse
+		eg.spatials.Position2
+	}
+}
+
+
+cam {
+	eg.cameras.State
+	(flecs.core.DependsOn, window1)
+	// Set the order of the operands, changes how {Orientation} rotates
+	eg.spatials.EgRotateOrder2
+	eg.spatials.Position3 : {3, -4, 4}
+	eg.spatials.Orientation : {-0.4, -0.1, -0.2, 0.8}
+	eg.spatials.Rotate3 : {0, 0, 0}
+	eg.spatials.Velocity3 : {0, 0, 0}
+	eg.cameras.KeyBindings : {
+		key_rotate_dx_plus:$SDL_SCANCODE_UP, 
+		key_rotate_dx_minus:$SDL_SCANCODE_DOWN, 
+		key_rotate_dy_plus:$SDL_SCANCODE_RIGHT, 
+		key_rotate_dy_minus:$SDL_SCANCODE_LEFT, 
+		key_rotate_dz_plus:$SDL_SCANCODE_E, 
+		key_rotate_dz_minus:$SDL_SCANCODE_Q,
+		key_move_dx_plus:$SDL_SCANCODE_A, 
+		key_move_dx_minus:$SDL_SCANCODE_D, 
+		key_move_dy_plus:$SDL_SCANCODE_LCTRL, 
+		key_move_dy_minus:$SDL_SCANCODE_SPACE, 
+		key_move_dz_plus:$SDL_SCANCODE_W, 
+		key_move_dz_minus:$SDL_SCANCODE_S, 
+		key_fov_reset:$SDL_SCANCODE_KP_0, 
+		key_fov_plus:$SDL_SCANCODE_KP_1, 
+		key_fov_minus:$SDL_SCANCODE_KP_2, 
+	}
+}
+
+
 default_gpu {
 	eg.gpu.DeviceCreateInfo : {debug: true}
 	eg.base.Update
-
-	window1 {
-		eg.windows.WindowCreateInfo : {debug: true}
-		eg.base.Update
-		eg.shapes.Rectangle
-		eg.spatials.Position2
-		mouse1 {
-			eg.windows.Mouse
-			eg.spatials.Position2
-		}
-		tex_depth {
-			eg.gpu.TextureCreateInfo : {sample_count:0}
-			eg.base.Update
-		}
-		cam {
-			eg.cameras.State
-			// Set the order of the operands, changes how {Orientation} rotates
-			eg.spatials.EgRotateOrder2
-			eg.spatials.Position3 : {3, -4, 4}
-			eg.spatials.Orientation : {-0.4, -0.1, -0.2, 0.8}
-			eg.spatials.Rotate3 : {0, 0, 0}
-			eg.spatials.Velocity3 : {0, 0, 0}
-			eg.cameras.KeyBindings : {
-				key_rotate_dx_plus:$SDL_SCANCODE_UP, 
-				key_rotate_dx_minus:$SDL_SCANCODE_DOWN, 
-				key_rotate_dy_plus:$SDL_SCANCODE_RIGHT, 
-				key_rotate_dy_minus:$SDL_SCANCODE_LEFT, 
-				key_rotate_dz_plus:$SDL_SCANCODE_E, 
-				key_rotate_dz_minus:$SDL_SCANCODE_Q,
-				key_move_dx_plus:$SDL_SCANCODE_A, 
-				key_move_dx_minus:$SDL_SCANCODE_D, 
-				key_move_dy_plus:$SDL_SCANCODE_LCTRL, 
-				key_move_dy_minus:$SDL_SCANCODE_SPACE, 
-				key_move_dz_plus:$SDL_SCANCODE_W, 
-				key_move_dz_minus:$SDL_SCANCODE_S, 
-				key_fov_reset:$SDL_SCANCODE_KP_0, 
-				key_fov_plus:$SDL_SCANCODE_KP_1, 
-				key_fov_minus:$SDL_SCANCODE_KP_2, 
-			}
-		}
-	}
 
 	@brief "shaders/cube"
 	shader_fragment {
@@ -146,6 +149,13 @@ default_gpu {
 	vert1 {
 		eg.gpu.BufferCreateInfo : {usage: 0}
 		eg.base.Update
+	}
+
+
+	tex_depth {
+		eg.gpu.TextureCreateInfo : {sample_count:0}
+		eg.base.Update
+		(flecs.core.DependsOn, window1)
 	}
 
 }

@@ -2,12 +2,12 @@ module app
 
 
 a {
+	(flecs.core.DependsOn, hello.window1)
+	(flecs.core.DependsOn, hello.cam)
 	(flecs.core.DependsOn, hello.default_gpu)
 	(flecs.core.DependsOn, hello.default_gpu.pipeline)
 	(flecs.core.DependsOn, hello.default_gpu.vert1)
-	(flecs.core.DependsOn, hello.default_gpu.window1)
-	(flecs.core.DependsOn, hello.default_gpu.window1.cam)
-	(flecs.core.DependsOn, hello.default_gpu.window1.tex_depth)
+	(flecs.core.DependsOn, hello.default_gpu.tex_depth)
 }
 
 

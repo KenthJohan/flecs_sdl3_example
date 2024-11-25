@@ -200,9 +200,9 @@ int main(int argc, char *argv[])
 	ecs_entity_t e_gpu = ecs_lookup(world, "hello.default_gpu");
 	ecs_entity_t e_pipeline = ecs_lookup(world, "hello.default_gpu.pipeline");
 	ecs_entity_t e_vert1 = ecs_lookup(world, "hello.default_gpu.vert1");
-	ecs_entity_t e_texd = ecs_lookup(world, "hello.default_gpu.window1.tex_depth");
-	ecs_entity_t e_win = ecs_lookup(world, "hello.default_gpu.window1");
-	ecs_entity_t e_cam = ecs_lookup(world, "hello.default_gpu.window1.cam");
+	ecs_entity_t e_texd = ecs_lookup(world, "hello.default_gpu.tex_depth");
+	ecs_entity_t e_win = ecs_lookup(world, "hello.window1");
+	ecs_entity_t e_cam = ecs_lookup(world, "hello.cam");
 
 	EgGpuPipeline const *c_pipeline = NULL;
 	EgGpuDevice const *c_gpu = NULL;

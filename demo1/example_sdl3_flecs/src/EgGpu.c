@@ -184,7 +184,7 @@ void EgGpuImport(ecs_world_t *world)
 	.callback = System_EgGpuTexture_Create,
 	.query.terms = {
 	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
-	{.id = ecs_id(EgShapesRectangle), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgShapesRectangle), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuTextureCreateInfo), .src.id = EcsSelf},
 	{.id = ecs_id(EgGpuTexture), .oper = EcsNot}, // Adds this
 	{.id = EgBaseUpdate},
