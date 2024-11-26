@@ -158,6 +158,8 @@ default_gpu {
 		(flecs.core.DependsOn, window1)
 	}
 
+
+	(eg.base.Claim, window1)
 }
 
 

@@ -50,5 +50,8 @@ extern ECS_TAG_DECLARE(EgBaseUse);
 extern ECS_TAG_DECLARE(EgBaseUpdate);
 extern ECS_TAG_DECLARE(EgBaseDraw);
 extern ECS_TAG_DECLARE(EgBaseError);
+extern ECS_TAG_DECLARE(EgBaseClaim);
+extern ECS_TAG_DECLARE(EgBaseClaimed);
+extern ECS_TAG_DECLARE(EgBaseClaimedBy);
 
 void EgBaseImport(ecs_world_t *world);

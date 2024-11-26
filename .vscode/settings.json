@@ -88,7 +88,8 @@
 		"sdl_keyboard.h": "c",
 		"sdl_events.h": "c",
 		"egkeyboards.h": "c",
-		"eggpu_system_eggputexture.h": "c"
+		"eggpu_system_eggputexture.h": "c",
+		"charconv": "c"
 	},
 	"terminal.integrated.env.linux": {
 		"GTK_PATH": ""

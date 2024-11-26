@@ -10,6 +10,9 @@ ECS_TAG_DECLARE(EgBaseUse);
 ECS_TAG_DECLARE(EgBaseUpdate);
 ECS_TAG_DECLARE(EgBaseDraw);
 ECS_TAG_DECLARE(EgBaseError);
+ECS_TAG_DECLARE(EgBaseClaim);
+ECS_TAG_DECLARE(EgBaseClaimed);
+ECS_TAG_DECLARE(EgBaseClaimedBy);
 
 ECS_CTOR(EgBaseShapeBuffer, ptr, {
 	ecs_os_memset_t(ptr, 0, EgBaseShapeBuffer);
@@ -30,9 +33,17 @@ void EgBaseImport(ecs_world_t *world)
 	ECS_TAG_DEFINE(world, EgBaseUpdate);
 	ECS_TAG_DEFINE(world, EgBaseDraw);
 	ECS_TAG_DEFINE(world, EgBaseError);
+	ECS_TAG_DEFINE(world, EgBaseClaim);
+	ECS_TAG_DEFINE(world, EgBaseClaimed);
+	ECS_TAG_DEFINE(world, EgBaseClaimedBy);
 
 	ecs_add_id(world, EgBaseUse, EcsTraversable);
 	ecs_add_id(world, EgBaseUpdate, EcsTraversable);
+	
+	ecs_add_id(world, EgBaseClaim, EcsTraversable);
+	ecs_add_id(world, EgBaseClaimed, EcsTraversable);
+	ecs_add_id(world, EgBaseClaimedBy, EcsTraversable);
+	ecs_add_id(world, EgBaseClaimedBy, EcsUnion);
 
 	ecs_set_hooks(world, EgBaseShapeBuffer, {.ctor = ecs_ctor(EgBaseShapeBuffer)});
 
