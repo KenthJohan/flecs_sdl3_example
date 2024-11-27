@@ -64,18 +64,29 @@ static void ControllerMove(ecs_iter_t *it)
 	}
 }
 
+
+
+#define ecs_field_paranoid(it, T, index)\
+    (ecs_field_id(it, index) == ecs_id(T)) ? ecs_field(it, T, index) : \
+    (ecs_abort_(ECS_INVALID_PARAMETER, __FILE__, __LINE__, \
+    "Field %i (%s) does not match %s", \
+    index, ecs_get_symbol(it->world, ecs_field_id(it, index)), ecs_get_symbol(it->world, ecs_id(T))), \
+    ecs_os_abort(), abort(), NULL);
+
+
 static void System_Draw(ecs_iter_t *it)
 {
-	EgGpuDevice *c_gpu = ecs_field(it, EgGpuDevice, 0);          // shared
+	EgGpuDevice *c_gpu = ecs_field_paranoid(it, EgGpuDevice, 1); // shared
 	EgGpuPipeline *c_pipeline = ecs_field(it, EgGpuPipeline, 1); // shared
 	EgGpuBuffer *c_buf = ecs_field(it, EgGpuBuffer, 2);          // shared
 	EgGpuTexture *c_texd = ecs_field(it, EgGpuTexture, 3);       // shared
 	EgWindowsWindow *c_win = ecs_field(it, EgWindowsWindow, 4);  // shared
-	//EgGpuWindow *c_gwin = ecs_field(it, EgGpuWindow, 5);         // shared
+	EgGpuWindow *c_gwin = ecs_field(it, EgGpuWindow, 5);         // shared
 	EgCamerasState *c_cam = ecs_field(it, EgCamerasState, 6);    // shared
-	// EgGpuDrawCube *c_cube = ecs_field(it, EgGpuDrawCube, 7);     // self
-	Transformation *c_trans = ecs_field(it, Transformation, 8); // self
-	Uint32 drawablew, drawableh;
+	EgGpuDrawCube *c_cube = ecs_field(it, EgGpuDrawCube, 7);     // self
+	Transformation *c_trans = ecs_field(it, Transformation, 8);  // self
+
+	printf("ecs_get_name() %s\n", ecs_get_symbol(it->world, ecs_field_id(it, 0)));
 
 	SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(c_gpu->device);
 	if (!cmd) {
@@ -83,13 +94,15 @@ static void System_Draw(ecs_iter_t *it)
 		return;
 	}
 
-	SDL_GPUTexture *swapchainTexture;
-	if (!SDL_AcquireGPUSwapchainTexture(cmd, c_win->object, &swapchainTexture, &drawablew, &drawableh)) {
+	SDL_GPUTexture *tex;
+	Uint32 drawableh = 0;
+	Uint32 drawablew = 0;
+	if (!SDL_AcquireGPUSwapchainTexture(cmd, c_win->object, &tex, &drawablew, &drawableh)) {
 		SDL_Log("Failed to acquire swapchain texture: %s", SDL_GetError());
 		return;
 	}
 
-	if (swapchainTexture == NULL) {
+	if (tex == NULL) {
 		// No swapchain was acquired, probably too many frames in flight
 		SDL_SubmitGPUCommandBuffer(cmd);
 		return;
@@ -100,7 +113,7 @@ static void System_Draw(ecs_iter_t *it)
 	color_target.clear_color.a = 1.0f;
 	color_target.load_op = SDL_GPU_LOADOP_CLEAR;
 	color_target.store_op = SDL_GPU_STOREOP_STORE;
-	color_target.texture = swapchainTexture;
+	color_target.texture = tex;
 
 	SDL_GPUDepthStencilTargetInfo depth_target;
 	SDL_zero(depth_target);
@@ -163,7 +176,7 @@ int main(int argc, char *argv[])
 	ecs_log_set_level(0);
 	ecs_script_run_file(world, "config/hello.flecs");
 	ecs_log_set_level(-1);
-	
+
 	ecs_log_set_level(0);
 	ecs_script_run_file(world, "config/app.flecs");
 	ecs_log_set_level(-1);
@@ -201,7 +214,6 @@ int main(int argc, char *argv[])
 	{.id = ecs_id(EgGpuDrawCube), .src.id = EcsSelf},
 	{.id = ecs_id(Transformation), .src.id = EcsSelf},
 	}});
-
 
 	EgKeyboardsState const *board = ecs_singleton_get(world, EgKeyboardsState);
 
