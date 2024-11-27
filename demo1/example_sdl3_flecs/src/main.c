@@ -76,18 +76,16 @@ static void ControllerMove(ecs_iter_t *it)
 
 static void System_Draw(ecs_iter_t *it)
 {
-	EgGpuDevice *c_gpu = ecs_field_paranoid(it, EgGpuDevice, 1); // shared
-	EgGpuPipeline *c_pipeline = ecs_field(it, EgGpuPipeline, 1); // shared
-	EgGpuBuffer *c_buf = ecs_field(it, EgGpuBuffer, 2);          // shared
-	EgGpuTexture *c_texd = ecs_field(it, EgGpuTexture, 3);       // shared
-	EgWindowsWindow *c_win = ecs_field(it, EgWindowsWindow, 4);  // shared
-	EgGpuWindow *c_gwin = ecs_field(it, EgGpuWindow, 5);         // shared
-	EgCamerasState *c_cam = ecs_field(it, EgCamerasState, 6);    // shared
-	EgGpuDrawCube *c_cube = ecs_field(it, EgGpuDrawCube, 7);     // self
-	Transformation *c_trans = ecs_field(it, Transformation, 8);  // self
-
-	printf("ecs_get_name() %s\n", ecs_get_symbol(it->world, ecs_field_id(it, 0)));
-
+	EgGpuDevice *c_gpu = ecs_field_paranoid(it, EgGpuDevice, 0); // shared
+	EgGpuPipeline *c_pipeline = ecs_field_paranoid(it, EgGpuPipeline, 1); // shared
+	EgGpuBuffer *c_buf = ecs_field_paranoid(it, EgGpuBuffer, 2);          // shared
+	EgGpuTexture *c_texd = ecs_field_paranoid(it, EgGpuTexture, 3);       // shared
+	EgWindowsWindow *c_win = ecs_field_paranoid(it, EgWindowsWindow, 4);  // shared
+	EgGpuWindow *c_gwin = ecs_field_paranoid(it, EgGpuWindow, 5);         // shared
+	EgCamerasState *c_cam = ecs_field_paranoid(it, EgCamerasState, 6);    // shared
+	EgGpuDrawCube *c_cube = ecs_field_paranoid(it, EgGpuDrawCube, 7);     // self
+	Transformation *c_trans = ecs_field_paranoid(it, Transformation, 8);  // self
+	
 	SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(c_gpu->device);
 	if (!cmd) {
 		SDL_Log("Failed to acquire command buffer :%s", SDL_GetError());
