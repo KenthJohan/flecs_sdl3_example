@@ -9,6 +9,11 @@ typedef struct
 
 typedef struct
 {
+	int dummy;
+} EgGpuWindow;
+
+typedef struct
+{
 	bool debug;
 } EgGpuDeviceCreateInfo;
 
@@ -72,6 +77,7 @@ typedef struct
 } EgGpuTextureCreateInfo;
 
 extern ECS_COMPONENT_DECLARE(EgGpuDevice);
+extern ECS_COMPONENT_DECLARE(EgGpuWindow);
 extern ECS_COMPONENT_DECLARE(EgGpuDeviceCreateInfo);
 extern ECS_COMPONENT_DECLARE(EgGpuShaderVertex);
 extern ECS_COMPONENT_DECLARE(EgGpuShaderVertexCreateInfo);

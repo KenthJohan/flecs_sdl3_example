@@ -11,6 +11,7 @@
 #include "EgGpu_System_EgGpuTexture.h"
 
 ECS_COMPONENT_DECLARE(EgGpuDevice);
+ECS_COMPONENT_DECLARE(EgGpuWindow);
 ECS_COMPONENT_DECLARE(EgGpuDeviceCreateInfo);
 ECS_COMPONENT_DECLARE(EgGpuShaderVertex);
 ECS_COMPONENT_DECLARE(EgGpuShaderVertexCreateInfo);
@@ -27,24 +28,21 @@ ECS_COMPONENT_DECLARE(EgGpuTextureCreateInfo);
 void System_Claim(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
-	EgGpuDevice *c_gpu = ecs_field(it, EgGpuDevice, 0);         // self
-	EgWindowsWindow *c_win = ecs_field(it, EgWindowsWindow, 1); // up
+	EgGpuDevice *c_gpu = ecs_field(it, EgGpuDevice, 0);         // up
+	EgWindowsWindow *c_win = ecs_field(it, EgWindowsWindow, 1); // self
 	ecs_log_set_level(1);
 	ecs_dbg("System_Claim() count:%i", it->count);
 	ecs_log_push_1();
 	for (int i = 0; i < it->count; ++i, ++c_gpu) {
 		ecs_entity_t e = it->entities[i];
-		ecs_entity_t e_win2 = ecs_field_src(it, 1);
 		//printf("e=%s, e_win=%s\n", ecs_get_name(world, e), ecs_get_name(world, e_win1));
-		ecs_remove_pair(world, e, EgBaseClaim, e_win2);
 		bool success = SDL_ClaimWindowForGPUDevice(c_gpu->device, c_win->object);
 		if (!success) {
 			ecs_add_id(world, e, EgBaseError);
 			ecs_err("SDL_ClaimWindowForGPUDevice() failed");
 		} else {
 			ecs_dbg("SDL_ClaimWindowForGPUDevice() success");
-			ecs_add_pair(world, e, EgBaseClaimed, e_win2);
-			ecs_add_pair(world, e_win2, EgBaseClaimedBy, e);
+			ecs_add(world, e, EgGpuWindow);
 		}
 	} // END FOR LOOP
 	ecs_log_pop_1();
@@ -59,6 +57,7 @@ void EgGpuImport(ecs_world_t *world)
 	ecs_set_name_prefix(world, "EgGpu");
 
 	ECS_COMPONENT_DEFINE(world, EgGpuDevice);
+	ECS_COMPONENT_DEFINE(world, EgGpuWindow);
 	ECS_COMPONENT_DEFINE(world, EgGpuDeviceCreateInfo);
 	ECS_COMPONENT_DEFINE(world, EgGpuShaderVertex);
 	ECS_COMPONENT_DEFINE(world, EgGpuShaderVertexCreateInfo);
@@ -214,9 +213,9 @@ void EgGpuImport(ecs_world_t *world)
 	{.entity = ecs_entity(world, {.name = "System_Claim", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = System_Claim,
 	.query.terms = {
-	{.id = ecs_id(EgGpuDevice), .src.id = EcsSelf, .inout = EcsIn},
-	{.id = ecs_id(EgWindowsWindow), .trav = EgBaseClaim, .src.id = EcsUp, .inout = EcsIn},
-	{.id = ecs_id(EgWindowsWindow), .trav = EgBaseClaimed, .src.id = EcsUp, .inout = EcsIn, .oper = EcsNot},
-	{.id = EgBaseError, .oper = EcsNot},
+	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgWindowsWindow), .src.id = EcsSelf, .inout = EcsIn},
+	{.id = ecs_id(EgGpuWindow), .oper = EcsNot},
+	{.id = ecs_id(EgBaseError), .oper = EcsNot},
 	}});
 }

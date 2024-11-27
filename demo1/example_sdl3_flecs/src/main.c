@@ -71,9 +71,10 @@ static void System_Draw(ecs_iter_t *it)
 	EgGpuBuffer *c_buf = ecs_field(it, EgGpuBuffer, 2);          // shared
 	EgGpuTexture *c_texd = ecs_field(it, EgGpuTexture, 3);       // shared
 	EgWindowsWindow *c_win = ecs_field(it, EgWindowsWindow, 4);  // shared
-	EgCamerasState *c_cam = ecs_field(it, EgCamerasState, 5);    // shared
-	// EgGpuDrawCube *c_cube = ecs_field(it, EgGpuDrawCube, 6);     // self
-	Transformation *c_trans = ecs_field(it, Transformation, 7); // self
+	//EgGpuWindow *c_gwin = ecs_field(it, EgGpuWindow, 5);         // shared
+	EgCamerasState *c_cam = ecs_field(it, EgCamerasState, 6);    // shared
+	// EgGpuDrawCube *c_cube = ecs_field(it, EgGpuDrawCube, 7);     // self
+	Transformation *c_trans = ecs_field(it, Transformation, 8); // self
 	Uint32 drawablew, drawableh;
 
 	SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(c_gpu->device);
@@ -162,6 +163,10 @@ int main(int argc, char *argv[])
 	ecs_log_set_level(0);
 	ecs_script_run_file(world, "config/hello.flecs");
 	ecs_log_set_level(-1);
+	
+	ecs_log_set_level(0);
+	ecs_script_run_file(world, "config/app.flecs");
+	ecs_log_set_level(-1);
 
 	ecs_system(world,
 	{.entity = ecs_entity(world, {.name = "ControllerRotate", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
@@ -191,59 +196,12 @@ int main(int argc, char *argv[])
 	{.id = ecs_id(EgGpuBuffer), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuTexture), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgWindowsWindow), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgGpuWindow), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgCamerasState), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuDrawCube), .src.id = EcsSelf},
 	{.id = ecs_id(Transformation), .src.id = EcsSelf},
 	}});
 
-	// Temporary solution:
-	ecs_entity_t e_gpu = ecs_lookup(world, "hello.default_gpu");
-	ecs_entity_t e_pipeline = ecs_lookup(world, "hello.default_gpu.pipeline");
-	ecs_entity_t e_vert1 = ecs_lookup(world, "hello.default_gpu.vert1");
-	ecs_entity_t e_texd = ecs_lookup(world, "hello.default_gpu.tex_depth");
-	ecs_entity_t e_win = ecs_lookup(world, "hello.window1");
-	ecs_entity_t e_cam = ecs_lookup(world, "hello.cam");
-
-	EgGpuPipeline const *c_pipeline = NULL;
-	EgGpuDevice const *c_gpu = NULL;
-	EgGpuBuffer const *c_buf = NULL;
-	EgGpuTexture const *c_texd = NULL;
-	EgWindowsWindow const *c_win = NULL;
-	EgCamerasState const *c_cam = NULL;
-	while (1) {
-		ecs_progress(world, 0.0f);
-		c_pipeline = ecs_get(world, e_pipeline, EgGpuPipeline);
-		c_gpu = ecs_get(world, e_gpu, EgGpuDevice);
-		c_buf = ecs_get(world, e_vert1, EgGpuBuffer);
-		c_texd = ecs_get(world, e_texd, EgGpuTexture);
-		c_win = ecs_get(world, e_win, EgWindowsWindow);
-		c_cam = ecs_get(world, e_cam, EgCamerasState);
-		if (c_pipeline == NULL) {
-			continue;
-		}
-		if (c_gpu == NULL) {
-			continue;
-		}
-		if (c_buf == NULL) {
-			continue;
-		}
-		if (c_texd == NULL) {
-			continue;
-		}
-		if (c_win == NULL) {
-			continue;
-		}
-		if (c_cam == NULL) {
-			continue;
-		}
-		break;
-	}
-
-	SDL_ClaimWindowForGPUDevice(c_gpu->device, c_win->object);
-
-	ecs_log_set_level(0);
-	ecs_script_run_file(world, "config/app.flecs");
-	ecs_log_set_level(-1);
 
 	EgKeyboardsState const *board = ecs_singleton_get(world, EgKeyboardsState);
 
