@@ -556,7 +556,7 @@ void EgSpatialsImport(ecs_world_t *world)
 		.query.terms =
 		{
 		{.id = ecs_id(Transformation), .src.id = EcsSelf},
-		{.id = ecs_id(TransformationCollector), .trav = EgBaseUse, .src.id = EcsUp},
+		{.id = ecs_id(TransformationCollector), .trav = EcsDependsOn, .src.id = EcsUp},
 		}});
 
 	ecs_system(world, {.entity = ecs_entity(world, {.name = "TransformationCollector_Reset", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),

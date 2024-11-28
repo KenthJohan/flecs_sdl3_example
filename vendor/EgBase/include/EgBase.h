@@ -2,56 +2,20 @@
 #include <flecs.h>
 
 
-/*
 
-ptr                                 last              size             cap
- |                                   |                 |                | 
- +--------+-------+------------------+-----------------+----------------+
- | item 1 | item2 | item 3           | item last       | unused space   |
- +--------+-------+------------------+-----------------+----------------+
-
-*/
-typedef struct {
-	void *ptr;
-	int32_t cap; // Capacity
-	int32_t size; // Current used space
-	int32_t last; // Starting byte position of last item
-} EgBaseMemory;
-
-
-typedef struct {
-	EgBaseMemory mem[2];
-} EgBaseMemory2;
-
-
-typedef struct {
-	uint32_t id;
-	int32_t cap;
-} EgBaseMemoryGPU;
-
-
-
-typedef struct {
-	EgBaseMemoryGPU vbuf;
-	EgBaseMemoryGPU ibuf;
-} EgBaseShapeBuffer;
-
-typedef struct {
-	uint32_t flags;
-} EgBaseShowDrawReference;
-
-extern ECS_COMPONENT_DECLARE(EgBaseMemoryGPU);
-extern ECS_COMPONENT_DECLARE(EgBaseShapeBuffer);
-extern ECS_COMPONENT_DECLARE(EgBaseShowDrawReference);
-extern ECS_COMPONENT_DECLARE(EgBaseMemory);
-extern ECS_COMPONENT_DECLARE(EgBaseMemory2);
-
-extern ECS_TAG_DECLARE(EgBaseUse);
 extern ECS_TAG_DECLARE(EgBaseUpdate);
-extern ECS_TAG_DECLARE(EgBaseDraw);
 extern ECS_TAG_DECLARE(EgBaseError);
-extern ECS_TAG_DECLARE(EgBaseClaim);
-extern ECS_TAG_DECLARE(EgBaseClaimed);
-extern ECS_TAG_DECLARE(EgBaseClaimedBy);
+
+
+#define ecs_field_paranoid(it, T, index)\
+    (ecs_field_id(it, index) == ecs_id(T)) ? (ECS_CAST(T*, ecs_field_w_size(it, sizeof(T), index))) : \
+    (ecs_abort_(ECS_INVALID_PARAMETER, __FILE__, __LINE__, \
+    "Field %i (%s) does not match %s", \
+    index, ecs_get_symbol(it->world, ecs_field_id(it, index)), ecs_get_symbol(it->world, ecs_id(T))), \
+    ecs_os_abort(), NULL)
+
+#undef ecs_field
+#define ecs_field(it, T, index) ecs_field_paranoid(it, T, index)
+
 
 void EgBaseImport(ecs_world_t *world);

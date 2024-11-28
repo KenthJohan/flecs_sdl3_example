@@ -16,7 +16,7 @@ void System_EgGpuShaderFragment_Create(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
 	EgGpuDevice *gpu = ecs_field(it, EgGpuDevice, 0);
-	EgGpuShaderVertexCreateInfo *create = ecs_field(it, EgGpuShaderVertexCreateInfo, 1);
+	EgGpuShaderFragmentCreateInfo *create = ecs_field(it, EgGpuShaderFragmentCreateInfo, 1);
 	ecs_log_set_level(1);
 	ecs_dbg("System Sampler_Create() count:%i", it->count);
 	ecs_log_push_1();
@@ -48,7 +48,7 @@ void System_EgGpuShaderVertex_Create(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
 	EgGpuDevice *gpu = ecs_field(it, EgGpuDevice, 0);
-	EgGpuShaderFragmentCreateInfo *create = ecs_field(it, EgGpuShaderFragmentCreateInfo, 1);
+	EgGpuShaderVertexCreateInfo *create = ecs_field(it, EgGpuShaderVertexCreateInfo, 1);
 	ecs_log_set_level(1);
 	ecs_dbg("System Sampler_Create() count:%i", it->count);
 	ecs_log_push_1();
