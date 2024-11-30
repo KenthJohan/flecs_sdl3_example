@@ -64,17 +64,32 @@ static void ControllerMove(ecs_iter_t *it)
 	}
 }
 
+
+static void System_Draw1(ecs_iter_t *it, SDL_GPUCommandBuffer *cmd, SDL_GPURenderPass *pass, m4f32 * vp)
+{
+    while (ecs_query_next(it)) {
+		EgGpuDrawCube *c_cube = ecs_field(it, EgGpuDrawCube, 0);     // self
+		Transformation *c_trans = ecs_field(it, Transformation, 1);  // self
+		for (int i = 0; i < it->count; ++i, ++c_trans) {
+			m4f32 mvp;
+			m4f32_mul(&mvp, vp, &c_trans->matrix);
+			SDL_PushGPUVertexUniformData(cmd, 0, &mvp, sizeof(float) * 16);
+			SDL_DrawGPUPrimitives(pass, 36, 1, 0, 0);
+		}
+    }
+}
+
+
 static void System_Draw(ecs_iter_t *it)
 {
-	EgGpuDevice *c_gpu = ecs_field(it, EgGpuDevice, 0);          // shared
-	EgGpuPipeline *c_pipeline = ecs_field(it, EgGpuPipeline, 1); // shared
-	EgGpuBuffer *c_buf = ecs_field(it, EgGpuBuffer, 2);          // shared
-	EgGpuTexture *c_texd = ecs_field(it, EgGpuTexture, 3);       // shared
-	EgWindowsWindow *c_win = ecs_field(it, EgWindowsWindow, 4);  // shared
-	EgGpuWindow *c_gwin = ecs_field(it, EgGpuWindow, 5);         // shared
-	EgCamerasState *c_cam = ecs_field(it, EgCamerasState, 6);    // shared
-	EgGpuDrawCube *c_cube = ecs_field(it, EgGpuDrawCube, 7);     // self
-	Transformation *c_trans = ecs_field(it, Transformation, 8);  // self
+	EgGpuDraw1 *c_draw1 = ecs_field(it, EgGpuDraw1, 0);          // self
+	EgGpuDevice *c_gpu = ecs_field(it, EgGpuDevice, 1);          // shared
+	EgGpuPipeline *c_pipeline = ecs_field(it, EgGpuPipeline, 2); // shared
+	EgGpuBuffer *c_buf = ecs_field(it, EgGpuBuffer, 3);          // shared
+	EgGpuTexture *c_texd = ecs_field(it, EgGpuTexture, 4);       // shared
+	EgWindowsWindow *c_win = ecs_field(it, EgWindowsWindow, 5);  // shared
+	EgGpuWindow *c_gwin = ecs_field(it, EgGpuWindow, 6);         // shared
+	EgCamerasState *c_cam = ecs_field(it, EgCamerasState, 7);    // shared
 
 	SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(c_gpu->device);
 	if (!cmd) {
@@ -96,7 +111,7 @@ static void System_Draw(ecs_iter_t *it)
 		return;
 	}
 
-	SDL_GPUColorTargetInfo color_target;
+	SDL_GPUColorTargetInfo color_target = {0};
 	SDL_zero(color_target);
 	color_target.clear_color.a = 1.0f;
 	color_target.load_op = SDL_GPU_LOADOP_CLEAR;
@@ -119,14 +134,12 @@ static void System_Draw(ecs_iter_t *it)
 
 	SDL_GPURenderPass *pass = SDL_BeginGPURenderPass(cmd, &color_target, 1, &depth_target);
 	SDL_BindGPUGraphicsPipeline(pass, c_pipeline->object);
+	SDL_BindGPUVertexBuffers(pass, 0, &vertex_binding, 1);
 
-	for (int i = 0; i < it->count; ++i, ++c_trans) {
-		m4f32 mvp;
-		m4f32_mul(&mvp, &c_cam->vp, &c_trans->matrix);
-		SDL_PushGPUVertexUniformData(cmd, 0, &mvp, sizeof(float) * 16);
-		SDL_BindGPUVertexBuffers(pass, 0, &vertex_binding, 1);
-		SDL_DrawGPUPrimitives(pass, 36, 1, 0, 0);
-	}
+
+	ecs_iter_t it2 = ecs_query_iter(it->world, c_draw1->query);
+	System_Draw1(&it2, cmd, pass, &c_cam->vp);	// call the inner system		
+
 
 	SDL_EndGPURenderPass(pass);
 	SDL_SubmitGPUCommandBuffer(cmd);
@@ -169,6 +182,18 @@ int main(int argc, char *argv[])
 	ecs_script_run_file(world, "config/app.flecs");
 	ecs_log_set_level(-1);
 
+	{
+		ecs_entity_t e_draw1 = ecs_lookup(world, "app.a");
+		ecs_query_t *q = ecs_query(world, {
+		.terms = {
+			{.id = ecs_id(EgGpuDrawCube), .src.id = EcsSelf},
+			{.id = ecs_id(Transformation), .src.id = EcsSelf},
+		}
+		});
+		ecs_set(world, e_draw1, EgGpuDraw1, {.query = q});
+	}
+
+
 	ecs_system(world,
 	{.entity = ecs_entity(world, {.name = "ControllerRotate", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = ControllerRotate,
@@ -192,6 +217,7 @@ int main(int argc, char *argv[])
 	{.entity = ecs_entity(world, {.name = "System_Draw", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = System_Draw,
 	.query.terms = {
+	{.id = ecs_id(EgGpuDraw1)},
 	{.id = ecs_id(EgGpuDevice), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuPipeline), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuBuffer), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
@@ -199,8 +225,6 @@ int main(int argc, char *argv[])
 	{.id = ecs_id(EgWindowsWindow), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuWindow), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgCamerasState), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
-	{.id = ecs_id(EgGpuDrawCube), .src.id = EcsSelf},
-	{.id = ecs_id(Transformation), .src.id = EcsSelf},
 	}});
 
 	EgKeyboardsState const *board = ecs_singleton_get(world, EgKeyboardsState);

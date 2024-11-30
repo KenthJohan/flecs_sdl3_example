@@ -24,6 +24,7 @@ ECS_COMPONENT_DECLARE(EgGpuBuffer);
 ECS_COMPONENT_DECLARE(EgGpuBufferCreateInfo);
 ECS_COMPONENT_DECLARE(EgGpuTexture);
 ECS_COMPONENT_DECLARE(EgGpuTextureCreateInfo);
+ECS_COMPONENT_DECLARE(EgGpuDraw1);
 
 void System_Claim(ecs_iter_t *it)
 {
@@ -70,6 +71,7 @@ void EgGpuImport(ecs_world_t *world)
 	ECS_COMPONENT_DEFINE(world, EgGpuBufferCreateInfo);
 	ECS_COMPONENT_DEFINE(world, EgGpuTexture);
 	ECS_COMPONENT_DEFINE(world, EgGpuTextureCreateInfo);
+	ECS_COMPONENT_DEFINE(world, EgGpuDraw1);
 
 	ecs_struct(world,
 	{.entity = ecs_id(EgGpuDeviceCreateInfo),

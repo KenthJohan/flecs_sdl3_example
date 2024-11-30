@@ -2,6 +2,7 @@ module app
 
 
 a {
+	eg.gpu.Draw1
 	(flecs.core.DependsOn, hello.default_gpu.window1)
 	(flecs.core.DependsOn, hello.cam)
 	(flecs.core.DependsOn, hello.default_gpu)
@@ -37,5 +38,18 @@ drawobjs
 		eg.spatials.Scale3 : {x: 1, y: 1, z: 1}
 		eg.spatials.Position3 : {x: 1, y: 0, z: 0}
 		eg.spatials.Rotate3 : {dx: 0.00, dy: 0.01, dz: 0}
+
+		c3  {
+			(flecs.core.DependsOn, a)
+			eg.gpu.DrawCube
+			eg.spatials.EgRotateOrder1
+			eg.spatials.Transformation
+			eg.spatials.Position3World
+			eg.spatials.Orientation
+			eg.spatials.OrientationWorld
+			eg.spatials.Scale3 : {x: 1, y: 1, z: 1}
+			eg.spatials.Position3 : {x: 1, y: 0, z: 0}
+			eg.spatials.Rotate3 : {dx: 0.00, dy: 0.01, dz: 0}
+		}
 	}
 }
