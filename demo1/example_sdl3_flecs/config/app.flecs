@@ -3,12 +3,11 @@ module app
 
 a {
 	eg.gpu.Draw1
-	(flecs.core.DependsOn, hello.default_gpu.window1)
-	(flecs.core.DependsOn, hello.cam)
-	(flecs.core.DependsOn, hello.default_gpu)
-	(flecs.core.DependsOn, hello.default_gpu.pipeline)
-	(flecs.core.DependsOn, hello.default_gpu.vert1)
-	(flecs.core.DependsOn, hello.default_gpu.tex_depth)
+	(flecs.core.DependsOn, gpu.gpu0)
+	(flecs.core.DependsOn, gpu.gpu0.window1)
+	(flecs.core.DependsOn, gpu.gpu0.pipeline)
+	(flecs.core.DependsOn, gpu.gpu0.vert1)
+	(flecs.core.DependsOn, gpu.gpu0.tex_depth)
 }
 
 
@@ -16,6 +15,7 @@ drawobjs
 {
 	c1  {
 		(flecs.core.DependsOn, a)
+		(flecs.core.DependsOn, cam.cam0)
 		eg.gpu.DrawCube
 		eg.spatials.EgRotateOrder1
 		eg.spatials.Transformation
@@ -29,6 +29,7 @@ drawobjs
 
 	c2  {
 		(flecs.core.DependsOn, a)
+		(flecs.core.DependsOn, cam.cam1)
 		eg.gpu.DrawCube
 		eg.spatials.EgRotateOrder1
 		eg.spatials.Transformation
@@ -41,6 +42,7 @@ drawobjs
 
 		c3  {
 			(flecs.core.DependsOn, a)
+			(flecs.core.DependsOn, cam.cam1)
 			eg.gpu.DrawCube
 			eg.spatials.EgRotateOrder1
 			eg.spatials.Transformation

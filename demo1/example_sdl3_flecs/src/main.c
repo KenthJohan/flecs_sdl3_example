@@ -65,14 +65,15 @@ static void ControllerMove(ecs_iter_t *it)
 }
 
 
-static void System_Draw1(ecs_iter_t *it, SDL_GPUCommandBuffer *cmd, SDL_GPURenderPass *pass, m4f32 * vp)
+static void System_Draw1(ecs_iter_t *it, SDL_GPUCommandBuffer *cmd, SDL_GPURenderPass *pass)
 {
     while (ecs_query_next(it)) {
 		EgGpuDrawCube *c_cube = ecs_field(it, EgGpuDrawCube, 0);     // self
 		Transformation *c_trans = ecs_field(it, Transformation, 1);  // self
+		EgCamerasState *c_cam = ecs_field(it, EgCamerasState, 2);    // shared
 		for (int i = 0; i < it->count; ++i, ++c_trans) {
 			m4f32 mvp;
-			m4f32_mul(&mvp, vp, &c_trans->matrix);
+			m4f32_mul(&mvp, &c_cam->vp, &c_trans->matrix);
 			SDL_PushGPUVertexUniformData(cmd, 0, &mvp, sizeof(float) * 16);
 			SDL_DrawGPUPrimitives(pass, 36, 1, 0, 0);
 		}
@@ -89,7 +90,6 @@ static void System_Draw(ecs_iter_t *it)
 	EgGpuTexture *c_texd = ecs_field(it, EgGpuTexture, 4);       // shared
 	EgWindowsWindow *c_win = ecs_field(it, EgWindowsWindow, 5);  // shared
 	EgGpuWindow *c_gwin = ecs_field(it, EgGpuWindow, 6);         // shared
-	EgCamerasState *c_cam = ecs_field(it, EgCamerasState, 7);    // shared
 
 	SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(c_gpu->device);
 	if (!cmd) {
@@ -138,7 +138,7 @@ static void System_Draw(ecs_iter_t *it)
 
 
 	ecs_iter_t it2 = ecs_query_iter(it->world, c_draw1->query);
-	System_Draw1(&it2, cmd, pass, &c_cam->vp);	// call the inner system		
+	System_Draw1(&it2, cmd, pass);	// call the inner system		
 
 
 	SDL_EndGPURenderPass(pass);
@@ -175,7 +175,11 @@ int main(int argc, char *argv[])
 	printf("Remote: %s\n", "https://www.flecs.dev/explorer/?remote=true");
 
 	ecs_log_set_level(0);
-	ecs_script_run_file(world, "config/hello.flecs");
+	ecs_script_run_file(world, "config/gpu.flecs");
+	ecs_log_set_level(-1);
+
+	ecs_log_set_level(0);
+	ecs_script_run_file(world, "config/cam.flecs");
 	ecs_log_set_level(-1);
 
 	ecs_log_set_level(0);
@@ -188,6 +192,7 @@ int main(int argc, char *argv[])
 		.terms = {
 			{.id = ecs_id(EgGpuDrawCube), .src.id = EcsSelf},
 			{.id = ecs_id(Transformation), .src.id = EcsSelf},
+			{.id = ecs_id(EgCamerasState), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 		}
 		});
 		ecs_set(world, e_draw1, EgGpuDraw1, {.query = q});
@@ -224,7 +229,6 @@ int main(int argc, char *argv[])
 	{.id = ecs_id(EgGpuTexture), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgWindowsWindow), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuWindow), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
-	{.id = ecs_id(EgCamerasState), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	}});
 
 	EgKeyboardsState const *board = ecs_singleton_get(world, EgKeyboardsState);

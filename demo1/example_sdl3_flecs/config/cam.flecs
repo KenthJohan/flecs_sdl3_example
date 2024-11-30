@@ -1,4 +1,4 @@
-module hello
+module cam
 
 const SDL_SCANCODE_A = 4
 const SDL_SCANCODE_B = 5
@@ -81,65 +81,9 @@ const SDL_SCANCODE_RGUI = 231
 
 
 
-
-
-
-
-
-
-default_gpu {
-	eg.gpu.DeviceCreateInfo : {debug: true}
-	eg.base.Update
-
-	window1 {
-		eg.windows.WindowCreateInfo : {debug: true}
-		eg.base.Update
-		eg.shapes.Rectangle
-		eg.spatials.Position2
-		mouse1 {
-			eg.windows.Mouse
-			eg.spatials.Position2
-		}
-	}
-
-	@brief "shaders/cube"
-	shader_fragment {
-		eg.gpu.ShaderFragmentCreateInfo : {stage: 0}
-		eg.base.Update
-	}
-
-	@brief "shaders/cube"
-	shader_vertex {
-		eg.gpu.ShaderVertexCreateInfo : {stage: 1}
-		eg.base.Update
-	}
-
-	pipeline {
-		eg.gpu.PipelineCreateInfo : {sample_count:0, target_info_has_depth_stencil_target:true}
-		(flecs.core.DependsOn, shader_fragment)
-		(flecs.core.DependsOn, shader_vertex)
-		eg.base.Update
-	}
-	
-	vert1 {
-		eg.gpu.BufferCreateInfo : {usage: 0}
-		eg.base.Update
-	}
-
-
-	tex_depth {
-		eg.gpu.TextureCreateInfo : {sample_count:0}
-		eg.base.Update
-		(flecs.core.DependsOn, window1)
-	}
-}
-
-
-
-
-cam {
+cam0 {
 	eg.cameras.State
-	(flecs.core.DependsOn, default_gpu.window1)
+	(flecs.core.DependsOn, gpu.gpu0.window1)
 	// Set the order of the operands, changes how {Orientation} rotates
 	eg.spatials.EgRotateOrder2
 	eg.spatials.Position3 : {3, -4, 4}
@@ -163,4 +107,16 @@ cam {
 		key_fov_plus:$SDL_SCANCODE_KP_1, 
 		key_fov_minus:$SDL_SCANCODE_KP_2, 
 	}
+}
+
+
+cam1 {
+	eg.cameras.State
+	(flecs.core.DependsOn, gpu.gpu0.window1)
+	// Set the order of the operands, changes how {Orientation} rotates
+	eg.spatials.EgRotateOrder2
+	eg.spatials.Position3 : {7, -4, 4}
+	eg.spatials.Orientation : {-0.4, -0.1, -0.2, 0.8}
+	eg.spatials.Rotate3 : {0, 0, 0}
+	eg.spatials.Velocity3 : {0, 0, 0}
 }
