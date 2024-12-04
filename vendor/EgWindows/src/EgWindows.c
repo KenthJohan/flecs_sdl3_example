@@ -6,13 +6,21 @@
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_mouse.h>
+#include <SDL3/SDL_events.h>
 
 #include <EgShapes.h>
 #include <EgSpatials.h>
+#include <EgKeyboards.h>
+#include <EgBase.h>
 
 ECS_COMPONENT_DECLARE(EgWindowsWindow);
 ECS_COMPONENT_DECLARE(EgWindowsWindowCreateInfo);
 ECS_COMPONENT_DECLARE(EgWindowsMouse);
+ECS_TAG_DECLARE(EgWindowsEventResize);
+
+// ecs_map_t test
+// https://github.com/SanderMertens/flecs/blob/57ebed1083274ee4875631a940452f08ff08aef9/test/collections/src/Map.c#L54
+static ecs_map_t static_window_map;
 
 static void System_EgWindowsWindow_Create(ecs_iter_t *it)
 {
@@ -38,6 +46,8 @@ static void System_EgWindowsWindow_Create(ecs_iter_t *it)
 			if (window == NULL) {
 				continue;
 			}
+			SDL_WindowID id = SDL_GetWindowID(window);
+			ecs_map_insert(&static_window_map, id, e);
 			ecs_set(world, e, EgWindowsWindow, {.object = window});
 			ecs_dbg("SDL_CreateWindowWithProperties() -> %p", window);
 		}
@@ -88,14 +98,62 @@ static void System_EgWindowsWindow_Mouse(ecs_iter_t *it)
 	}
 }
 
+static void System_EgKeyboardsState(ecs_iter_t *it)
+{
+	EgKeyboardsState *create = ecs_field(it, EgKeyboardsState, 0);
+	SDL_Event event;
+	while (SDL_PollEvent(&event)) {
+		// SDLTest_CommonEvent(state, &event, &done);
+		switch (event.type) {
+		case SDL_EVENT_KEY_DOWN:
+			// create->keycode[event.key.key] = 1;
+			create->scancode[event.key.scancode] = 1;
+			break;
+		case SDL_EVENT_KEY_UP:
+			// create->keycode[event.key.key] = 0;
+			create->scancode[event.key.scancode] = 0;
+			break;
+		case SDL_EVENT_WINDOW_RESIZED: {
+			SDL_Window *window = SDL_GetWindowFromEvent(&event);
+			SDL_WindowID id = SDL_GetWindowID(window);
+			ecs_map_val_t * ev = ecs_map_get(&static_window_map, id);
+			if (ev == NULL) {
+				break;
+			}
+			ecs_entity_t e = ev[0];
+			printf("SDL_EVENT_WINDOW_RESIZED: %s\n", ecs_get_name(it->world, e));
+			ecs_add(it->world, e, EgWindowsEventResize);
+			break;
+		} // END CASE
+		} // END SWITCH
+	} // END WHILE
+}
+
+
+static void System_Resize(ecs_iter_t *it)
+{
+	ecs_id_t pair = ecs_field_id(it, 1);
+	ecs_entity_t food = ecs_pair_second(it->world, pair);
+	printf("food: %s\n", ecs_get_name(it->world, food));
+	ecs_add(it->world, food, EgBaseUpdate);
+	for (int i = 0; i < it->count; ++i) {
+		ecs_remove(it->world, it->entities[i], EgWindowsEventResize);
+	}
+}
+
+
 void EgWindowsImport(ecs_world_t *world)
 {
 	ECS_MODULE(world, EgWindows);
+	ECS_IMPORT(world, EgKeyboards);
 	ecs_set_name_prefix(world, "EgWindows");
+
+    ecs_map_init(&static_window_map, NULL);
 
 	ECS_COMPONENT_DEFINE(world, EgWindowsWindow);
 	ECS_COMPONENT_DEFINE(world, EgWindowsWindowCreateInfo);
 	ECS_COMPONENT_DEFINE(world, EgWindowsMouse);
+	ECS_TAG_DEFINE(world, EgWindowsEventResize);
 
 	ecs_struct(world,
 	{.entity = ecs_id(EgWindowsWindow),
@@ -151,4 +209,25 @@ void EgWindowsImport(ecs_world_t *world)
 	{.id = ecs_id(Position2), .src.id = EcsSelf, .inout = EcsOut},
 	{.id = ecs_id(EgWindowsMouse), .src.id = EcsSelf, .inout = EcsIn},
 	}});
+
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "System_EgKeyboardsState", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = System_EgKeyboardsState,
+	.query.terms =
+	{
+	{.id = ecs_id(EgKeyboardsState), .src.id = ecs_id(EgKeyboardsState), .inout = EcsInOut},
+	}});
+
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "System_Resize", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = System_Resize,
+	.query.terms =
+	{
+	{.id = ecs_id(EgWindowsEventResize), .src.id = EcsSelf, .inout = EcsOut},
+	{.id = ecs_pair(EgWindowsEventResize, EcsWildcard ), .src.id = EcsSelf, .inout = EcsOut},
+	}});
+
+
+	ecs_singleton_set(world, EgKeyboardsState, {.keycode = {0}, .scancode = {0}});
+
 }

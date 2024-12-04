@@ -4,6 +4,9 @@ gpu0 {
 	eg.gpu.DeviceCreateInfo : {debug: true}
 	eg.base.Update
 
+	tex_depth {}
+	tex_depth2 {}
+
 	window1 {
 		eg.windows.WindowCreateInfo : {debug: true}
 		eg.base.Update
@@ -13,6 +16,8 @@ gpu0 {
 			eg.windows.Mouse
 			eg.spatials.Position2
 		}
+		(eg.windows.EventResize, tex_depth)
+		(eg.windows.EventResize, tex_depth2)
 	}
 
 	@brief "shaders/cube"
@@ -45,4 +50,6 @@ gpu0 {
 		eg.base.Update
 		(flecs.core.DependsOn, window1)
 	}
+
+
 }

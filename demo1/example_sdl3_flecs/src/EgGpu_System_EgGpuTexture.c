@@ -29,6 +29,9 @@ void System_EgGpuTexture_Create(ecs_iter_t *it)
 		ecs_dbg("Entity: '%s'", ecs_get_name(world, e));
 		ecs_log_push_1();
 		{
+			if (c_gpu->device == NULL) {
+				SDL_ReleaseGPUTexture(c_gpu->device, c_gpu->device);
+			}
 			SDL_GPUTextureCreateInfo createinfo = {0};
 			createinfo.type = SDL_GPU_TEXTURETYPE_2D;
 			createinfo.format = SDL_GPU_TEXTUREFORMAT_D16_UNORM;
@@ -43,7 +46,34 @@ void System_EgGpuTexture_Create(ecs_iter_t *it)
 			if (tex) {
 				ecs_set(world, e, EgGpuTexture, {.object = tex});
 			}
+			ecs_dbg("w: '%f', h: '%f'", c_rect->w, c_rect->h);
 		}
+		ecs_log_pop_1();
+
+	} // END FOR LOOP
+	ecs_log_pop_1();
+	ecs_log_set_level(0);
+}
+
+void System_EgGpuTexture_Release(ecs_iter_t *it)
+{
+	ecs_world_t *world = it->world;
+	EgGpuDevice *c_gpu = ecs_field(it, EgGpuDevice, 0); // parent
+	EgGpuTexture *c_tex = ecs_field(it, EgGpuTexture, 1); // self
+
+	ecs_log_set_level(1);
+	ecs_dbg("System_EgGpuTexture_Release() count:%i", it->count);
+	ecs_log_push_1();
+	for (int i = 0; i < it->count; ++i, ++c_tex) {
+		ecs_entity_t e = it->entities[i];
+		ecs_dbg("Entity: '%s'", ecs_get_name(world, e));
+		ecs_log_push_1();
+		if (c_tex->object == NULL) {
+			continue;
+		}
+		SDL_ReleaseGPUTexture(c_gpu->device, c_tex->object);
+		c_tex->object = NULL;
+		ecs_remove(world, e, EgGpuTexture);
 		ecs_log_pop_1();
 
 	} // END FOR LOOP

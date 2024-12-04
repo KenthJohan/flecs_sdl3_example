@@ -208,6 +208,15 @@ void EgGpuImport(ecs_world_t *world)
 	{.id = ecs_id(EgShapesRectangle), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuTextureCreateInfo), .src.id = EcsSelf},
 	{.id = ecs_id(EgGpuTexture), .oper = EcsNot}, // Adds this
+	{.id = EgBaseUpdate}, // Removes this
+	{.id = EgBaseError, .oper = EcsNot}}});
+
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "System_EgGpuTexture_Release", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = System_EgGpuTexture_Release,
+	.query.terms = {
+	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgGpuTexture)}, // Removes this
 	{.id = EgBaseUpdate},
 	{.id = EgBaseError, .oper = EcsNot}}});
 

@@ -128,20 +128,22 @@ static void System_Draw(ecs_iter_t *it)
 	depth_target.texture = c_texd->object;
 	depth_target.cycle = true;
 
-	SDL_GPUBufferBinding vertex_binding;
-	vertex_binding.buffer = c_buf->object;
-	vertex_binding.offset = 0;
 
-	SDL_GPURenderPass *pass = SDL_BeginGPURenderPass(cmd, &color_target, 1, &depth_target);
-	SDL_BindGPUGraphicsPipeline(pass, c_pipeline->object);
-	SDL_BindGPUVertexBuffers(pass, 0, &vertex_binding, 1);
+	if (c_texd->object) {
+		SDL_GPUBufferBinding vertex_binding;
+		vertex_binding.buffer = c_buf->object;
+		vertex_binding.offset = 0;
+		SDL_GPURenderPass *pass = SDL_BeginGPURenderPass(cmd, &color_target, 1, &depth_target);
+		SDL_BindGPUGraphicsPipeline(pass, c_pipeline->object);
+		SDL_BindGPUVertexBuffers(pass, 0, &vertex_binding, 1);
+		ecs_iter_t it2 = ecs_query_iter(it->world, c_draw1->query);
+		System_Draw1(&it2, cmd, pass);	// call the inner system
+		SDL_EndGPURenderPass(pass);
+	}
 
 
-	ecs_iter_t it2 = ecs_query_iter(it->world, c_draw1->query);
-	System_Draw1(&it2, cmd, pass);	// call the inner system		
 
 
-	SDL_EndGPURenderPass(pass);
 	SDL_SubmitGPUCommandBuffer(cmd);
 }
 
