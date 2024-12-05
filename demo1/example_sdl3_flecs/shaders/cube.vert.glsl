@@ -13,5 +13,5 @@ layout (set = 1, binding = 0) uniform UBO
 void main()
 {
     gl_Position = modelViewProj * vec4(in_position, 1.0);
-    out_color = vec4(in_color, 1.0) + vec4(gl_Position.x, gl_Position.y, gl_Position.z, 1.0);
+    out_color = vec4(in_color, 1.0);
 }

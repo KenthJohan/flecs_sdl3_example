@@ -16,7 +16,7 @@ drawobjs
 {
 	c1  {
 		(flecs.core.DependsOn, a)
-		(flecs.core.DependsOn, cam.cam0)
+		(flecs.core.DependsOn, cam.cam1)
 		eg.gpu.DrawCube
 		eg.spatials.EgRotateOrder1
 		eg.spatials.Transformation
@@ -30,7 +30,7 @@ drawobjs
 
 	c2  {
 		(flecs.core.DependsOn, a)
-		(flecs.core.DependsOn, cam.cam1)
+		(flecs.core.DependsOn, cam.cam0)
 		eg.gpu.DrawCube
 		eg.spatials.EgRotateOrder1
 		eg.spatials.Transformation
@@ -43,7 +43,7 @@ drawobjs
 
 		c3  {
 			(flecs.core.DependsOn, a)
-			(flecs.core.DependsOn, cam.cam1)
+			(flecs.core.DependsOn, cam.cam0)
 			eg.gpu.DrawCube
 			eg.spatials.EgRotateOrder1
 			eg.spatials.Transformation

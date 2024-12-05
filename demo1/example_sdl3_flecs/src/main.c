@@ -103,6 +103,7 @@ static void System_Draw(ecs_iter_t *it)
 		SDL_Log("Failed to acquire swapchain texture: %s", SDL_GetError());
 		return;
 	}
+	
 	if (c_rec->w != drawablew || c_rec->h != drawableh) {
 		SDL_ReleaseGPUTexture(c_gpu->device, c_texd->object);
 		SDL_GPUTextureCreateInfo createinfo = {0};
