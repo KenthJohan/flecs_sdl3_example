@@ -3,6 +3,7 @@ module app
 
 a {
 	eg.gpu.Draw1
+	eg.shapes.Rectangle
 	(flecs.core.DependsOn, gpu.gpu0)
 	(flecs.core.DependsOn, gpu.gpu0.window1)
 	(flecs.core.DependsOn, gpu.gpu0.pipeline)

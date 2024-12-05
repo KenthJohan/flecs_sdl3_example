@@ -16,8 +16,8 @@ gpu0 {
 			eg.windows.Mouse
 			eg.spatials.Position2
 		}
-		(eg.windows.EventResize, tex_depth)
-		(eg.windows.EventResize, tex_depth2)
+		//(eg.windows.EventResize, tex_depth)
+		//(eg.windows.EventResize, tex_depth2)
 	}
 
 	@brief "shaders/cube"

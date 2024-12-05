@@ -29,9 +29,6 @@ void System_EgGpuTexture_Create(ecs_iter_t *it)
 		ecs_dbg("Entity: '%s'", ecs_get_name(world, e));
 		ecs_log_push_1();
 		{
-			if (c_gpu->device == NULL) {
-				SDL_ReleaseGPUTexture(c_gpu->device, c_gpu->device);
-			}
 			SDL_GPUTextureCreateInfo createinfo = {0};
 			createinfo.type = SDL_GPU_TEXTURETYPE_2D;
 			createinfo.format = SDL_GPU_TEXTUREFORMAT_D16_UNORM;

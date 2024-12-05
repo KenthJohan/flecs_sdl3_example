@@ -64,32 +64,31 @@ static void ControllerMove(ecs_iter_t *it)
 	}
 }
 
-
 static void System_Draw1(ecs_iter_t *it, SDL_GPUCommandBuffer *cmd, SDL_GPURenderPass *pass)
 {
-    while (ecs_query_next(it)) {
-		EgGpuDrawCube *c_cube = ecs_field(it, EgGpuDrawCube, 0);     // self
-		Transformation *c_trans = ecs_field(it, Transformation, 1);  // self
-		EgCamerasState *c_cam = ecs_field(it, EgCamerasState, 2);    // shared
+	while (ecs_query_next(it)) {
+		EgGpuDrawCube *c_cube = ecs_field(it, EgGpuDrawCube, 0);    // self
+		Transformation *c_trans = ecs_field(it, Transformation, 1); // self
+		EgCamerasState *c_cam = ecs_field(it, EgCamerasState, 2);   // shared
 		for (int i = 0; i < it->count; ++i, ++c_trans) {
 			m4f32 mvp;
 			m4f32_mul(&mvp, &c_cam->vp, &c_trans->matrix);
 			SDL_PushGPUVertexUniformData(cmd, 0, &mvp, sizeof(float) * 16);
 			SDL_DrawGPUPrimitives(pass, 36, 1, 0, 0);
 		}
-    }
+	}
 }
-
 
 static void System_Draw(ecs_iter_t *it)
 {
-	EgGpuDraw1 *c_draw1 = ecs_field(it, EgGpuDraw1, 0);          // self
-	EgGpuDevice *c_gpu = ecs_field(it, EgGpuDevice, 1);          // shared
-	EgGpuPipeline *c_pipeline = ecs_field(it, EgGpuPipeline, 2); // shared
-	EgGpuBuffer *c_buf = ecs_field(it, EgGpuBuffer, 3);          // shared
-	EgGpuTexture *c_texd = ecs_field(it, EgGpuTexture, 4);       // shared
-	EgWindowsWindow *c_win = ecs_field(it, EgWindowsWindow, 5);  // shared
-	EgGpuWindow *c_gwin = ecs_field(it, EgGpuWindow, 6);         // shared
+	EgGpuDraw1 *c_draw1 = ecs_field(it, EgGpuDraw1, 0);             // self
+	EgShapesRectangle *c_rec = ecs_field(it, EgShapesRectangle, 1); // self
+	EgGpuDevice *c_gpu = ecs_field(it, EgGpuDevice, 2);             // shared
+	EgGpuPipeline *c_pipeline = ecs_field(it, EgGpuPipeline, 3);    // shared
+	EgGpuBuffer *c_buf = ecs_field(it, EgGpuBuffer, 4);             // shared
+	EgGpuTexture *c_texd = ecs_field(it, EgGpuTexture, 5);          // shared
+	EgWindowsWindow *c_win = ecs_field(it, EgWindowsWindow, 6);     // shared
+	EgGpuWindow *c_gwin = ecs_field(it, EgGpuWindow, 7);            // shared
 
 	SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(c_gpu->device);
 	if (!cmd) {
@@ -104,6 +103,22 @@ static void System_Draw(ecs_iter_t *it)
 		SDL_Log("Failed to acquire swapchain texture: %s", SDL_GetError());
 		return;
 	}
+	if (c_rec->w != drawablew || c_rec->h != drawableh) {
+		SDL_ReleaseGPUTexture(c_gpu->device, c_texd->object);
+		SDL_GPUTextureCreateInfo createinfo = {0};
+		createinfo.type = SDL_GPU_TEXTURETYPE_2D;
+		createinfo.format = SDL_GPU_TEXTUREFORMAT_D16_UNORM;
+		createinfo.width = drawablew;
+		createinfo.height = drawableh;
+		createinfo.layer_count_or_depth = 1;
+		createinfo.num_levels = 1;
+		createinfo.sample_count = 1;
+		createinfo.usage = SDL_GPU_TEXTUREUSAGE_DEPTH_STENCIL_TARGET;
+		createinfo.props = 0;
+		c_texd->object = SDL_CreateGPUTexture(c_gpu->device, &createinfo);
+		c_rec->w = drawablew;
+		c_rec->h = drawableh;
+	}
 
 	if (tex == NULL) {
 		// No swapchain was acquired, probably too many frames in flight
@@ -111,25 +126,22 @@ static void System_Draw(ecs_iter_t *it)
 		return;
 	}
 
-	SDL_GPUColorTargetInfo color_target = {0};
-	SDL_zero(color_target);
-	color_target.clear_color.a = 1.0f;
-	color_target.load_op = SDL_GPU_LOADOP_CLEAR;
-	color_target.store_op = SDL_GPU_STOREOP_STORE;
-	color_target.texture = tex;
-
-	SDL_GPUDepthStencilTargetInfo depth_target;
-	SDL_zero(depth_target);
-	depth_target.clear_depth = 1.0f;
-	depth_target.load_op = SDL_GPU_LOADOP_CLEAR;
-	depth_target.store_op = SDL_GPU_STOREOP_DONT_CARE;
-	depth_target.stencil_load_op = SDL_GPU_LOADOP_DONT_CARE;
-	depth_target.stencil_store_op = SDL_GPU_STOREOP_DONT_CARE;
-	depth_target.texture = c_texd->object;
-	depth_target.cycle = true;
-
-
 	if (c_texd->object) {
+		SDL_GPUColorTargetInfo color_target = {0};
+		SDL_zero(color_target);
+		color_target.clear_color.a = 1.0f;
+		color_target.load_op = SDL_GPU_LOADOP_CLEAR;
+		color_target.store_op = SDL_GPU_STOREOP_STORE;
+		color_target.texture = tex;
+		SDL_GPUDepthStencilTargetInfo depth_target;
+		SDL_zero(depth_target);
+		depth_target.clear_depth = 1.0f;
+		depth_target.load_op = SDL_GPU_LOADOP_CLEAR;
+		depth_target.store_op = SDL_GPU_STOREOP_DONT_CARE;
+		depth_target.stencil_load_op = SDL_GPU_LOADOP_DONT_CARE;
+		depth_target.stencil_store_op = SDL_GPU_STOREOP_DONT_CARE;
+		depth_target.texture = c_texd->object;
+		depth_target.cycle = true;
 		SDL_GPUBufferBinding vertex_binding;
 		vertex_binding.buffer = c_buf->object;
 		vertex_binding.offset = 0;
@@ -137,12 +149,9 @@ static void System_Draw(ecs_iter_t *it)
 		SDL_BindGPUGraphicsPipeline(pass, c_pipeline->object);
 		SDL_BindGPUVertexBuffers(pass, 0, &vertex_binding, 1);
 		ecs_iter_t it2 = ecs_query_iter(it->world, c_draw1->query);
-		System_Draw1(&it2, cmd, pass);	// call the inner system
+		System_Draw1(&it2, cmd, pass); // call the inner system
 		SDL_EndGPURenderPass(pass);
 	}
-
-
-
 
 	SDL_SubmitGPUCommandBuffer(cmd);
 }
@@ -190,16 +199,13 @@ int main(int argc, char *argv[])
 
 	{
 		ecs_entity_t e_draw1 = ecs_lookup(world, "app.a");
-		ecs_query_t *q = ecs_query(world, {
-		.terms = {
-			{.id = ecs_id(EgGpuDrawCube), .src.id = EcsSelf},
-			{.id = ecs_id(Transformation), .src.id = EcsSelf},
-			{.id = ecs_id(EgCamerasState), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
-		}
-		});
+		ecs_query_t *q = ecs_query(world, {.terms = {
+		                                   {.id = ecs_id(EgGpuDrawCube), .src.id = EcsSelf},
+		                                   {.id = ecs_id(Transformation), .src.id = EcsSelf},
+		                                   {.id = ecs_id(EgCamerasState), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+		                                   }});
 		ecs_set(world, e_draw1, EgGpuDraw1, {.query = q});
 	}
-
 
 	ecs_system(world,
 	{.entity = ecs_entity(world, {.name = "ControllerRotate", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
@@ -224,7 +230,8 @@ int main(int argc, char *argv[])
 	{.entity = ecs_entity(world, {.name = "System_Draw", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = System_Draw,
 	.query.terms = {
-	{.id = ecs_id(EgGpuDraw1)},
+	{.id = ecs_id(EgGpuDraw1), .src.id = EcsSelf, .inout = EcsIn},
+	{.id = ecs_id(EgShapesRectangle), .src.id = EcsSelf, .inout = EcsIn},
 	{.id = ecs_id(EgGpuDevice), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuPipeline), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuBuffer), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
