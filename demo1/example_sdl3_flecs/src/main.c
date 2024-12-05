@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
 	ecs_log_set_level(-1);
 
 	{
-		ecs_entity_t e_draw1 = ecs_lookup(world, "app.a");
+		ecs_entity_t e_draw1 = ecs_lookup(world, "xapp.a");
 		ecs_query_t *q = ecs_query(world, {.terms = {
 		                                   {.id = ecs_id(EgGpuDrawCube), .src.id = EcsSelf},
 		                                   {.id = ecs_id(Transformation), .src.id = EcsSelf},

@@ -1,4 +1,6 @@
-module gpu
+@color #FF99FF
+xgpu {}
+module xgpu
 
 gpu0 {
 	eg.gpu.DeviceCreateInfo : {debug: true}
@@ -31,6 +33,7 @@ gpu0 {
 		eg.gpu.ShaderVertexCreateInfo : {stage: 1}
 		eg.base.Update
 	}
+
 
 	pipeline {
 		eg.gpu.PipelineCreateInfo : {sample_count:0, target_info_has_depth_stencil_target:true}

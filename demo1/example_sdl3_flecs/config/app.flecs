@@ -1,14 +1,16 @@
-module app
+@color #FF99FF
+xapp {}
+module xapp
 
 
 a {
 	eg.gpu.Draw1
 	eg.shapes.Rectangle
-	(flecs.core.DependsOn, gpu.gpu0)
-	(flecs.core.DependsOn, gpu.gpu0.window1)
-	(flecs.core.DependsOn, gpu.gpu0.pipeline)
-	(flecs.core.DependsOn, gpu.gpu0.vert1)
-	(flecs.core.DependsOn, gpu.gpu0.tex_depth)
+	(flecs.core.DependsOn, xgpu.gpu0)
+	(flecs.core.DependsOn, xgpu.gpu0.window1)
+	(flecs.core.DependsOn, xgpu.gpu0.pipeline)
+	(flecs.core.DependsOn, xgpu.gpu0.vert1)
+	(flecs.core.DependsOn, xgpu.gpu0.tex_depth)
 }
 
 
@@ -16,7 +18,7 @@ drawobjs
 {
 	c1  {
 		(flecs.core.DependsOn, a)
-		(flecs.core.DependsOn, cam.cam1)
+		(flecs.core.DependsOn, xcam.cam1)
 		eg.gpu.DrawCube
 		eg.spatials.EgRotateOrder1
 		eg.spatials.Transformation
@@ -30,7 +32,7 @@ drawobjs
 
 	c2  {
 		(flecs.core.DependsOn, a)
-		(flecs.core.DependsOn, cam.cam0)
+		(flecs.core.DependsOn, xcam.cam0)
 		eg.gpu.DrawCube
 		eg.spatials.EgRotateOrder1
 		eg.spatials.Transformation
@@ -43,7 +45,7 @@ drawobjs
 
 		c3  {
 			(flecs.core.DependsOn, a)
-			(flecs.core.DependsOn, cam.cam0)
+			(flecs.core.DependsOn, xcam.cam0)
 			eg.gpu.DrawCube
 			eg.spatials.EgRotateOrder1
 			eg.spatials.Transformation
