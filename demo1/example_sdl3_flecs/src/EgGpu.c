@@ -114,12 +114,13 @@ void EgGpuImport(ecs_world_t *world)
 	.members = {
 	{.name = "sample_count", .type = ecs_id(ecs_u32_t)},
 	{.name = "target_info_has_depth_stencil_target", .type = ecs_id(ecs_bool_t)},
+	{.name = "pitch", .type = ecs_id(ecs_u32_t)},
 	}});
 
 	ecs_struct(world,
 	{.entity = ecs_id(EgGpuPipeline),
 	.members = {
-	{.name = "object", .type = ecs_id(ecs_uptr_t)},
+	{.name = "object", .type = ecs_id(ecs_uptr_t)}
 	}});
 
 	ecs_struct(world,

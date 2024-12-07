@@ -46,6 +46,7 @@ typedef struct
 {
 	uint32_t sample_count;
 	bool target_info_has_depth_stencil_target;
+	uint32_t pitch;
 } EgGpuPipelineCreateInfo;
 
 

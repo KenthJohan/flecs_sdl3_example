@@ -36,7 +36,11 @@ gpu0 {
 
 
 	pipeline {
-		eg.gpu.PipelineCreateInfo : {sample_count:0, target_info_has_depth_stencil_target:true}
+		eg.gpu.PipelineCreateInfo : {
+			sample_count:0, 
+			target_info_has_depth_stencil_target:true, 
+			pitch:24
+		}
 		(flecs.core.DependsOn, shader_fragment)
 		(flecs.core.DependsOn, shader_vertex)
 		eg.base.Update

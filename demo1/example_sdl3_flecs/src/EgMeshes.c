@@ -1,22 +1,141 @@
 #include "EgMeshes.h"
 
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <EgSpatials.h>
 #include <EgBase.h>
 
-
 ECS_COMPONENT_DECLARE(EgMeshesMesh);
 
-void System_EgMeshesMesh(ecs_iter_t *it)
+static void gen_box24(float *x, int stride, float l0, float l1, float l2)
+{
+	/* Front face. */
+	/* Bottom left */
+	x[0] = -l0;
+	x[1] = l1;
+	x[2] = -l2;
+	x += stride;
+	x[0] = l0;
+	x[1] = -l1;
+	x[2] = -l2;
+	x += stride;
+	x[0] = -l0;
+	x[1] = -l1;
+	x[2] = -l2;
+	x += stride;
+
+	/* Top right */
+	x[0] = -l0;
+	x[1] = l1;
+	x[2] = -l2;
+	x += stride;
+	x[0] = l0;
+	x[1] = l1;
+	x[2] = -l2;
+	x += stride;
+	x[0] = l0;
+	x[1] = -l1;
+	x[2] = -l2;
+	x += stride;
+
+	/* Left face */
+	/* Bottom left */
+	x[0] = -l0;
+	x[1] = l1;
+	x[2] = l2;
+	x += stride;
+	x[0] = -l0;
+	x[1] = -l1;
+	x[2] = -l2;
+	x += stride;
+	x[0] = -l0;
+	x[1] = -l1;
+	x[2] = l2;
+	x += stride;
+
+	/* Top right */
+	x[0] = -l0;
+	x[1] = l1;
+	x[2] = l2;
+	x += stride;
+	x[0] = -l0;
+	x[1] = l1;
+	x[2] = -l2;
+	x += stride;
+	x[0] = -l0;
+	x[1] = -l1;
+	x[2] = -l2;
+	x += stride;
+
+	/* Top face */
+	/* Bottom left */
+	x[0] = -l0;
+	x[1] = l1;
+	x[2] = l2;
+	x += stride;
+	x[0] = l0;
+	x[1] = l1;
+	x[2] = -l2;
+	x += stride;
+	x[0] = -l0;
+	x[1] = l1;
+	x[2] = -l2;
+	x += stride;
+
+	/* Top right */
+	x[0] = -l0;
+	x[1] = l1;
+	x[2] = l2;
+	x += stride;
+	x[0] = l0;
+	x[1] = l1;
+	x[2] = l2;
+	x += stride;
+	x[0] = l0;
+	x[1] = l1;
+	x[2] = -l2;
+	x += stride;
+
+	/* Right face */
+	/* Bottom left */
+	x[0] = l0;
+	x[1] = l1;
+	x[2] = -l2;
+	x += stride;
+	x[0] = l0;
+	x[1] = -l1;
+	x[2] = l2;
+	x += stride;
+	x[0] = l0;
+	x[1] = -l1;
+	x[2] = -l2;
+	x += stride;
+
+	/* Top right */
+	x[0] = l0;
+	x[1] = l1;
+	x[2] = -l2;
+	x += stride;
+	x[0] = l0;
+	x[1] = l1;
+	x[2] = l2;
+	x += stride;
+	x[0] = l0;
+	x[1] = -l1;
+	x[2] = l2;
+	x += stride;
+}
+
+static void System_EgMeshesMesh(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
 	EgMeshesMesh *m = ecs_field(it, EgMeshesMesh, 0);
 	for (int i = 0; i < it->count; ++i, ++m) {
 		ecs_entity_t e = it->entities[i];
 		ecs_remove(world, e, EgBaseUpdate);
-		ecs_vec_reset_t(NULL, &m->data, Position3);
+		ecs_vec_reset(NULL, &m->data, sizeof(float) * 6);
+		void * transform = ecs_vec_grow(NULL, &m->data, sizeof(float)*6, 24);
+		gen_box24(transform, 6, 0.5f, 0.5f, 0.5f);
 	} // END FOR LOOP
 }
 
@@ -26,13 +145,11 @@ void EgMeshesImport(ecs_world_t *world)
 	ecs_set_name_prefix(world, "EgMeshes");
 	ECS_COMPONENT_DEFINE(world, EgMeshesMesh);
 
-
 	ecs_struct(world,
 	{.entity = ecs_id(EgMeshesMesh),
 	.members = {
 	{.name = "usage", .type = ecs_id(EgBaseVec)},
 	}});
-	
 
 	ecs_system(world,
 	{.entity = ecs_entity(world, {.name = "System_EgMeshesMesh", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),

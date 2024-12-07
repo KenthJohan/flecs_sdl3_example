@@ -10,10 +10,6 @@
 
 #include "shader_spirv.h"
 
-typedef struct VertexData {
-	float x, y, z;          /* 3D data. Vertex range -0.5..0.5 in all axes. Z -0.5 is near, 0.5 is far. */
-	float red, green, blue; /* intensity 0 to 1 (alpha is always 1). */
-} VertexData;
 
 void System_EgGpuPipeline_Create(ecs_iter_t *it)
 {
@@ -57,7 +53,7 @@ void System_EgGpuPipeline_Create(ecs_iter_t *it)
 			vertex_buffer_desc.slot = 0;
 			vertex_buffer_desc.input_rate = SDL_GPU_VERTEXINPUTRATE_VERTEX;
 			vertex_buffer_desc.instance_step_rate = 0;
-			vertex_buffer_desc.pitch = sizeof(VertexData);
+			vertex_buffer_desc.pitch = create->pitch;
 
 			vertex_attributes[0].buffer_slot = 0;
 			vertex_attributes[0].format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3;
