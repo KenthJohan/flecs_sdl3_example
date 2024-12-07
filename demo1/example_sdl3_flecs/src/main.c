@@ -32,6 +32,7 @@
 #include "EgFs.h"
 #include "EgDisplay.h"
 #include "EgGpu.h"
+#include "EgMeshes.h"
 
 static void ControllerRotate(ecs_iter_t *it)
 {
@@ -103,7 +104,7 @@ static void System_Draw(ecs_iter_t *it)
 		SDL_Log("Failed to acquire swapchain texture: %s", SDL_GetError());
 		return;
 	}
-	
+
 	if (c_rec->w != drawablew || c_rec->h != drawableh) {
 		SDL_ReleaseGPUTexture(c_gpu->device, c_texd->object);
 		SDL_GPUTextureCreateInfo createinfo = {0};
@@ -182,6 +183,7 @@ int main(int argc, char *argv[])
 	ECS_IMPORT(world, EgGpu);
 	ECS_IMPORT(world, EgWindows);
 	ECS_IMPORT(world, EgKeyboards);
+	ECS_IMPORT(world, EgMeshes);
 
 	ecs_set(world, EcsWorld, EcsRest, {.port = 0});
 	printf("Remote: %s\n", "https://www.flecs.dev/explorer/?remote=true");
@@ -217,7 +219,6 @@ int main(int argc, char *argv[])
 	{.id = ecs_id(EgKeyboardsState), .src.id = ecs_id(EgKeyboardsState)},
 	}});
 
-	// ECS_SYSTEM(world, ControllerMove, EcsOnUpdate, KeyboardController, Velocity3, Window($));
 	ecs_system(world,
 	{.entity = ecs_entity(world, {.name = "ControllerMove", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = ControllerMove,
@@ -248,8 +249,6 @@ int main(int argc, char *argv[])
 			break;
 		}
 		ecs_progress(world, 0.0f);
-		// c_cam = ecs_get(world, e_cam, EgCamerasState);
-		// main_render(c_win->object, c_gpu->device, c_pipeline->object, c_buf->object, c_texd->object, (float *)&c_cam->vp);
 	}
 
 	return 0;

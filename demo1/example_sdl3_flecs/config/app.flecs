@@ -58,3 +58,14 @@ drawobjs
 		}
 	}
 }
+
+
+
+m1 {
+	cube {
+		eg.meshes.Mesh
+		eg.base.Update
+		eg.spatials.Position3 : {x: 0, y: 0, z: 0}
+		eg.shapes.Box : {1,1,1}
+	}
+}

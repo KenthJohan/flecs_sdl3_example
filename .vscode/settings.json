@@ -89,7 +89,16 @@
 		"sdl_events.h": "c",
 		"egkeyboards.h": "c",
 		"eggpu_system_eggputexture.h": "c",
-		"charconv": "c"
+		"charconv": "c",
+		"egmeshes.h": "c",
+		"strstream": "c",
+		"*.tcc": "c",
+		"future": "c",
+		"istream": "c",
+		"new": "c",
+		"ostream": "c",
+		"streambuf": "c",
+		"valarray": "c"
 	},
 	"terminal.integrated.env.linux": {
 		"GTK_PATH": ""

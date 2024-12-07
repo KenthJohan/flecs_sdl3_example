@@ -3,6 +3,14 @@
 
 
 
+typedef struct
+{
+	ecs_vec_t data;
+} EgBaseVec;
+
+extern ECS_COMPONENT_DECLARE(EgBaseVec);
+
+
 extern ECS_TAG_DECLARE(EgBaseUpdate);
 extern ECS_TAG_DECLARE(EgBaseError);
 
