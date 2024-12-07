@@ -9,8 +9,6 @@
 #include <EgBase.h>
 #include <EgShapes.h>
 
-#include "vertex.h"
-
 
 
 void System_EgGpuTexture_Create(ecs_iter_t *it)

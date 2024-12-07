@@ -9,8 +9,11 @@
 #include <EgBase.h>
 
 #include "shader_spirv.h"
-#include "vertex.h"
 
+typedef struct VertexData {
+	float x, y, z;          /* 3D data. Vertex range -0.5..0.5 in all axes. Z -0.5 is near, 0.5 is far. */
+	float red, green, blue; /* intensity 0 to 1 (alpha is always 1). */
+} VertexData;
 
 void System_EgGpuPipeline_Create(ecs_iter_t *it)
 {

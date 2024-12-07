@@ -9,7 +9,6 @@
 #include <EgBase.h>
 
 #include "shader_spirv.h"
-#include "vertex.h"
 
 
 void System_EgGpuShaderFragment_Create(ecs_iter_t *it)
