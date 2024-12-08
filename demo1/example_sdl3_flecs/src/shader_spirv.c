@@ -105,7 +105,7 @@ SDL_GPUShader * shader_spirv_compile(SDL_GPUDevice *device, const char *namepart
 	createinfo.num_uniform_buffers = (stage == SDL_GPU_SHADERSTAGE_VERTEX);
 	createinfo.props = 0;
 	createinfo.format = SDL_GPU_SHADERFORMAT_SPIRV;
-	createinfo.code = alloc_code;
+	createinfo.code = (uint8_t const *)alloc_code;
 	createinfo.code_size = length;
 	createinfo.entrypoint = "main";
 	createinfo.stage = stage;
