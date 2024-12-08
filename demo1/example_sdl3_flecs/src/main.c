@@ -71,6 +71,7 @@ static void System_Draw1(ecs_iter_t *it, SDL_GPUCommandBuffer *cmd, SDL_GPURende
 		EgGpuDrawCube *c_cube = ecs_field(it, EgGpuDrawCube, 0);    // self
 		Transformation *c_trans = ecs_field(it, Transformation, 1); // self
 		EgCamerasState *c_cam = ecs_field(it, EgCamerasState, 2);   // shared
+		EgMeshesMesh *c_mesh = ecs_field(it, EgMeshesMesh, 3);   // shared
 		for (int i = 0; i < it->count; ++i, ++c_trans) {
 			m4f32 mvp;
 			m4f32_mul(&mvp, &c_cam->vp, &c_trans->matrix);
@@ -206,6 +207,7 @@ int main(int argc, char *argv[])
 		                                   {.id = ecs_id(EgGpuDrawCube), .src.id = EcsSelf},
 		                                   {.id = ecs_id(Transformation), .src.id = EcsSelf},
 		                                   {.id = ecs_id(EgCamerasState), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+		                                   {.id = ecs_id(EgMeshesMesh), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 		                                   }});
 		ecs_set(world, e_draw1, EgGpuDraw1, {.query = q});
 	}

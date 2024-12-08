@@ -14,11 +14,22 @@ a {
 }
 
 
+m1 {
+	cube {
+		eg.meshes.Mesh
+		eg.base.Update
+		eg.spatials.Position3 : {x: 0, y: 0, z: 0}
+		eg.shapes.Box : {1,1,1}
+	}
+}
+
+
 drawobjs
 {
 	c1  {
 		(flecs.core.DependsOn, a)
 		(flecs.core.DependsOn, xcam.cam1)
+		(flecs.core.DependsOn, m1.cube)
 		eg.gpu.DrawCube
 		eg.spatials.EgRotateOrder1
 		eg.spatials.Transformation
@@ -33,6 +44,7 @@ drawobjs
 	c2  {
 		(flecs.core.DependsOn, a)
 		(flecs.core.DependsOn, xcam.cam0)
+		(flecs.core.DependsOn, m1.cube)
 		eg.gpu.DrawCube
 		eg.spatials.EgRotateOrder1
 		eg.spatials.Transformation
@@ -46,6 +58,7 @@ drawobjs
 		c3  {
 			(flecs.core.DependsOn, a)
 			(flecs.core.DependsOn, xcam.cam0)
+			(flecs.core.DependsOn, m1.cube)
 			eg.gpu.DrawCube
 			eg.spatials.EgRotateOrder1
 			eg.spatials.Transformation
@@ -61,11 +74,3 @@ drawobjs
 
 
 
-m1 {
-	cube {
-		eg.meshes.Mesh
-		eg.base.Update
-		eg.spatials.Position3 : {x: 0, y: 0, z: 0}
-		eg.shapes.Box : {1,1,1}
-	}
-}
