@@ -25,6 +25,8 @@ ECS_COMPONENT_DECLARE(EgGpuBufferCreateInfo);
 ECS_COMPONENT_DECLARE(EgGpuTexture);
 ECS_COMPONENT_DECLARE(EgGpuTextureCreateInfo);
 ECS_COMPONENT_DECLARE(EgGpuDraw1);
+ECS_COMPONENT_DECLARE(EgGpuLocation);
+
 
 void System_Claim(ecs_iter_t *it)
 {
@@ -72,6 +74,7 @@ void EgGpuImport(ecs_world_t *world)
 	ECS_COMPONENT_DEFINE(world, EgGpuTexture);
 	ECS_COMPONENT_DEFINE(world, EgGpuTextureCreateInfo);
 	ECS_COMPONENT_DEFINE(world, EgGpuDraw1);
+	ECS_COMPONENT_DEFINE(world, EgGpuLocation);
 
 	ecs_struct(world,
 	{.entity = ecs_id(EgGpuDeviceCreateInfo),
@@ -114,7 +117,6 @@ void EgGpuImport(ecs_world_t *world)
 	.members = {
 	{.name = "sample_count", .type = ecs_id(ecs_u32_t)},
 	{.name = "target_info_has_depth_stencil_target", .type = ecs_id(ecs_bool_t)},
-	{.name = "pitch", .type = ecs_id(ecs_u32_t)},
 	}});
 
 	ecs_struct(world,
@@ -145,6 +147,12 @@ void EgGpuImport(ecs_world_t *world)
 	{.entity = ecs_id(EgGpuTextureCreateInfo),
 	.members = {
 	{.name = "sample_count", .type = ecs_id(ecs_u32_t)},
+	}});
+
+	ecs_struct(world,
+	{.entity = ecs_id(EgGpuLocation),
+	.members = {
+	{.name = "location", .type = ecs_id(ecs_i32_t)},
 	}});
 
 	ecs_system(world,
@@ -187,6 +195,7 @@ void EgGpuImport(ecs_world_t *world)
 	{.id = ecs_id(EgGpuPipelineCreateInfo), .src.id = EcsSelf},
 	{.id = ecs_id(EgGpuShaderVertex), .trav = EcsDependsOn, .src.id = EcsUp},
 	{.id = ecs_id(EgGpuShaderFragment), .trav = EcsDependsOn, .src.id = EcsUp},
+	{.id = ecs_id(EcsComponent), .trav = EcsDependsOn, .src.id = EcsUp},
 	{.id = ecs_id(EgGpuPipeline), .oper = EcsNot}, // Adds this
 	{.id = EgBaseUpdate},
 	{.id = EgBaseError, .oper = EcsNot}}});

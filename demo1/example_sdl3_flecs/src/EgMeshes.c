@@ -7,6 +7,9 @@
 
 ECS_COMPONENT_DECLARE(EgMeshesMesh);
 
+
+
+
 static void gen_box24_vertex(float *x, int stride, float l0, float l1, float l2)
 {
 	/* Front face. */
@@ -147,10 +150,8 @@ static void gen_box24_color(float *x, int stride)
 	x += stride * 6;
 	repeat_rgb(x, stride, 6, 0.0f, 1.0f, 1.0f);
 	x += stride * 6;
-	/*
 	repeat_rgb(x, stride, 6, 1.0f, 0.0f, 0.0f); 
 	x += stride * 6;
-	*/
 }
 
 static void System_EgMeshesMesh(ecs_iter_t *it)
@@ -161,7 +162,7 @@ static void System_EgMeshesMesh(ecs_iter_t *it)
 		ecs_entity_t e = it->entities[i];
 		ecs_remove(world, e, EgBaseUpdate);
 		ecs_vec_reset(NULL, &m->data, sizeof(float) * 6);
-		float * v = ecs_vec_grow(NULL, &m->data, sizeof(float)*6, 24);
+		float * v = ecs_vec_grow(NULL, &m->data, sizeof(float)*6, 36);
 		gen_box24_vertex(v + 0, 6, 0.5f, 0.5f, 0.5f);
 		gen_box24_color(v + 3, 6);
 	} // END FOR LOOP

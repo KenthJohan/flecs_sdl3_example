@@ -34,6 +34,7 @@
 #include "EgGpu.h"
 #include "EgMeshes.h"
 
+
 static void ControllerRotate(ecs_iter_t *it)
 {
 	EgCamerasKeyBindings *controller = ecs_field(it, EgCamerasKeyBindings, 0);
@@ -172,6 +173,10 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+	ecs_os_set_api_defaults();
+	ecs_os_api_t os_api = ecs_os_get_api();
+	ecs_os_set_api(&os_api);
+
 	ecs_world_t *world = ecs_init();
 	ECS_IMPORT(world, FlecsUnits);
 	ECS_IMPORT(world, FlecsDoc);
@@ -190,6 +195,10 @@ int main(int argc, char *argv[])
 	printf("Remote: %s\n", "https://www.flecs.dev/explorer/?remote=true");
 
 	ecs_log_set_level(0);
+	ecs_script_run_file(world, "config/xvertex.flecs");
+	ecs_log_set_level(-1);
+	
+	ecs_log_set_level(0);
 	ecs_script_run_file(world, "config/gpu.flecs");
 	ecs_log_set_level(-1);
 
@@ -200,6 +209,7 @@ int main(int argc, char *argv[])
 	ecs_log_set_level(0);
 	ecs_script_run_file(world, "config/app.flecs");
 	ecs_log_set_level(-1);
+
 
 	{
 		ecs_entity_t e_draw1 = ecs_lookup(world, "xapp.a");

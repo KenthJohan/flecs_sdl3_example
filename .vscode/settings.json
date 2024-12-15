@@ -98,7 +98,9 @@
 		"new": "c",
 		"ostream": "c",
 		"streambuf": "c",
-		"valarray": "c"
+		"valarray": "c",
+		"egvatt.h": "c",
+		"egmeta.h": "c"
 	},
 	"terminal.integrated.env.linux": {
 		"GTK_PATH": ""

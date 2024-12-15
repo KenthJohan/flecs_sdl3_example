@@ -46,7 +46,6 @@ typedef struct
 {
 	uint32_t sample_count;
 	bool target_info_has_depth_stencil_target;
-	uint32_t pitch;
 } EgGpuPipelineCreateInfo;
 
 
@@ -82,7 +81,12 @@ typedef struct
 	ecs_query_t * query;
 } EgGpuDraw1;
 
+typedef struct
+{
+	int32_t location;
+} EgGpuLocation;
 
+extern ECS_TAG_DECLARE(EgGpuVertexFormat);
 
 extern ECS_COMPONENT_DECLARE(EgGpuDevice);
 extern ECS_COMPONENT_DECLARE(EgGpuWindow);
@@ -99,6 +103,7 @@ extern ECS_COMPONENT_DECLARE(EgGpuBufferCreateInfo);
 extern ECS_COMPONENT_DECLARE(EgGpuTexture);
 extern ECS_COMPONENT_DECLARE(EgGpuTextureCreateInfo);
 extern ECS_COMPONENT_DECLARE(EgGpuDraw1);
+extern ECS_COMPONENT_DECLARE(EgGpuLocation);
 
 void EgGpuImport(ecs_world_t *world);
 

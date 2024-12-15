@@ -1,0 +1,19 @@
+@color #FF99FF
+xvertex {}
+module xvertex
+
+
+
+struct Vertex123 {
+  p = f32,3
+  c = f32,3
+}
+
+
+Vertex123.p {
+	eg.gpu.Location : {0}
+}
+
+Vertex123.c {
+	eg.gpu.Location : {1}
+}
