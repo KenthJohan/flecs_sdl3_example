@@ -5,8 +5,8 @@ module xvertex
 
 
 struct Vertex123 {
-  p = f32,3
-  c = f32,3
+  p = f32,3,flecs.units.Length.Meters
+  c = f32,3,flecs.units.Color.Rgb
 }
 
 

@@ -34,7 +34,6 @@
 #include "EgGpu.h"
 #include "EgMeshes.h"
 
-
 static void ControllerRotate(ecs_iter_t *it)
 {
 	EgCamerasKeyBindings *controller = ecs_field(it, EgCamerasKeyBindings, 0);
@@ -69,13 +68,13 @@ static void ControllerMove(ecs_iter_t *it)
 static void System_Draw1(ecs_iter_t *it, SDL_GPUCommandBuffer *cmd, SDL_GPURenderPass *pass)
 {
 	while (ecs_query_next(it)) {
-		EgGpuDrawCube *c_cube = ecs_field(it, EgGpuDrawCube, 0);    // self
-		Transformation *c_trans = ecs_field(it, Transformation, 1); // self
-		EgCamerasState *c_cam = ecs_field(it, EgCamerasState, 2);   // shared
-		EgMeshesMesh *c_mesh = ecs_field(it, EgMeshesMesh, 3);   // shared
-		for (int i = 0; i < it->count; ++i, ++c_trans) {
+		EgGpuDrawCube *field_cube = ecs_field(it, EgGpuDrawCube, 0);    // self
+		Transformation *field_trans = ecs_field(it, Transformation, 1); // self
+		EgCamerasState *field_cam = ecs_field(it, EgCamerasState, 2);   // shared
+		(void)field_cube;
+		for (int i = 0; i < it->count; ++i, ++field_trans) {
 			m4f32 mvp;
-			m4f32_mul(&mvp, &c_cam->vp, &c_trans->matrix);
+			m4f32_mul(&mvp, &field_cam->vp, &field_trans->matrix);
 			SDL_PushGPUVertexUniformData(cmd, 0, &mvp, sizeof(float) * 16);
 			SDL_DrawGPUPrimitives(pass, 36, 1, 0, 0);
 		}
@@ -92,6 +91,7 @@ static void System_Draw(ecs_iter_t *it)
 	EgGpuTexture *c_texd = ecs_field(it, EgGpuTexture, 5);          // shared
 	EgWindowsWindow *c_win = ecs_field(it, EgWindowsWindow, 6);     // shared
 	EgGpuWindow *c_gwin = ecs_field(it, EgGpuWindow, 7);            // shared
+	(void)c_gwin;
 
 	SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(c_gpu->device);
 	if (!cmd) {
@@ -180,6 +180,7 @@ int main(int argc, char *argv[])
 	ecs_world_t *world = ecs_init();
 	ECS_IMPORT(world, FlecsUnits);
 	ECS_IMPORT(world, FlecsDoc);
+	ECS_IMPORT(world, FlecsStats);
 	ECS_IMPORT(world, EgBase);
 	ECS_IMPORT(world, EgSpatials);
 	ECS_IMPORT(world, EgShapes);
@@ -197,28 +198,30 @@ int main(int argc, char *argv[])
 	ecs_log_set_level(0);
 	ecs_script_run_file(world, "config/xvertex.flecs");
 	ecs_log_set_level(-1);
-	
+
 	ecs_log_set_level(0);
-	ecs_script_run_file(world, "config/gpu.flecs");
+	ecs_script_run_file(world, "config/xmeshes.flecs");
 	ecs_log_set_level(-1);
 
 	ecs_log_set_level(0);
-	ecs_script_run_file(world, "config/cam.flecs");
+	ecs_script_run_file(world, "config/xgpu.flecs");
 	ecs_log_set_level(-1);
 
 	ecs_log_set_level(0);
-	ecs_script_run_file(world, "config/app.flecs");
+	ecs_script_run_file(world, "config/xcam.flecs");
 	ecs_log_set_level(-1);
 
+	ecs_log_set_level(0);
+	ecs_script_run_file(world, "config/xapp.flecs");
+	ecs_log_set_level(-1);
 
 	{
-		ecs_entity_t e_draw1 = ecs_lookup(world, "xapp.a");
-		ecs_query_t *q = ecs_query(world, {.terms = {
-		                                   {.id = ecs_id(EgGpuDrawCube), .src.id = EcsSelf},
-		                                   {.id = ecs_id(Transformation), .src.id = EcsSelf},
-		                                   {.id = ecs_id(EgCamerasState), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
-		                                   {.id = ecs_id(EgMeshesMesh), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
-		                                   }});
+		ecs_entity_t e_draw1 = ecs_lookup(world, "xapp.renderer");
+		ecs_query_t *q = ecs_query(world,
+		{.terms = {
+		 {.id = ecs_id(EgGpuDrawCube), .src.id = EcsSelf},
+		 {.id = ecs_id(Transformation), .src.id = EcsSelf},
+		 {.id = ecs_id(EgCamerasState), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn}}});
 		ecs_set(world, e_draw1, EgGpuDraw1, {.query = q});
 	}
 

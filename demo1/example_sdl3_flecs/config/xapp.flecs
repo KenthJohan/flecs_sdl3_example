@@ -3,7 +3,7 @@ xapp {}
 module xapp
 
 
-a {
+renderer {
 	eg.gpu.Draw1
 	eg.shapes.Rectangle
 	(flecs.core.DependsOn, xgpu.gpu0)
@@ -14,22 +14,13 @@ a {
 }
 
 
-m1 {
-	cube {
-		eg.meshes.Mesh
-		eg.base.Update
-		eg.spatials.Position3 : {x: 0, y: 0, z: 0}
-		eg.shapes.Box : {1,1,1}
-	}
-}
 
 
 drawobjs
 {
 	c1  {
-		(flecs.core.DependsOn, a)
+		(flecs.core.DependsOn, renderer)
 		(flecs.core.DependsOn, xcam.cam1)
-		(flecs.core.DependsOn, m1.cube)
 		eg.gpu.DrawCube
 		eg.spatials.EgRotateOrder1
 		eg.spatials.Transformation
@@ -42,9 +33,8 @@ drawobjs
 	}
 
 	c2  {
-		(flecs.core.DependsOn, a)
+		(flecs.core.DependsOn, renderer)
 		(flecs.core.DependsOn, xcam.cam0)
-		(flecs.core.DependsOn, m1.cube)
 		eg.gpu.DrawCube
 		eg.spatials.EgRotateOrder1
 		eg.spatials.Transformation
@@ -56,9 +46,8 @@ drawobjs
 		eg.spatials.Rotate3 : {dx: 0.00, dy: 0.01, dz: 0}
 
 		c3  {
-			(flecs.core.DependsOn, a)
+			(flecs.core.DependsOn, renderer)
 			(flecs.core.DependsOn, xcam.cam0)
-			(flecs.core.DependsOn, m1.cube)
 			eg.gpu.DrawCube
 			eg.spatials.EgRotateOrder1
 			eg.spatials.Transformation

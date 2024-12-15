@@ -79,7 +79,6 @@ typedef enum SDL_GPUVertexElementFormat
 
 static int iterate_attributes(ecs_world_t *world, ecs_entity_t parent, SDL_GPUVertexAttribute *out_attr, int out_attr_length)
 {
-	int index = 0;
 	// Iterate children of parent entity
 	ecs_iter_t it = ecs_children(world, parent);
 	while (ecs_children_next(&it)) {
