@@ -154,8 +154,17 @@ static void gen_box24_color(float *x, int stride)
 static void System_EgMeshesMesh(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
-	EgMeshesMesh *field_mesh = ecs_field(it, EgMeshesMesh, 0); // self
-	EcsMember *field_member = ecs_field(it, EcsMember, 1);     // shared
+	EgMeshesMesh *field_mesh = ecs_field(it, EgMeshesMesh, 0);      // self
+	EcsComponent *field_component = ecs_field(it, EcsComponent, 1); // shared
+	EcsMember *field_member = ecs_field(it, EcsMember, 2);          // shared
+
+	/*
+	float x6[] = {55.0f, 0.0f, 1.0f, 0.0f, 3.0f, 0.0f};
+	char * json = ecs_ptr_to_json(it->world, field_component_src, x6);
+	printf("%s\n", json);
+	ecs_os_free(json);
+	*/
+
 	for (int i = 0; i < it->count; ++i, ++field_mesh) {
 		ecs_entity_t e = it->entities[i];
 		ecs_remove(world, e, EgBaseUpdate);
@@ -183,7 +192,9 @@ void EgMeshesImport(ecs_world_t *world)
 	.callback = System_EgMeshesMesh,
 	.query.terms = {
 	{.id = ecs_id(EgMeshesMesh), .src.id = EcsSelf},
+	{.id = ecs_id(EcsComponent), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EcsMember), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+	//{ .id = ecs_pair(ecs_id(EcsDependsOn), EcsWildcard ) },
 	{.id = EgBaseUpdate},
 	{.id = EgBaseError, .oper = EcsNot}}});
 }

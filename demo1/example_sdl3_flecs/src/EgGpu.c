@@ -10,6 +10,7 @@
 #include "EgGpu_System_EgGpuBuffer.h"
 #include "EgGpu_System_EgGpuTexture.h"
 
+ECS_TAG_DECLARE(EgGpuVertexFormat);
 ECS_COMPONENT_DECLARE(EgGpuDevice);
 ECS_COMPONENT_DECLARE(EgGpuWindow);
 ECS_COMPONENT_DECLARE(EgGpuDeviceCreateInfo);
@@ -52,6 +53,17 @@ void System_Claim(ecs_iter_t *it)
 	ecs_log_set_level(0);
 }
 
+
+void System_123(ecs_iter_t *it)
+{
+	ecs_world_t *world = it->world;
+	EgGpuDevice *gpu = ecs_field(it, EgGpuDevice, 0);
+	for (int i = 0; i < it->count; ++i) {
+		ecs_entity_t e = it->entities[i];
+	} // END FOR LOOP
+}
+
+
 void EgGpuImport(ecs_world_t *world)
 {
 	ECS_MODULE(world, EgGpu);
@@ -59,6 +71,7 @@ void EgGpuImport(ecs_world_t *world)
 	ECS_IMPORT(world, EgShapes);
 	ecs_set_name_prefix(world, "EgGpu");
 
+	ECS_TAG_DEFINE(world, EgGpuVertexFormat);
 	ECS_COMPONENT_DEFINE(world, EgGpuDevice);
 	ECS_COMPONENT_DEFINE(world, EgGpuWindow);
 	ECS_COMPONENT_DEFINE(world, EgGpuDeviceCreateInfo);
@@ -239,4 +252,6 @@ void EgGpuImport(ecs_world_t *world)
 	{.id = ecs_id(EgGpuWindow), .oper = EcsNot},
 	{.id = ecs_id(EgBaseError), .oper = EcsNot},
 	}});
+
+
 }

@@ -86,6 +86,9 @@ typedef struct
 	int32_t location;
 } EgGpuLocation;
 
+
+
+
 extern ECS_TAG_DECLARE(EgGpuVertexFormat);
 
 extern ECS_COMPONENT_DECLARE(EgGpuDevice);
