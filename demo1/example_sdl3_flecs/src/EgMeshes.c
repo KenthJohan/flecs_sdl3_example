@@ -156,7 +156,29 @@ static void System_EgMeshesMesh(ecs_iter_t *it)
 	ecs_world_t *world = it->world;
 	EgMeshesMesh *field_mesh = ecs_field(it, EgMeshesMesh, 0);      // self
 	EcsComponent *field_component = ecs_field(it, EcsComponent, 1); // shared
-	EcsMember *field_member = ecs_field(it, EcsMember, 2);          // shared
+	ecs_entity_t field_component_src = ecs_field_src(it, 1);        // shared
+
+	int32_t stride;
+	int32_t offset_pos;
+	int32_t offset_col;
+
+	ecs_iter_t it2 = ecs_children(world, field_component_src);
+	while (ecs_children_next(&it2)) {
+		for (int i = 0; i < it2.count; i ++) {
+			ecs_entity_t child = it2.entities[i];
+			EcsMember const * m = ecs_get(world, child, EcsMember);
+			if (m->unit == EcsMeters) {
+				//printf("m: %i\n", m->count);
+				offset_pos = m->offset;
+			}
+			if (m->unit == EcsColorRgb) {
+				//printf("m: %i\n", m->count);
+				offset_col = m->offset;
+			}
+		}
+	}
+
+	stride = field_component->size;
 
 	/*
 	float x6[] = {55.0f, 0.0f, 1.0f, 0.0f, 3.0f, 0.0f};
@@ -166,6 +188,9 @@ static void System_EgMeshesMesh(ecs_iter_t *it)
 	*/
 
 	for (int i = 0; i < it->count; ++i, ++field_mesh) {
+		field_mesh->stride = stride;
+		field_mesh->offset_pos = offset_pos;
+		field_mesh->offset_col = offset_col;
 		ecs_entity_t e = it->entities[i];
 		ecs_remove(world, e, EgBaseUpdate);
 		ecs_vec_reset(NULL, &field_mesh->data, sizeof(float) * 6);
@@ -185,6 +210,9 @@ void EgMeshesImport(ecs_world_t *world)
 	{.entity = ecs_id(EgMeshesMesh),
 	.members = {
 	{.name = "usage", .type = ecs_id(EgBaseVec)},
+	{.name = "stride", .type = ecs_id(ecs_i32_t)},
+	{.name = "offset_pos", .type = ecs_id(ecs_i32_t)},
+	{.name = "offset_col", .type = ecs_id(ecs_i32_t)},
 	}});
 
 	ecs_system(world,
@@ -193,8 +221,6 @@ void EgMeshesImport(ecs_world_t *world)
 	.query.terms = {
 	{.id = ecs_id(EgMeshesMesh), .src.id = EcsSelf},
 	{.id = ecs_id(EcsComponent), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
-	{.id = ecs_id(EcsMember), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
-	//{ .id = ecs_pair(ecs_id(EcsDependsOn), EcsWildcard ) },
 	{.id = EgBaseUpdate},
 	{.id = EgBaseError, .oper = EcsNot}}});
 }

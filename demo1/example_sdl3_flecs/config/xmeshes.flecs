@@ -10,6 +10,5 @@ m1 {
 		eg.shapes.Box : {1,1,1}
 		// Store in vertex format as defined in xvertex.Vertex123
 		(flecs.core.DependsOn, xvertex.Vertex123)
-		(flecs.core.DependsOn, xvertex.Vertex123.p)
 	}
 }
