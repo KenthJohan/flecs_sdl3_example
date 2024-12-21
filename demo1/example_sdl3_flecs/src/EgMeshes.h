@@ -4,7 +4,8 @@
 
 typedef struct
 {
-	ecs_vec_t data;
+	ecs_vec_t vertices;
+	ecs_vec_t indices;
 	int32_t stride;
 	int32_t offset_pos;
 	int32_t offset_col;

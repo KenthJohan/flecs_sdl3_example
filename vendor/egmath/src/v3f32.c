@@ -1,5 +1,12 @@
 #include "egmath.h"
 
+void v3f32_xyz(float v[3], float x, float y, float z)
+{
+	v[0] = x;
+	v[1] = y;
+	v[2] = z;
+}
+
 void v3f32_mul(float r[3], float const a[3], float b)
 {
 	r[0] = a[0] * b;

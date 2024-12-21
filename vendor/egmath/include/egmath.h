@@ -71,6 +71,8 @@ void qf32_unit_to_m3(float const q[4], m3f32 *r);
 void qf32_from_euler(float q[4], float pitch, float yaw, float roll);
 void qf32_rotate_vector(float const q[4], float const v[3], float output[3]);
 
+
+void v3f32_xyz(float v[3], float x, float y, float z);
 void v3f32_cross(int const a[3], int const b[], int p[]);
 void v3f32_normalize(float r[3], float const q[3], float epsilon);
 void v3f32_mul(float r[3], float const a[3], float b);
@@ -103,7 +105,7 @@ void m3f32_transpose(m3f32 *x);
 void m3f32_rs_inverse(float const q[4], float const s[3], m3f32 *r);
 void m3f32_rs_inverse_transposed(float const q[4], float const s[3], m3f32 *r);
 
-
+void v4f32_xyzw(float v[4], float x, float y, float z, float w);
 void v4f32_mul(float r[4], float const a[4], float b);
 void v4f32_add(float r[4], float const a[4], float const b[4]);
 void v4f32_print(float const x[4]);
