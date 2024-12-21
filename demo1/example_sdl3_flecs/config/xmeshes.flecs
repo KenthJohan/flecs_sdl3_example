@@ -2,13 +2,20 @@
 xmeshes {}
 module xmeshes
 
+const SDL_SCANCODE_1 = 30
+
+prefab actionjack {
+	eg.meshes.Expand
+}
+
 m1 {
 	cube {
-		eg.meshes.Mesh
+		eg.meshes.CreateInfo
 		eg.base.Update
 		eg.spatials.Position3 : {x: 0, y: 0, z: 0}
 		eg.shapes.Box : {1,1,1}
 		// Store in vertex format as defined in xvertex.Vertex123
 		(flecs.core.DependsOn, xvertex.Vertex123)
+		eg.keyboards.ActionToggleEntity : {key_index:$SDL_SCANCODE_1, entity:actionjack}
 	}
 }

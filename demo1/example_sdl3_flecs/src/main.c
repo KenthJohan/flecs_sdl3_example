@@ -70,6 +70,9 @@ static void System_Draw1(ecs_iter_t *it, SDL_GPUCommandBuffer *cmd, SDL_GPURende
 	}
 }
 
+
+
+
 static void System_Draw(ecs_iter_t *it)
 {
 	EgGpuDraw1 *c_draw1 = ecs_field(it, EgGpuDraw1, 0);             // self
