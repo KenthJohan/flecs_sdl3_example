@@ -17,5 +17,6 @@ m1 {
 		// Store in vertex format as defined in xvertex.Vertex123
 		(flecs.core.DependsOn, xvertex.Vertex123)
 		eg.keyboards.ActionToggleEntity : {key_index:$SDL_SCANCODE_1, entity:actionjack}
+		expanded {}
 	}
 }

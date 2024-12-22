@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <EgSpatials.h>
+//#include <EgColor.h>
 #include <EgBase.h>
 #include <egmath.h>
 
@@ -108,9 +109,18 @@ static void System_Expand(ecs_iter_t *it)
 	EgMeshesCreateInfo *field_info = ecs_field(it, EgMeshesCreateInfo, 1); // self
 	for (int i = 0; i < it->count; ++i) {
 		ecs_remove(it->world, it->entities[i], EgMeshesExpand);
-		ecs_entity_t c = ecs_new_w_pair(it->world, EcsChildOf, it->entities[i]);
+		ecs_entity_t e_verts = ecs_lookup_child(it->world, it->entities[i], "expanded");
+		if (e_verts == 0) {
+			continue;
+		}
+		//ecs_entity_t c = ecs_new_w_pair(it->world, EcsChildOf, it->entities[i]);
 		uint8_t * v = ecs_vec_first(&field_mesh[i].vertices);
 		for(int j = 0; j < ecs_vec_count(&field_mesh[i].vertices); j++) {
+			float * p = (float *)(v + field_info[i].offset_pos);
+			float * c = (float *)(v + field_info[i].offset_col);
+			ecs_entity_t e_vert = ecs_new_w_pair(it->world, EcsChildOf, e_verts);
+			ecs_set(it->world, e_vert, Position3, {p[0], p[1], p[2]});
+			ecs_set(it->world, e_vert, Color3, {c[0], c[1], c[2]});
 			printf("v: %f\n", *(float *)v);
 			v += field_info[i].stride;
 		}

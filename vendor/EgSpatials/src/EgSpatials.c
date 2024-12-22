@@ -17,6 +17,7 @@ ECS_COMPONENT_DECLARE(EulerAngles);
 ECS_COMPONENT_DECLARE(Transformation);
 ECS_COMPONENT_DECLARE(TransformationCollector);
 ECS_COMPONENT_DECLARE(Sinewave);
+ECS_COMPONENT_DECLARE(Color3);
 ECS_TAG_DECLARE(EgRotateOrder1);
 ECS_TAG_DECLARE(EgRotateOrder2);
 ECS_TAG_DECLARE(EgPositionWorldNoReset);
@@ -303,6 +304,7 @@ void EgSpatialsImport(ecs_world_t *world)
 	ECS_COMPONENT_DEFINE(world, TransformationCollector);
 	ECS_COMPONENT_DEFINE(world, RotMat3);
 	ECS_COMPONENT_DEFINE(world, Sinewave);
+	ECS_COMPONENT_DEFINE(world, Color3);
 
 	ECS_TAG_DEFINE(world, EgRotateOrder1);
 	ECS_TAG_DEFINE(world, EgRotateOrder2);
@@ -336,6 +338,14 @@ void EgSpatialsImport(ecs_world_t *world)
 	{.name = "x", .type = ecs_id(ecs_f32_t)},
 	{.name = "y", .type = ecs_id(ecs_f32_t)},
 	{.name = "z", .type = ecs_id(ecs_f32_t)},
+	}});
+
+	ecs_struct(world,
+	{.entity = ecs_id(Color3),
+	.members = {
+	{.name = "r", .type = ecs_id(ecs_f32_t)},
+	{.name = "g", .type = ecs_id(ecs_f32_t)},
+	{.name = "b", .type = ecs_id(ecs_f32_t)},
 	}});
 
 	ecs_struct(world,

@@ -15,6 +15,12 @@ typedef struct {
 } Position3;
 
 typedef struct {
+	float r;
+	float g;
+	float b;
+} Color3;
+
+typedef struct {
 	float x;
 	float y;
 	float z;
@@ -120,6 +126,8 @@ extern ECS_COMPONENT_DECLARE(Transformation);
 extern ECS_COMPONENT_DECLARE(TransformationCollector);
 extern ECS_COMPONENT_DECLARE(RotMat3);
 extern ECS_COMPONENT_DECLARE(Sinewave);
+extern ECS_COMPONENT_DECLARE(Color3);
+
 extern ECS_TAG_DECLARE(EgRotateOrder1);
 extern ECS_TAG_DECLARE(EgRotateOrder2);
 extern ECS_TAG_DECLARE(EgPositionWorldNoReset);
