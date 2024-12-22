@@ -3,6 +3,10 @@
 
 #define EG_KEYBOARDS_KEYS_MAX 512
 
+#define EG_KEYBOARDS_STATE_DOWN 0x01
+#define EG_KEYBOARDS_STATE_FALLING_EDGE 0x02
+#define EG_KEYBOARDS_STATE_RISING_EDGE 0x04
+
 typedef struct
 {
 	int32_t id;

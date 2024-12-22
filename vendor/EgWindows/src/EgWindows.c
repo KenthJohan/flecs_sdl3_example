@@ -18,8 +18,10 @@ ECS_COMPONENT_DECLARE(EgWindowsWindowCreateInfo);
 ECS_COMPONENT_DECLARE(EgWindowsMouse);
 ECS_TAG_DECLARE(EgWindowsEventResize);
 
-// ecs_map_t test
+
 // https://github.com/SanderMertens/flecs/blob/57ebed1083274ee4875631a940452f08ff08aef9/test/collections/src/Map.c#L54
+// We need to map the SDL_WindowID to the ecs_entity_t so we can look up the entity from the SDL_WindowID
+// This is needed for the SDL_EVENT_WINDOW_RESIZED event
 static ecs_map_t static_window_map;
 
 static void System_EgWindowsWindow_Create(ecs_iter_t *it)
@@ -46,6 +48,7 @@ static void System_EgWindowsWindow_Create(ecs_iter_t *it)
 			if (window == NULL) {
 				continue;
 			}
+			// Map the SDL_WindowID to the ecs_entity_t:
 			SDL_WindowID id = SDL_GetWindowID(window);
 			ecs_map_insert(&static_window_map, id, e);
 			ecs_set(world, e, EgWindowsWindow, {.object = window});
@@ -100,24 +103,33 @@ static void System_EgWindowsWindow_Mouse(ecs_iter_t *it)
 
 static void System_EgKeyboardsState(ecs_iter_t *it)
 {
-	EgKeyboardsState *create = ecs_field(it, EgKeyboardsState, 0);
+	EgKeyboardsState *s = ecs_field(it, EgKeyboardsState, 0); // Singleton
 	SDL_Event event;
+	for (int i = 0; i < EG_KEYBOARDS_KEYS_MAX; i++) {
+		s->scancode[i] &= ~EG_KEYBOARDS_STATE_FALLING_EDGE;
+		s->scancode[i] &= ~EG_KEYBOARDS_STATE_RISING_EDGE;
+	}
 	while (SDL_PollEvent(&event)) {
 		// SDLTest_CommonEvent(state, &event, &done);
 		switch (event.type) {
 		case SDL_EVENT_KEY_DOWN:
-			// create->keycode[event.key.key] = 1;
-			create->scancode[event.key.scancode] = 1;
+			if (s->scancode[event.key.scancode] & EG_KEYBOARDS_STATE_DOWN) {
+				//s->scancode[event.key.scancode] &= ~EG_KEYBOARDS_STATE_RISING_EDGE;
+			} else {
+				s->scancode[event.key.scancode] |= EG_KEYBOARDS_STATE_RISING_EDGE;
+			}
+			s->scancode[event.key.scancode] |= EG_KEYBOARDS_STATE_DOWN;
 			break;
 		case SDL_EVENT_KEY_UP:
-			// create->keycode[event.key.key] = 0;
-			create->scancode[event.key.scancode] = 0;
+			s->scancode[event.key.scancode] &= ~EG_KEYBOARDS_STATE_DOWN;
 			break;
 		case SDL_EVENT_WINDOW_RESIZED: {
+			// Get the entity from the SDL_WindowID
 			SDL_Window *window = SDL_GetWindowFromEvent(&event);
 			SDL_WindowID id = SDL_GetWindowID(window);
 			ecs_map_val_t * ev = ecs_map_get(&static_window_map, id);
 			if (ev == NULL) {
+				ecs_err("SDL_EVENT_WINDOW_RESIZED: No entity found for SDL_WindowID: %i", id);
 				break;
 			}
 			ecs_entity_t e = ev[0];
@@ -127,6 +139,7 @@ static void System_EgKeyboardsState(ecs_iter_t *it)
 		} // END CASE
 		} // END SWITCH
 	} // END WHILE
+	//printf("EG_KEYBOARDS_STATE_RISING_EDGE: %i\n", s->scancode[SDL_SCANCODE_B] & EG_KEYBOARDS_STATE_RISING_EDGE);
 }
 
 

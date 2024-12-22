@@ -14,21 +14,28 @@ ECS_COMPONENT_DECLARE(EgKeyboardsActionToggleEntity);
 
 static void System_Toggle(ecs_iter_t *it)
 {
+	ecs_log_set_level(1);
 	EgKeyboardsState *field_keyboard = ecs_field(it, EgKeyboardsState, 0);                         // singleton
 	EgKeyboardsActionToggleEntity *field_action = ecs_field(it, EgKeyboardsActionToggleEntity, 1); // self
-
 	for (int i = 0; i < it->count; ++i, ++field_action) {
+		ecs_entity_t e = it->entities[i];
 		EgKeyboardsActionToggleEntity * a = field_action + i;
-		if (field_keyboard->scancode[field_action->key_index]) {
-			// ecs_add_id(it->world, it->entities[i], action->entity);
-			if (ecs_has_pair(it->world, it->entities[i], EcsIsA, a->entity)) {
-				ecs_remove_pair(it->world, it->entities[i], EcsIsA, a->entity);
+		uint8_t k = field_keyboard->scancode[field_action->key_index];
+		if (k & EG_KEYBOARDS_STATE_RISING_EDGE) {
+			if (ecs_has_pair(it->world, e, EcsIsA, a->entity)) {
+				ecs_dbg("ecs_remove_pair(%s,%s,%s)", ecs_get_name(it->world, e), ecs_get_name(it->world, EcsIsA), ecs_get_name(it->world, a->entity));
+				ecs_remove_pair(it->world, e, EcsIsA, a->entity);
 			} else {
-				ecs_add_pair(it->world, it->entities[i], EcsIsA, a->entity);
+				ecs_dbg("ecs_add_pair(%s,%s,%s)", ecs_get_name(it->world, e), ecs_get_name(it->world, EcsIsA), ecs_get_name(it->world, a->entity));
+				ecs_add_pair(it->world, e, EcsIsA, a->entity);
 			}
 		}
 	}
+	ecs_log_set_level(0);
 }
+
+
+
 
 void EgKeyboardsImport(ecs_world_t *world)
 {
