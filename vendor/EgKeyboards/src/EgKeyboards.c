@@ -22,12 +22,12 @@ static void System_Toggle(ecs_iter_t *it)
 		EgKeyboardsActionToggleEntity * a = field_action + i;
 		uint8_t k = field_keyboard->scancode[field_action->key_index];
 		if (k & EG_KEYBOARDS_STATE_RISING_EDGE) {
-			if (ecs_has_pair(it->world, e, EcsIsA, a->entity)) {
-				ecs_dbg("ecs_remove_pair(%s,%s,%s)", ecs_get_name(it->world, e), ecs_get_name(it->world, EcsIsA), ecs_get_name(it->world, a->entity));
-				ecs_remove_pair(it->world, e, EcsIsA, a->entity);
+			if (ecs_has_pair(it->world, a->entity, EcsIsA, a->toggle)) {
+				ecs_dbg("ecs_remove_pair(%s,%s,%s)", ecs_get_name(it->world, a->entity), ecs_get_name(it->world, EcsIsA), ecs_get_name(it->world, a->toggle));
+				ecs_remove_pair(it->world, a->entity, EcsIsA, a->toggle);
 			} else {
-				ecs_dbg("ecs_add_pair(%s,%s,%s)", ecs_get_name(it->world, e), ecs_get_name(it->world, EcsIsA), ecs_get_name(it->world, a->entity));
-				ecs_add_pair(it->world, e, EcsIsA, a->entity);
+				ecs_dbg("ecs_add_pair(%s,%s,%s)", ecs_get_name(it->world, a->entity), ecs_get_name(it->world, EcsIsA), ecs_get_name(it->world, a->toggle));
+				ecs_add_pair(it->world, a->entity, EcsIsA, a->toggle);
 			}
 		}
 	}
@@ -64,6 +64,7 @@ void EgKeyboardsImport(ecs_world_t *world)
 	.members = {
 	{.name = "key_index", .type = ecs_id(ecs_i32_t)},
 	{.name = "entity", .type = ecs_id(ecs_entity_t)},
+	{.name = "toggle", .type = ecs_id(ecs_entity_t)},
 	}});
 
 	int count;

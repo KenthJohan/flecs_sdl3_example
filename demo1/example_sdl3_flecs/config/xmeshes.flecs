@@ -5,7 +5,9 @@ module xmeshes
 const SDL_SCANCODE_1 = 30
 
 prefab actionjack {
-	eg.meshes.Expand
+	expanded {
+		eg.meshes.Expand
+	}
 }
 
 m1 {
@@ -16,7 +18,11 @@ m1 {
 		eg.shapes.Box : {1,1,1}
 		// Store in vertex format as defined in xvertex.Vertex123
 		(flecs.core.DependsOn, xvertex.Vertex123)
-		eg.keyboards.ActionToggleEntity : {key_index:$SDL_SCANCODE_1, entity:actionjack}
-		expanded {}
+	}
+}
+
+keybinds {
+	b1 {
+		eg.keyboards.ActionToggleEntity : {key_index: $SDL_SCANCODE_1, entity: m1.cube, toggle: actionjack}
 	}
 }

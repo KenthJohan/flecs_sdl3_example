@@ -24,6 +24,7 @@ typedef struct
 {
 	int32_t key_index;
 	ecs_entity_t entity;
+	ecs_entity_t toggle;
 } EgKeyboardsActionToggleEntity;
 
 extern ECS_COMPONENT_DECLARE(EgKeyboardsDevice);
