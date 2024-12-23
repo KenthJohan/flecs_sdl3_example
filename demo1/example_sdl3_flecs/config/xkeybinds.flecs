@@ -1,0 +1,32 @@
+@color #FF99FF
+xkeybinds {}
+module xkeybinds
+
+const SDL_SCANCODE_1 = 30
+const SDL_SCANCODE_2 = 31
+
+b1 {
+	eg.keyboards.ActionToggleEntity : {key_index: $SDL_SCANCODE_1, entity: xmeshes.m1.cube, toggle: xmeshes.actionjack}
+	/*
+	eg.keyboards.VecMod : {
+		key_index: $SDL_SCANCODE_2, 
+		entity: xcam.cam1, 
+		mod: eg.spatials.Velocity3, 
+		index:0, 
+		value: 0.1
+	}
+	*/
+}
+
+b2 {
+	eg.keyboards.ActionToggleEntity : {key_index: $SDL_SCANCODE_2, entity: xmeshes.m2.cube, toggle: xmeshes.actionjack}
+	/*
+	eg.keyboards.VecMod : {
+		key_index: $SDL_SCANCODE_2, 
+		entity: xcam.cam1, 
+		mod: eg.spatials.Velocity3, 
+		index:0, 
+		value: 0.1
+	}
+	*/
+}

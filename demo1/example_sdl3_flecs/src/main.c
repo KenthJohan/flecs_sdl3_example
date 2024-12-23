@@ -207,6 +207,10 @@ int main(int argc, char *argv[])
 	ecs_script_run_file(world, "config/xapp.flecs");
 	ecs_log_set_level(-1);
 
+	ecs_log_set_level(0);
+	ecs_script_run_file(world, "config/xkeybinds.flecs");
+	ecs_log_set_level(-1);
+
 	{
 		ecs_entity_t e_draw1 = ecs_lookup(world, "xapp.renderer");
 		ecs_query_t *q = ecs_query(world,

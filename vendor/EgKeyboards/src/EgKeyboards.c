@@ -15,12 +15,11 @@ ECS_COMPONENT_DECLARE(EgKeyboardsActionToggleEntity);
 static void System_Toggle(ecs_iter_t *it)
 {
 	ecs_log_set_level(1);
-	EgKeyboardsState *field_keyboard = ecs_field(it, EgKeyboardsState, 0);                         // singleton
-	EgKeyboardsActionToggleEntity *field_action = ecs_field(it, EgKeyboardsActionToggleEntity, 1); // self
-	for (int i = 0; i < it->count; ++i, ++field_action) {
+	EgKeyboardsState *field_keyboard = ecs_field(it, EgKeyboardsState, 0);              // singleton
+	EgKeyboardsActionToggleEntity *a = ecs_field(it, EgKeyboardsActionToggleEntity, 1); // self
+	for (int i = 0; i < it->count; ++i, ++a) {
 		ecs_entity_t e = it->entities[i];
-		EgKeyboardsActionToggleEntity * a = field_action + i;
-		uint8_t k = field_keyboard->scancode[field_action->key_index];
+		uint8_t k = field_keyboard->scancode[a->key_index];
 		if (k & EG_KEYBOARDS_STATE_RISING_EDGE) {
 			if (ecs_has_pair(it->world, a->entity, EcsIsA, a->toggle)) {
 				ecs_dbg("ecs_remove_pair(%s,%s,%s)", ecs_get_name(it->world, a->entity), ecs_get_name(it->world, EcsIsA), ecs_get_name(it->world, a->toggle));
@@ -33,9 +32,6 @@ static void System_Toggle(ecs_iter_t *it)
 	}
 	ecs_log_set_level(0);
 }
-
-
-
 
 void EgKeyboardsImport(ecs_world_t *world)
 {
@@ -76,14 +72,10 @@ void EgKeyboardsImport(ecs_world_t *world)
 		// printf("Keyboard %d: %d %s\n", i, keyboards[i], SDL_GetKeyboardNameForID(keyboards[i]));
 	}
 
-
-	ecs_system(world,{
-	.entity = ecs_entity(world, {.name = "System_Toggle", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
-	.callback = System_Toggle,
-	.query.terms =
-	{
-	{.id = ecs_id(EgKeyboardsState), .src.id = ecs_id(EgKeyboardsState)},
-	{.id = ecs_id(EgKeyboardsActionToggleEntity), .src.id = EcsSelf}
-	}});
-
+	ecs_system(world, {.entity = ecs_entity(world, {.name = "System_Toggle", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	                  .callback = System_Toggle,
+	                  .query.terms =
+	                  {
+	                  {.id = ecs_id(EgKeyboardsState), .src.id = ecs_id(EgKeyboardsState)},
+	                  {.id = ecs_id(EgKeyboardsActionToggleEntity), .src.id = EcsSelf}}});
 }
