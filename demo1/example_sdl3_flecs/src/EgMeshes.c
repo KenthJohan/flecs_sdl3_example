@@ -108,25 +108,14 @@ static void System_Expand(ecs_iter_t *it)
 	EgMeshesMesh *field_mesh = ecs_field(it, EgMeshesMesh, 0);             // self
 	EgMeshesCreateInfo *field_info = ecs_field(it, EgMeshesCreateInfo, 1); // self
 	for (int i = 0; i < it->count; ++i) {
-		/*
 		ecs_remove(it->world, it->entities[i], EgMeshesExpand);
-		ecs_entity_t e_verts = ecs_lookup_child(it->world, it->entities[i], "expanded");
-		if (e_verts) {
-			ecs_delete(it->world, e_verts);
-			continue;
-		}
-		e_verts = ecs_new(it->world, it->entities[i], "expanded");
-		*/
-		// ecs_entity_t c = ecs_new_w_pair(it->world, EcsChildOf, it->entities[i]);
 		uint8_t *v = ecs_vec_first(&field_mesh[i].vertices);
 		for (int j = 0; j < ecs_vec_count(&field_mesh[i].vertices); j++) {
 			float *p = (float *)(v + field_info[i].offset_pos);
 			float *c = (float *)(v + field_info[i].offset_col);
-			/*
-			ecs_entity_t e_vert = ecs_new_w_pair(it->world, EcsChildOf, e_verts);
+			ecs_entity_t e_vert = ecs_new_w_pair(it->world, EcsChildOf, it->entities[i]);
 			ecs_set(it->world, e_vert, Position3, {p[0], p[1], p[2]});
 			ecs_set(it->world, e_vert, Color3, {c[0], c[1], c[2]});
-			*/
 			printf("v: %f\n", *(float *)v);
 			v += field_info[i].stride;
 			c += field_info[i].stride;
@@ -171,8 +160,8 @@ void EgMeshesImport(ecs_world_t *world)
 	{.entity = ecs_entity(world, {.name = "System_Expand", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = System_Expand,
 	.query.terms = {
-	{.id = ecs_id(EgMeshesMesh), .src.id = EcsSelf},
-	{.id = ecs_id(EgMeshesCreateInfo), .src.id = EcsSelf},
+	{.id = ecs_id(EgMeshesMesh), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgMeshesCreateInfo), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
 	{.id = EgMeshesExpand},
 	{.id = EgBaseError, .oper = EcsNot}}});
 }

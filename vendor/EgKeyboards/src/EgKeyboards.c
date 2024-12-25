@@ -12,6 +12,51 @@ ECS_COMPONENT_DECLARE(EgKeyboardsDevice);
 ECS_COMPONENT_DECLARE(EgKeyboardsState);
 ECS_COMPONENT_DECLARE(EgKeyboardsActionToggleEntity);
 
+
+
+/*
+printf("remove1(%s,%s)\n", ecs_get_name(world, prefab), ecs_get_name(world, subject));
+const ecs_type_t *type = ecs_get_type(world, subject);
+char *type_str = ecs_type_str(world, type);
+printf("ecs_type_str: %s\n\n", type_str);
+ecs_os_free(type_str);
+		char const * n1 = ecs_get_name(world, subject);
+		char const * n2 = ecs_get_name(world, id);
+		printf("ecs_remove_id(%s,%s)\n", n1, n2);
+*/
+
+void remove_copies_from_prefab(ecs_world_t * world, ecs_entity_t prefab, ecs_entity_t subject)
+{
+	// Removes all components from subject that are in prefab:
+	const ecs_type_t *type = ecs_get_type(world, prefab);
+	for (int i = 0; i < type->count; i++) {
+		ecs_id_t id = type->array[i];
+		if (ecs_has_id(world, subject, id) == false) {
+			continue;
+		}
+		if (ecs_is_alive(world, id) == false) {
+			continue;
+		}
+		ecs_remove_id(world, subject, id);
+	}
+	// Removes all children that belong to prefab:
+	ecs_query_t *q = ecs_query(world, {
+		.cache_kind = EcsQueryCacheNone,
+		.terms = {
+			{ .id = ecs_pair(prefab, EcsWildcard) },
+			{ .id = ecs_childof(subject) }
+		}
+	});
+	ecs_iter_t it = ecs_query_iter(world, q);
+	while (ecs_query_next(&it)) {
+		for (int i = 0; i < it.count; ++i) {
+			ecs_entity_t e1 = it.entities[i];
+			ecs_delete(world, e1);
+		}
+	}
+	ecs_query_fini(q);
+}
+
 static void System_Toggle(ecs_iter_t *it)
 {
 	ecs_log_set_level(1);
@@ -24,6 +69,7 @@ static void System_Toggle(ecs_iter_t *it)
 			if (ecs_has_pair(it->world, a->entity, EcsIsA, a->toggle)) {
 				ecs_dbg("ecs_remove_pair(%s,%s,%s)", ecs_get_name(it->world, a->entity), ecs_get_name(it->world, EcsIsA), ecs_get_name(it->world, a->toggle));
 				ecs_remove_pair(it->world, a->entity, EcsIsA, a->toggle);
+				remove_copies_from_prefab(it->world, a->toggle, a->entity);
 			} else {
 				ecs_dbg("ecs_add_pair(%s,%s,%s)", ecs_get_name(it->world, a->entity), ecs_get_name(it->world, EcsIsA), ecs_get_name(it->world, a->toggle));
 				ecs_add_pair(it->world, a->entity, EcsIsA, a->toggle);

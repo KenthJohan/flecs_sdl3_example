@@ -31,9 +31,9 @@ static void ControllerRotate(ecs_iter_t *it)
 	uint8_t *keys = ckey->scancode;
 	float k = 0.8f * it->delta_time;
 	for (int i = 0; i < it->count; ++i, ++rotate) {
-		rotate->dx = keys[controller->key_rotate_dx_plus] - keys[controller->key_rotate_dx_minus];
-		rotate->dy = keys[controller->key_rotate_dy_plus] - keys[controller->key_rotate_dy_minus];
-		rotate->dz = keys[controller->key_rotate_dz_plus] - keys[controller->key_rotate_dz_minus];
+		rotate->dx = !!keys[controller->key_rotate_dx_plus] - !!keys[controller->key_rotate_dx_minus];
+		rotate->dy = !!keys[controller->key_rotate_dy_plus] - !!keys[controller->key_rotate_dy_minus];
+		rotate->dz = !!keys[controller->key_rotate_dz_plus] - !!keys[controller->key_rotate_dz_minus];
 		v3f32_mul((float *)rotate, (float *)rotate, k);
 	}
 }

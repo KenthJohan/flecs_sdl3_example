@@ -4,9 +4,12 @@ module xmeshes
 
 
 prefab actionjack {
+	eg.spatials.Velocity3 : {x: 0.0, y: 0, z: 0}
 	expanded {
+		(actionjack,expanded)
 		eg.meshes.Expand
 	}
+	
 }
 
 m1 {
