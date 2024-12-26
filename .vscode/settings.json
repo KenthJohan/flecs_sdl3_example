@@ -100,7 +100,8 @@
 		"streambuf": "c",
 		"valarray": "c",
 		"egvatt.h": "c",
-		"egmeta.h": "c"
+		"egmeta.h": "c",
+		"sdl_gpu_copy.h": "c"
 	},
 	"terminal.integrated.env.linux": {
 		"GTK_PATH": ""

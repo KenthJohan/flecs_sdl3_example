@@ -58,6 +58,8 @@ typedef struct
 typedef struct
 {
 	void * object;
+	uint32_t usage;
+	uint32_t size;
 } EgGpuBuffer;
 
 typedef struct

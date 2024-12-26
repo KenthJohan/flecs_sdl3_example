@@ -11,7 +11,7 @@ ECS_TAG_DECLARE(EgMeshesExpand);
 ECS_COMPONENT_DECLARE(EgMeshesMesh);
 ECS_COMPONENT_DECLARE(EgMeshesCreateInfo);
 
-static void gen_triangle(void *vertices, int stride)
+static void gen3_triangle(void *vertices, int stride)
 {
 	uint8_t *v = vertices;
 	v3f32_xyz((float *)v, 0.0f, 0.5f, 0.0f);
@@ -21,7 +21,7 @@ static void gen_triangle(void *vertices, int stride)
 	v3f32_xyz((float *)v, -0.5f, -0.5f, 0.0f);
 }
 
-static void gen_color(void *vertices, int stride)
+static void gen3_color(void *vertices, int stride)
 {
 	uint8_t *v = vertices;
 	v4f32_xyzw((float *)v, 1.0f, 0.0f, 0.0f, 1.0f);
@@ -88,11 +88,14 @@ static void System_EgMeshesMesh(ecs_iter_t *it)
 		field_info->stride = stride;
 		field_info->offset_pos = offset_pos;
 		field_info->offset_col = offset_col;
+	}
+
+	for (int i = 0; i < it->count; ++i) {
 		EgMeshesMesh *m = ecs_ensure(world, it->entities[i], EgMeshesMesh);
 		ecs_vec_reset(NULL, &m->vertices, stride);
 		uint8_t *v = ecs_vec_grow(NULL, &m->vertices, stride, 3);
-		gen_triangle(v + offset_pos, stride);
-		gen_color(v + offset_col, stride);
+		gen3_triangle(v + offset_pos, stride);
+		gen3_color(v + offset_col, stride);
 	} // END FOR LOOP
 
 	return;

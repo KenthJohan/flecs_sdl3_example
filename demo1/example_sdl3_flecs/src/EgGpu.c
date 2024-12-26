@@ -142,6 +142,8 @@ void EgGpuImport(ecs_world_t *world)
 	{.entity = ecs_id(EgGpuBuffer),
 	.members = {
 	{.name = "object", .type = ecs_id(ecs_uptr_t)},
+	{.name = "usage", .type = ecs_id(ecs_u32_t)},
+	{.name = "size", .type = ecs_id(ecs_u32_t)},
 	}});
 
 	ecs_struct(world,

@@ -46,11 +46,15 @@ gpu0 {
 		eg.base.Update
 	}
 	
-	vert1 {
+	vbuf0 {
 		eg.gpu.BufferCreateInfo : {usage: 0}
 		eg.base.Update
 	}
 
+	vbuf1 {
+		eg.gpu.BufferCreateInfo : {usage: 0}
+		eg.base.Update
+	}
 
 	tex_depth {
 		eg.gpu.TextureCreateInfo : {sample_count:0}
