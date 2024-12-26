@@ -85,6 +85,7 @@ const SDL_SCANCODE_RGUI = 231
 
 cam0 {
 	eg.cameras.State
+	// Get window size component from the window entity to calculate aspect ratio
 	(flecs.core.DependsOn, xgpu.gpu0.window1)
 	// Set the order of the operands, changes how {Orientation} rotates
 	eg.spatials.EgRotateOrder2
@@ -114,6 +115,7 @@ cam0 {
 
 cam1 {
 	eg.cameras.State
+	// Get window size component from the window entity to calculate aspect ratio
 	(flecs.core.DependsOn, xgpu.gpu0.window1)
 	// Set the order of the operands, changes how {Orientation} rotates
 	eg.spatials.EgRotateOrder2

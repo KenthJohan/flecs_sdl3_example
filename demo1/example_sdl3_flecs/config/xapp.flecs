@@ -3,6 +3,16 @@ xapp {}
 module xapp
 
 
+prefab transform {
+	eg.spatials.EgRotateOrder1
+	eg.spatials.Transformation
+	eg.spatials.Position3World
+	eg.spatials.Orientation
+	eg.spatials.OrientationWorld
+	eg.spatials.Scale3 : {x: 1, y: 1, z: 1}
+	eg.spatials.Position3 : {x: 0, y: 0, z: 0}
+}
+
 renderer {
 	eg.gpu.Draw1
 	eg.shapes.Rectangle
@@ -18,42 +28,27 @@ renderer {
 
 drawobjs
 {
-	c1  {
+	c1 : transform {
 		(flecs.core.DependsOn, renderer)
 		(flecs.core.DependsOn, xcam.cam1)
 		eg.gpu.DrawCube
-		eg.spatials.EgRotateOrder1
-		eg.spatials.Transformation
-		eg.spatials.Position3World
-		eg.spatials.Orientation
-		eg.spatials.OrientationWorld
 		eg.spatials.Scale3 : {x: 1, y: 1, z: 1}
 		eg.spatials.Position3 : {x: 0, y: 0, z: 0}
 		eg.spatials.Rotate3 : {dx: 0.01, dy: 0, dz: 0}
 	}
 
-	c2  {
+	c2 : transform {
 		(flecs.core.DependsOn, renderer)
 		(flecs.core.DependsOn, xcam.cam0)
 		eg.gpu.DrawCube
-		eg.spatials.EgRotateOrder1
-		eg.spatials.Transformation
-		eg.spatials.Position3World
-		eg.spatials.Orientation
-		eg.spatials.OrientationWorld
 		eg.spatials.Scale3 : {x: 1, y: 1, z: 1}
 		eg.spatials.Position3 : {x: 1, y: 0, z: 0}
 		eg.spatials.Rotate3 : {dx: 0.00, dy: 0.01, dz: 0}
 
-		c3  {
+		c3 : transform {
 			(flecs.core.DependsOn, renderer)
 			(flecs.core.DependsOn, xcam.cam0)
 			eg.gpu.DrawCube
-			eg.spatials.EgRotateOrder1
-			eg.spatials.Transformation
-			eg.spatials.Position3World
-			eg.spatials.Orientation
-			eg.spatials.OrientationWorld
 			eg.spatials.Scale3 : {x: 1, y: 1, z: 1}
 			eg.spatials.Position3 : {x: 1, y: 0, z: 0}
 			eg.spatials.Rotate3 : {dx: 0.00, dy: 0.01, dz: 0}
