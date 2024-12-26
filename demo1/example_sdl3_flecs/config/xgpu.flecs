@@ -49,6 +49,9 @@ gpu0 {
 	vbuf0 {
 		eg.gpu.BufferCreateInfo : {usage: 0}
 		eg.base.Update
+		// Put entity instances here:
+		i1 {}
+		i2 {}
 	}
 
 	vbuf1 {

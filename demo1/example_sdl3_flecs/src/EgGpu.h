@@ -51,8 +51,12 @@ typedef struct
 
 typedef struct
 {
-	int dummy;
-} EgGpuDrawCube;
+	ecs_entity_t instance;
+	uint32_t num_vertices;
+	uint32_t num_instances;
+	uint32_t first_vertex;
+	uint32_t first_instance;
+} EgGpuDrawPrimitive;
 
 
 typedef struct
@@ -102,7 +106,7 @@ extern ECS_COMPONENT_DECLARE(EgGpuShaderFragment);
 extern ECS_COMPONENT_DECLARE(EgGpuShaderFragmentCreateInfo);
 extern ECS_COMPONENT_DECLARE(EgGpuPipeline);
 extern ECS_COMPONENT_DECLARE(EgGpuPipelineCreateInfo);
-extern ECS_COMPONENT_DECLARE(EgGpuDrawCube);
+extern ECS_COMPONENT_DECLARE(EgGpuDrawPrimitive);
 extern ECS_COMPONENT_DECLARE(EgGpuBuffer);
 extern ECS_COMPONENT_DECLARE(EgGpuBufferCreateInfo);
 extern ECS_COMPONENT_DECLARE(EgGpuTexture);

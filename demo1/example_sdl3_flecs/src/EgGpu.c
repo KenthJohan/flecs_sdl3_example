@@ -20,7 +20,7 @@ ECS_COMPONENT_DECLARE(EgGpuShaderFragment);
 ECS_COMPONENT_DECLARE(EgGpuShaderFragmentCreateInfo);
 ECS_COMPONENT_DECLARE(EgGpuPipeline);
 ECS_COMPONENT_DECLARE(EgGpuPipelineCreateInfo);
-ECS_COMPONENT_DECLARE(EgGpuDrawCube);
+ECS_COMPONENT_DECLARE(EgGpuDrawPrimitive);
 ECS_COMPONENT_DECLARE(EgGpuBuffer);
 ECS_COMPONENT_DECLARE(EgGpuBufferCreateInfo);
 ECS_COMPONENT_DECLARE(EgGpuTexture);
@@ -54,14 +54,6 @@ void System_Claim(ecs_iter_t *it)
 }
 
 
-void System_123(ecs_iter_t *it)
-{
-	ecs_world_t *world = it->world;
-	EgGpuDevice *gpu = ecs_field(it, EgGpuDevice, 0);
-	for (int i = 0; i < it->count; ++i) {
-		ecs_entity_t e = it->entities[i];
-	} // END FOR LOOP
-}
 
 
 void EgGpuImport(ecs_world_t *world)
@@ -81,7 +73,7 @@ void EgGpuImport(ecs_world_t *world)
 	ECS_COMPONENT_DEFINE(world, EgGpuShaderFragmentCreateInfo);
 	ECS_COMPONENT_DEFINE(world, EgGpuPipeline);
 	ECS_COMPONENT_DEFINE(world, EgGpuPipelineCreateInfo);
-	ECS_COMPONENT_DEFINE(world, EgGpuDrawCube);
+	ECS_COMPONENT_DEFINE(world, EgGpuDrawPrimitive);
 	ECS_COMPONENT_DEFINE(world, EgGpuBuffer);
 	ECS_COMPONENT_DEFINE(world, EgGpuBufferCreateInfo);
 	ECS_COMPONENT_DEFINE(world, EgGpuTexture);
@@ -168,6 +160,16 @@ void EgGpuImport(ecs_world_t *world)
 	{.entity = ecs_id(EgGpuLocation),
 	.members = {
 	{.name = "location", .type = ecs_id(ecs_i32_t)},
+	}});
+
+	ecs_struct(world,
+	{.entity = ecs_id(EgGpuDrawPrimitive),
+	.members = {
+	{.name = "instance", .type = ecs_id(ecs_entity_t)},
+	{.name = "num_vertices", .type = ecs_id(ecs_u32_t)},
+	{.name = "num_instances", .type = ecs_id(ecs_u32_t)},
+	{.name = "first_vertex", .type = ecs_id(ecs_u32_t)},
+	{.name = "first_instance", .type = ecs_id(ecs_u32_t)},
 	}});
 
 	ecs_system(world,
