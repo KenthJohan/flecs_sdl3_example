@@ -13,7 +13,8 @@
 			"EgShapes",
 			"EgSpatials",
 			"EgKeyboards",
-			"EgWindows"
+			"EgWindows",
+			"EgCamcontrols"
 		]
 	},
 	"lang.c": {
@@ -23,6 +24,7 @@
 			"flecs",
 			"egmisc",
 			"EgBase",
+			"EgCamcontrols",
 			"EgCameras",
 			"EgShapes",
 			"EgSpatials",
