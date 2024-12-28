@@ -82,13 +82,13 @@ static void System_EgMeshesMesh(ecs_iter_t *it)
 	*/
 	for (int i = 0; i < it->count; ++i) {
 		ecs_remove(world, it->entities[i], EgBaseUpdate);
-	}
+	} // END FOR LOOP
 
 	for (int i = 0; i < it->count; ++i, ++field_info) {
 		field_info->stride = stride;
 		field_info->offset_pos = offset_pos;
 		field_info->offset_col = offset_col;
-	}
+	} // END FOR LOOP
 
 	for (int i = 0; i < it->count; ++i) {
 		EgMeshesMesh *m = ecs_ensure(world, it->entities[i], EgMeshesMesh);
@@ -122,7 +122,7 @@ static void System_Expand(ecs_iter_t *it)
 			printf("v: %f\n", *(float *)v);
 			v += field_info[i].stride;
 			c += field_info[i].stride;
-		}
+		} // END FOR LOOP
 		printf("\n");
 	} // END FOR LOOP
 }

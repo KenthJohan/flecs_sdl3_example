@@ -6,6 +6,13 @@
 #include <egmath.h>
 #include <assert.h>
 
+/*
+TODO:
+Change these systems into a more generic system that can be used for any entity that has a rotation and a velocity component.
+
+*/
+
+
 static void System_Rotate(ecs_iter_t *it)
 {
 	EgCamerasKeyBindings *c = ecs_field(it, EgCamerasKeyBindings, 0); // self
