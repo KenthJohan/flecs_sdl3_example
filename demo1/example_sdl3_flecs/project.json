@@ -19,7 +19,9 @@
 	},
 	"lang.c": {
 		"c-standard": "gnu99",
-		"defines": [],
+		"defines": [
+			"_FORTIFY_SOURCE=2"
+		],
 		"lib": [
 			"flecs",
 			"egmisc",
@@ -39,7 +41,20 @@
 			"-Wall",
 			"-Wextra",
 			"-Wno-error=unused-variable",
-			"-Wno-error=unused-function"
+			"-Wno-error=unused-function",
+			"-ftrapv",
+			"-Werror=format-security",
+			"-Wl,-z,defs",
+			"-fstack-clash-protection",
+			"-fstack-protector-strong",
+			"-fstack-protector",
+			"-fstack-protector-all",
+			"-grecord-gcc-switches",
+			"-pipe",
+			"-Werror=implicit-function-declaration",
+			"-Wl,-z,now",
+			"-Wl,-z,relro",
+			"-Wwrite-strings"
 		]
 	}
 }

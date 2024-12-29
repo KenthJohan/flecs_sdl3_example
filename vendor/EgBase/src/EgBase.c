@@ -25,7 +25,7 @@ void EgBaseImport(ecs_world_t *world)
 	#endif
 	} ecs_vec_t;
 	*/
-	ecs_struct(world,
+	ecs_struct_init(world, &(ecs_struct_desc_t)
 	{.entity = ecs_id(EgBaseVec),
 	.members = {
 	{.name = "array", .type = ecs_id(ecs_uptr_t)},

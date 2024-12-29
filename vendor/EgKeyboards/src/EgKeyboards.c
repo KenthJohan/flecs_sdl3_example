@@ -59,7 +59,7 @@ static void System_Toggle(ecs_iter_t *it)
 	EgKeyboardsState *field_keyboard = ecs_field(it, EgKeyboardsState, 0);              // singleton
 	EgKeyboardsActionToggleEntity *a = ecs_field(it, EgKeyboardsActionToggleEntity, 1); // self
 	for (int i = 0; i < it->count; ++i, ++a) {
-		ecs_entity_t e = it->entities[i];
+		//ecs_entity_t e = it->entities[i];
 		uint8_t k = field_keyboard->scancode[a->key_index];
 		if (k & EG_KEYBOARDS_STATE_RISING_EDGE) {
 			if (ecs_has_pair(it->world, a->entity, EcsIsA, a->toggle)) {
