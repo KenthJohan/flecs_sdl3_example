@@ -27,15 +27,15 @@
 static void System_Draw1(ecs_iter_t *it, SDL_GPUCommandBuffer *cmd, SDL_GPURenderPass *pass)
 {
 	while (ecs_query_next(it)) {
-		EgGpuDrawPrimitive *d0 = ecs_field(it, EgGpuDrawPrimitive, 0); // shared
-		Transformation *x = ecs_field(it, Transformation, 1);          // self
-		EgCamerasState *c0 = ecs_field(it, EgCamerasState, 2);         // shared
+		EgBaseOffsetCount *d0 = ecs_field(it, EgBaseOffsetCount, 0); // shared
+		Transformation *x = ecs_field(it, Transformation, 1);        // self
+		EgCamerasState *c0 = ecs_field(it, EgCamerasState, 2);       // shared
 		for (int i = 0; i < it->count; ++i, ++x) {
 			m4f32 mvp;
 			m4f32_mul(&mvp, &c0->vp, &x->matrix);
 			SDL_PushGPUVertexUniformData(cmd, 0, &mvp, sizeof(float) * 16);
 			// SDL_DrawGPUPrimitives(pass, 36, 1, 0, 0);
-			SDL_DrawGPUPrimitives(pass, d0->num_vertices, d0->num_instances, d0->first_vertex, d0->first_instance);
+			SDL_DrawGPUPrimitives(pass, d0->count, 1, d0->offset, 0);
 		}
 	}
 }
@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
 		ecs_entity_t e_draw1 = ecs_lookup(world, "xapp.renderer");
 		ecs_query_t *q = ecs_query(world,
 		{.terms = {
-		 {.id = ecs_id(EgGpuDrawPrimitive), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+		 {.id = ecs_id(EgBaseOffsetCount), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 		 {.id = ecs_id(Transformation), .src.id = EcsSelf, .inout = EcsIn},
 		 {.id = ecs_id(EgCamerasState), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn}}});
 		ecs_set(world, e_draw1, EgGpuDraw1, {.query = q});

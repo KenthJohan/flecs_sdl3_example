@@ -34,10 +34,8 @@ static void gen3_color(void *vertices, int stride)
 static void System_EgMeshesMesh(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
-	EgMeshesInfo *field_info = ecs_field(it, EgMeshesInfo, 0);               // self
-	EgBaseVertexIndexVec *field_vi = ecs_field(it, EgBaseVertexIndexVec, 1); // self
-	EcsComponent *field_component = ecs_field(it, EcsComponent, 2);          // shared
-	ecs_entity_t field_component_src = ecs_field_src(it, 2);                 // shared
+	EcsComponent *field_component = ecs_field(it, EcsComponent, 2); // shared
+	ecs_entity_t field_component_src = ecs_field_src(it, 2);        // shared
 
 	int32_t stride;
 	int32_t offset_pos = -1;
@@ -75,30 +73,31 @@ static void System_EgMeshesMesh(ecs_iter_t *it)
 		goto on_error;
 	}
 
-	/*
-	float x6[] = {55.0f, 0.0f, 1.0f, 0.0f, 3.0f, 0.0f};
-	char * json = ecs_ptr_to_json(it->world, field_component_src, x6);
-	printf("%s\n", json);
-	ecs_os_free(json);
-	*/
 	for (int i = 0; i < it->count; ++i) {
 		ecs_remove(world, it->entities[i], EgBaseUpdate);
 	} // END FOR LOOP
 
-	for (int i = 0; i < it->count; ++i, ++field_info) {
-		field_info->stride = stride;
-		field_info->offset_pos = offset_pos;
-		field_info->offset_col = offset_col;
-	} // END FOR LOOP
+	{
+		EgMeshesInfo *m = ecs_field(it, EgMeshesInfo, 0); // self
+		for (int i = 0; i < it->count; ++i, ++m) {
+			m->stride = stride;
+			m->offset_pos = offset_pos;
+			m->offset_col = offset_col;
+		} // END FOR LOOP
+	}
 
-	for (int i = 0; i < it->count; ++i) {
-		ecs_vec_t *vertices = &field_vi[i].vertices;
-		ecs_vec_reset(NULL, vertices, stride);
-		// Put example data into the vertices:
-		uint8_t *v = ecs_vec_grow(NULL, vertices, stride, 3);
-		gen3_triangle(v + offset_pos, stride);
-		gen3_color(v + offset_col, stride);
-	} // END FOR LOOP
+	{
+		EgBaseVertexIndexVec *vi = ecs_field(it, EgBaseVertexIndexVec, 1); // self
+		for (int i = 0; i < it->count; ++i, ++vi) {
+			vi->stride_vertices = stride;
+			ecs_vec_t *vertices = &vi->vertices;
+			ecs_vec_reset(NULL, vertices, stride);
+			// Put example data into the vertices:
+			uint8_t *v = ecs_vec_grow(NULL, vertices, stride, 3);
+			gen3_triangle(v + offset_pos, stride);
+			gen3_color(v + offset_col, stride);
+		} // END FOR LOOP
+	}
 
 	return;
 on_error:
@@ -108,18 +107,19 @@ on_error:
 	return;
 }
 
-
-
 static void System_VertexIndexVec_Indexing(ecs_iter_t *it)
 {
 	EgBaseVertexIndexVec *vi0 = ecs_field(it, EgBaseVertexIndexVec, 0); // shared, parent
-	EgMeshesInfo *info0 = ecs_field(it, EgMeshesInfo, 1);          // // shared, parent
+	EgMeshesInfo *info0 = ecs_field(it, EgMeshesInfo, 1);               // shared, parent
+
+	for (int i = 0; i < it->count; ++i) {
+		ecs_set(it->world, it->entities[i], EgBaseOffsetCount, {vi0->vertices.count, 3});
+	}
 
 	int total = it->count * 3;
 	uint8_t *v = ecs_vec_grow(NULL, &vi0->vertices, info0->stride, total);
 
 	for (int i = 0; i < it->count; ++i) {
-		ecs_set(it->world, it->entities[i], EgBaseOffsetCount, {vi0->vertices.count, 3});
 		gen3_triangle(v + info0->offset_pos, info0->stride);
 		gen3_color(v + info0->offset_col, info0->stride);
 		v += info0->stride * 3;

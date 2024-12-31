@@ -142,6 +142,7 @@ void EgGpuImport(ecs_world_t *world)
 	{.entity = ecs_id(EgGpuBufferCreateInfo),
 	.members = {
 	{.name = "usage", .type = ecs_id(ecs_u32_t)},
+	{.name = "size", .type = ecs_id(ecs_u32_t)},
 	}});
 
 	ecs_struct(world,
@@ -224,7 +225,16 @@ void EgGpuImport(ecs_world_t *world)
 	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuBufferCreateInfo), .src.id = EcsSelf},
 	{.id = ecs_id(EgGpuBuffer), .oper = EcsNot}, // Adds this
-	{.id = EgBaseUpdate},
+	{.id = EgBaseError, .oper = EcsNot}}});
+
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "System_EgGpuBuffer_Fill", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = System_EgGpuBuffer_Fill,
+	.query.terms = {
+	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgGpuBuffer)},
+	{.id = ecs_id(EgBaseVertexIndexVec), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+	{.id = EgBaseUpdate}, // Removes this
 	{.id = EgBaseError, .oper = EcsNot}}});
 
 	ecs_system(world,

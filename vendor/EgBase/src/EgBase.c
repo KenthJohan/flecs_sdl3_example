@@ -49,6 +49,7 @@ void EgBaseImport(ecs_world_t *world)
 	.members = {
 	{.name = "vertices", .type = ecs_id(EgBaseVec)},
 	{.name = "indices", .type = ecs_id(EgBaseVec)},
+	{.name = "stride_vertices", .type = ecs_id(ecs_u32_t)},
 	}});
 
 

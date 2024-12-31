@@ -12,6 +12,7 @@ typedef struct
 {
 	ecs_vec_t vertices;
 	ecs_vec_t indices;
+	uint32_t stride_vertices;
 } EgBaseVertexIndexVec;
 
 typedef struct

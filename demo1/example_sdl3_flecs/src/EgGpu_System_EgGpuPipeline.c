@@ -107,31 +107,32 @@ static int iterate_attributes(ecs_world_t *world, ecs_entity_t parent, SDL_GPUVe
 			}
 
 			if (member->type == ecs_id(ecs_f32_t) && (member->count <= 4)) {
-				out_attr[j].format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT + member->count - 1;
+				out_attr->format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT + member->count - 1;
 			}
 			else if (member->type == ecs_id(ecs_i32_t) && (member->count <= 4)) {
-				out_attr[j].format = SDL_GPU_VERTEXELEMENTFORMAT_INT + member->count - 1;
+				out_attr->format = SDL_GPU_VERTEXELEMENTFORMAT_INT + member->count - 1;
 			}
 			else if (member->type == ecs_id(ecs_u32_t) && (member->count <= 4)) {
-				out_attr[j].format = SDL_GPU_VERTEXELEMENTFORMAT_UINT + member->count - 1;
+				out_attr->format = SDL_GPU_VERTEXELEMENTFORMAT_UINT + member->count - 1;
 			}
 			else if (member->type == ecs_id(ecs_i8_t) && (member->count == 2)) {
-				out_attr[j].format = SDL_GPU_VERTEXELEMENTFORMAT_BYTE2;
+				out_attr->format = SDL_GPU_VERTEXELEMENTFORMAT_BYTE2;
 			}
 			else if (member->type == ecs_id(ecs_i8_t) && (member->count == 4)) {
-				out_attr[j].format = SDL_GPU_VERTEXELEMENTFORMAT_BYTE4;
+				out_attr->format = SDL_GPU_VERTEXELEMENTFORMAT_BYTE4;
 			}
 			else if (member->type == ecs_id(ecs_u8_t) && (member->count == 2)) {
-				out_attr[j].format = SDL_GPU_VERTEXELEMENTFORMAT_UBYTE2;
+				out_attr->format = SDL_GPU_VERTEXELEMENTFORMAT_UBYTE2;
 			}
 			else if (member->type == ecs_id(ecs_u8_t) && (member->count == 4)) {
-				out_attr[j].format = SDL_GPU_VERTEXELEMENTFORMAT_UBYTE4;
+				out_attr->format = SDL_GPU_VERTEXELEMENTFORMAT_UBYTE4;
 			}
 
 
-			out_attr[j].offset = member->offset;
-			out_attr[j].location = location->location;
-			out_attr[j].buffer_slot = 0;
+			out_attr->offset = member->offset;
+			out_attr->location = location->location;
+			out_attr->buffer_slot = 0;
+			out_attr++;
 			j++;
 		}
 	}

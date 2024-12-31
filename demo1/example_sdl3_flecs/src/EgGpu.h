@@ -69,6 +69,7 @@ typedef struct
 typedef struct
 {
 	uint32_t usage;
+	uint32_t size;
 } EgGpuBufferCreateInfo;
 
 

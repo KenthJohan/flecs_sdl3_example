@@ -40,6 +40,8 @@
 			"-Werror",
 			"-Wall",
 			"-Wextra",
+			"-Wno-error=unused-local-typedefs",
+			"-Wno-error=unused-const-variable=",
 			"-Wno-error=unused-variable",
 			"-Wno-error=unused-function",
 			"-ftrapv",
