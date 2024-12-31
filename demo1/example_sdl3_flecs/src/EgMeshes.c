@@ -7,9 +7,9 @@
 #include <EgBase.h>
 #include <egmath.h>
 
+ECS_TAG_DECLARE(EgMeshesTriangle);
 ECS_TAG_DECLARE(EgMeshesExpand);
-ECS_COMPONENT_DECLARE(EgMeshesMesh);
-ECS_COMPONENT_DECLARE(EgMeshesCreateInfo);
+ECS_COMPONENT_DECLARE(EgMeshesInfo);
 
 static void gen3_triangle(void *vertices, int stride)
 {
@@ -34,9 +34,10 @@ static void gen3_color(void *vertices, int stride)
 static void System_EgMeshesMesh(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
-	EgMeshesCreateInfo *field_info = ecs_field(it, EgMeshesCreateInfo, 0); // self
-	EcsComponent *field_component = ecs_field(it, EcsComponent, 1);        // shared
-	ecs_entity_t field_component_src = ecs_field_src(it, 1);               // shared
+	EgMeshesInfo *field_info = ecs_field(it, EgMeshesInfo, 0);               // self
+	EgBaseVertexIndexVec *field_vi = ecs_field(it, EgBaseVertexIndexVec, 1); // self
+	EcsComponent *field_component = ecs_field(it, EcsComponent, 2);          // shared
+	ecs_entity_t field_component_src = ecs_field_src(it, 2);                 // shared
 
 	int32_t stride;
 	int32_t offset_pos = -1;
@@ -91,9 +92,10 @@ static void System_EgMeshesMesh(ecs_iter_t *it)
 	} // END FOR LOOP
 
 	for (int i = 0; i < it->count; ++i) {
-		EgMeshesMesh *m = ecs_ensure(world, it->entities[i], EgMeshesMesh);
-		ecs_vec_reset(NULL, &m->vertices, stride);
-		uint8_t *v = ecs_vec_grow(NULL, &m->vertices, stride, 3);
+		ecs_vec_t *vertices = &field_vi[i].vertices;
+		ecs_vec_reset(NULL, vertices, stride);
+		// Put example data into the vertices:
+		uint8_t *v = ecs_vec_grow(NULL, vertices, stride, 3);
 		gen3_triangle(v + offset_pos, stride);
 		gen3_color(v + offset_col, stride);
 	} // END FOR LOOP
@@ -106,44 +108,35 @@ on_error:
 	return;
 }
 
-static void System_Expand(ecs_iter_t *it)
+
+
+static void System_VertexIndexVec_Indexing(ecs_iter_t *it)
 {
-	EgMeshesMesh *field_mesh = ecs_field(it, EgMeshesMesh, 0);             // self
-	EgMeshesCreateInfo *field_info = ecs_field(it, EgMeshesCreateInfo, 1); // self
+	EgBaseVertexIndexVec *vi0 = ecs_field(it, EgBaseVertexIndexVec, 0); // shared, parent
+	EgMeshesInfo *info0 = ecs_field(it, EgMeshesInfo, 1);          // // shared, parent
+
+	int total = it->count * 3;
+	uint8_t *v = ecs_vec_grow(NULL, &vi0->vertices, info0->stride, total);
+
 	for (int i = 0; i < it->count; ++i) {
-		ecs_remove(it->world, it->entities[i], EgMeshesExpand);
-		uint8_t *v = ecs_vec_first(&field_mesh[i].vertices);
-		for (int j = 0; j < ecs_vec_count(&field_mesh[i].vertices); j++) {
-			float *p = (float *)(v + field_info[i].offset_pos);
-			float *c = (float *)(v + field_info[i].offset_col);
-			ecs_entity_t e_vert = ecs_new_w_pair(it->world, EcsChildOf, it->entities[i]);
-			ecs_set(it->world, e_vert, Position3, {p[0], p[1], p[2]});
-			ecs_set(it->world, e_vert, Color3, {c[0], c[1], c[2]});
-			printf("v: %f\n", *(float *)v);
-			v += field_info[i].stride;
-			c += field_info[i].stride;
-		} // END FOR LOOP
-		printf("\n");
+		ecs_set(it->world, it->entities[i], EgBaseOffsetCount, {vi0->vertices.count, 3});
+		gen3_triangle(v + info0->offset_pos, info0->stride);
+		gen3_color(v + info0->offset_col, info0->stride);
+		v += info0->stride * 3;
 	} // END FOR LOOP
 }
 
 void EgMeshesImport(ecs_world_t *world)
 {
 	ECS_MODULE(world, EgMeshes);
+	ECS_IMPORT(world, EgBase);
 	ecs_set_name_prefix(world, "EgMeshes");
 	ECS_TAG_DEFINE(world, EgMeshesExpand);
-	ECS_COMPONENT_DEFINE(world, EgMeshesMesh);
-	ECS_COMPONENT_DEFINE(world, EgMeshesCreateInfo);
+	ECS_TAG_DEFINE(world, EgMeshesTriangle);
+	ECS_COMPONENT_DEFINE(world, EgMeshesInfo);
 
 	ecs_struct(world,
-	{.entity = ecs_id(EgMeshesMesh),
-	.members = {
-	{.name = "vertices", .type = ecs_id(EgBaseVec)},
-	{.name = "indices", .type = ecs_id(EgBaseVec)},
-	}});
-
-	ecs_struct(world,
-	{.entity = ecs_id(EgMeshesCreateInfo),
+	{.entity = ecs_id(EgMeshesInfo),
 	.members = {
 	{.name = "stride", .type = ecs_id(ecs_i32_t)},
 	{.name = "offset_pos", .type = ecs_id(ecs_i32_t)},
@@ -154,17 +147,20 @@ void EgMeshesImport(ecs_world_t *world)
 	{.entity = ecs_entity(world, {.name = "System_EgMeshesMesh", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = System_EgMeshesMesh,
 	.query.terms = {
-	{.id = ecs_id(EgMeshesCreateInfo), .src.id = EcsSelf},
+	{.id = ecs_id(EgMeshesInfo), .src.id = EcsSelf},
+	{.id = ecs_id(EgBaseVertexIndexVec), .src.id = EcsSelf},
 	{.id = ecs_id(EcsComponent), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
-	{.id = EgBaseUpdate},
+	{.id = EgBaseUpdate}, // Removes this tag
 	{.id = EgBaseError, .oper = EcsNot}}});
 
 	ecs_system(world,
-	{.entity = ecs_entity(world, {.name = "System_Expand", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
-	.callback = System_Expand,
+	{.entity = ecs_entity(world, {.name = "System_VertexIndexVec_Indexing", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = System_VertexIndexVec_Indexing,
 	.query.terms = {
-	{.id = ecs_id(EgMeshesMesh), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
-	{.id = ecs_id(EgMeshesCreateInfo), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
-	{.id = EgMeshesExpand},
+	{.id = ecs_id(EgBaseVertexIndexVec), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgMeshesInfo), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgBaseOffsetCount), .oper = EcsNot}, // Adds this
+	{.id = EgMeshesTriangle},
+	{.id = EgBaseUpdate, .trav = EcsChildOf, .src.id = EcsUp, .oper = EcsNot},
 	{.id = EgBaseError, .oper = EcsNot}}});
 }

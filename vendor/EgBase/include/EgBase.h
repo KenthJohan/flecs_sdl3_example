@@ -8,7 +8,22 @@ typedef struct
 	ecs_vec_t data;
 } EgBaseVec;
 
+typedef struct
+{
+	ecs_vec_t vertices;
+	ecs_vec_t indices;
+} EgBaseVertexIndexVec;
+
+typedef struct
+{
+	uint32_t offset;
+	uint32_t count;
+} EgBaseOffsetCount;
+
+
 extern ECS_COMPONENT_DECLARE(EgBaseVec);
+extern ECS_COMPONENT_DECLARE(EgBaseVertexIndexVec);
+extern ECS_COMPONENT_DECLARE(EgBaseOffsetCount);
 
 
 extern ECS_TAG_DECLARE(EgBaseUpdate);

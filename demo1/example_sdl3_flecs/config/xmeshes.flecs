@@ -2,33 +2,31 @@
 xmeshes {}
 module xmeshes
 
-
+// Not used yet
 prefab actionjack {
 	eg.spatials.Velocity3 : {x: 0.0, y: 0, z: 0}
 	expanded {
 		// This is a tag that is used to identify this entity came from this prefab
 		(actionjack, expanded)
-		eg.meshes.Expand
 	}
-	
 }
+
+
 
 m1 {
-	cube {
-		eg.meshes.CreateInfo
-		eg.base.Update
-		// Store in vertex format as defined in xvertex.Vertex123
-		(flecs.core.DependsOn, xvertex.Vertex123)
-		//(eg.base.Update, xgpu.gpu0.vbuf0)
+	// Store in vertex format as defined in xvertex.Vertex123
+	(flecs.core.DependsOn, xvertex.Vertex123)
+	eg.base.VertexIndexVec
+	// Information about position offset and color offset and vertex stride taken from xvertex.Vertex123
+	eg.meshes.Info
+	// Tag this entity for an update
+	eg.base.Update
+
+	triangle1 {
+		eg.meshes.Triangle
+	}
+
+	triangle2 {
+		eg.meshes.Triangle
 	}
 }
-
-m2 {
-	cube {
-		eg.meshes.CreateInfo
-		eg.base.Update
-		// Store in vertex format as defined in xvertex.Vertex123
-		(flecs.core.DependsOn, xvertex.Vertex123)
-	}
-}
-

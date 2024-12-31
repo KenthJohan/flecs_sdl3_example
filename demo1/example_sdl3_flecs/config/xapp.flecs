@@ -32,7 +32,8 @@ drawobjs
 	c1 : transform {
 		(flecs.core.DependsOn, renderer)
 		(flecs.core.DependsOn, xcam.cam0)
-		eg.gpu.DrawPrimitive : {instance: xgpu.gpu0.vbuf0.i1, num_vertices: 36, num_instances: 1, first_vertex: 0, first_instance: 0}
+		(flecs.core.DependsOn, xgpu.gpu0.vbuf1.i1)
+		//eg.gpu.DrawPrimitive : {instance: xgpu.gpu0.vbuf0.i1, num_vertices: 36, num_instances: 1, first_vertex: 0, first_instance: 0}
 		eg.spatials.Scale3 : {x: 1, y: 1, z: 1}
 		eg.spatials.Position3 : {x: 0, y: 0, z: 0}
 		eg.spatials.Rotate3 : {dx: 0.00, dy: 0, dz: 0}
@@ -41,7 +42,7 @@ drawobjs
 	c2 : transform {
 		(flecs.core.DependsOn, renderer)
 		(flecs.core.DependsOn, xcam.cam0)
-		eg.gpu.DrawPrimitive : {instance: xgpu.gpu0.vbuf0.i1, num_vertices: 36, num_instances: 1, first_vertex: 0, first_instance: 0}
+		//eg.gpu.DrawPrimitive : {instance: xgpu.gpu0.vbuf0.i1, num_vertices: 36, num_instances: 1, first_vertex: 0, first_instance: 0}
 		eg.spatials.Scale3 : {x: 1, y: 1, z: 1}
 		eg.spatials.Position3 : {x: 1, y: 0, z: 0}
 		eg.spatials.Rotate3 : {dx: 0.00, dy: 0.01, dz: 0}
@@ -49,7 +50,7 @@ drawobjs
 		c3 : transform {
 			(flecs.core.DependsOn, renderer)
 			(flecs.core.DependsOn, xcam.cam0)
-			eg.gpu.DrawPrimitive : {instance: xgpu.gpu0.vbuf0.i1, num_vertices: 36, num_instances: 1, first_vertex: 0, first_instance: 0}
+			//eg.gpu.DrawPrimitive : {instance: xgpu.gpu0.vbuf0.i1, num_vertices: 36, num_instances: 1, first_vertex: 0, first_instance: 0}
 			eg.spatials.Scale3 : {x: 1, y: 1, z: 1}
 			eg.spatials.Position3 : {x: 1, y: 0, z: 0}
 			eg.spatials.Rotate3 : {dx: 0.00, dy: 0.01, dz: 0}

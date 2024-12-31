@@ -9,6 +9,7 @@
 #include <EgBase.h>
 
 #include "sdl_gpu_copy.h"
+#include "EgMeshes.h"
 
 typedef struct VertexData {
 	float x, y, z;          /* 3D data. Vertex range -0.5..0.5 in all axes. Z -0.5 is near, 0.5 is far. */
@@ -83,8 +84,6 @@ static const VertexData vertex_data[] = {
 {0.5, -0.5, 0.5, 1.0, 0.0, 1.0}    /* magenta */
 };
 
-
-
 void System_EgGpuBuffer_Create(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
@@ -120,3 +119,16 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 	ecs_log_pop_1();
 	ecs_log_set_level(0);
 }
+
+/*
+void System_EgGpuBuffer_Append(ecs_iter_t *it)
+{
+	ecs_world_t *world = it->world;
+	EgGpuDevice *d = ecs_field(it, EgGpuDevice, 0); // shared, parent
+	EgGpuBuffer *b = ecs_field(it, EgGpuBuffer, 1); // shared, parent
+	EgMeshesMesh *m = ecs_field(it, EgMeshesMesh, 2); // self
+	for (int i = 0; i < it->count; ++i) {
+
+	} // END FOR LOOP
+}
+*/

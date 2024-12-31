@@ -49,17 +49,17 @@ gpu0 {
 	vbuf0 {
 		eg.gpu.BufferCreateInfo : {usage: 0}
 		eg.base.Update
-		// Put entity instances here:
-		i1 {
-			(flecs.core.DependsOn, xmeshes.m1.cube)
-			eg.gpu.DrawPrimitive : {num_vertices: 36, num_instances: 1, first_vertex: 0, first_instance: 0}
-		}
-		i2 {}
 	}
 
 	vbuf1 {
 		eg.gpu.BufferCreateInfo : {usage: 0}
 		eg.base.Update
+		// Put entity instances here:
+		i1 {
+			//(flecs.core.DependsOn, xmeshes.m1.cube1)
+			eg.gpu.DrawPrimitive : {num_vertices: 36, num_instances: 1, first_vertex: 0, first_instance: 0}
+		}
+		i2 {}
 	}
 
 	tex_depth {
