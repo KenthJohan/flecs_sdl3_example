@@ -37,9 +37,11 @@ void System_EgGpuDevice_Create(ecs_iter_t *it)
 			ecs_doc_set_name(world, e, buf);
 			char const *driver = SDL_GetGPUDeviceDriver(device);
 			SDL_GPUShaderFormat formats = SDL_GetGPUShaderFormats(device);
+			// ecs_doc_set_color(world, e, color);
 			snprintf(buf, 128, "Driver: %s, %08X", driver, formats);
 			ecs_doc_set_brief(world, e, buf);
-			//ecs_doc_set_color(world, e, color);
+			// Entities can be annotated with the Final trait, which prevents using them with IsA relationship. 
+			ecs_add_id(world, e, EcsFinal);
 		}
 		ecs_log_pop_1();
 

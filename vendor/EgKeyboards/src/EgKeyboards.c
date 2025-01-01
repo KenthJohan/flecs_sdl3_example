@@ -23,6 +23,9 @@ ecs_os_free(type_str);
         printf("ecs_remove_id(%s,%s)\n", n1, n2);
 */
 
+/*
+https://www.flecs.dev/flecs/md_docs_2ComponentTraits.html
+*/
 void remove_copies_from_prefab(ecs_world_t *world, ecs_entity_t prefab, ecs_entity_t subject)
 {
 	// Removes every component of subject that are also in prefab:

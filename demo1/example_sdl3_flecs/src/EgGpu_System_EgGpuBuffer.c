@@ -110,6 +110,8 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 			char const *name = ecs_get_name(world, e);
 			SDL_SetGPUBufferName(c_gpu->device, b, name);
 			ecs_set(world, e, EgGpuBuffer, {.object = b, .usage = desc.usage, .size = desc.size});
+			// Entities can be annotated with the Final trait, which prevents using them with IsA relationship. 
+			ecs_add_id(world, e, EcsFinal);
 		}
 		ecs_log_pop_1();
 	}

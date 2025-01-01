@@ -21,57 +21,57 @@ typedef enum SDL_GPUVertexElementFormat
 {
     SDL_GPU_VERTEXELEMENTFORMAT_INVALID,
 
-    // 32-bit Signed Integers 
+    // 32-bit Signed Integers
     SDL_GPU_VERTEXELEMENTFORMAT_INT,
     SDL_GPU_VERTEXELEMENTFORMAT_INT2,
     SDL_GPU_VERTEXELEMENTFORMAT_INT3,
     SDL_GPU_VERTEXELEMENTFORMAT_INT4,
 
-    // 32-bit Unsigned Integers 
+    // 32-bit Unsigned Integers
     SDL_GPU_VERTEXELEMENTFORMAT_UINT,
     SDL_GPU_VERTEXELEMENTFORMAT_UINT2,
     SDL_GPU_VERTEXELEMENTFORMAT_UINT3,
     SDL_GPU_VERTEXELEMENTFORMAT_UINT4,
 
-    // 32-bit Floats 
+    // 32-bit Floats
     SDL_GPU_VERTEXELEMENTFORMAT_FLOAT,
     SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2,
     SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3,
     SDL_GPU_VERTEXELEMENTFORMAT_FLOAT4,
 
-    // 8-bit Signed Integers 
+    // 8-bit Signed Integers
     SDL_GPU_VERTEXELEMENTFORMAT_BYTE2,
     SDL_GPU_VERTEXELEMENTFORMAT_BYTE4,
 
-    // 8-bit Unsigned Integers 
+    // 8-bit Unsigned Integers
     SDL_GPU_VERTEXELEMENTFORMAT_UBYTE2,
     SDL_GPU_VERTEXELEMENTFORMAT_UBYTE4,
 
-    // 8-bit Signed Normalized 
+    // 8-bit Signed Normalized
     SDL_GPU_VERTEXELEMENTFORMAT_BYTE2_NORM,
     SDL_GPU_VERTEXELEMENTFORMAT_BYTE4_NORM,
 
-    // 8-bit Unsigned Normalized 
+    // 8-bit Unsigned Normalized
     SDL_GPU_VERTEXELEMENTFORMAT_UBYTE2_NORM,
     SDL_GPU_VERTEXELEMENTFORMAT_UBYTE4_NORM,
 
-    // 16-bit Signed Integers 
+    // 16-bit Signed Integers
     SDL_GPU_VERTEXELEMENTFORMAT_SHORT2,
     SDL_GPU_VERTEXELEMENTFORMAT_SHORT4,
 
-    // 16-bit Unsigned Integers 
+    // 16-bit Unsigned Integers
     SDL_GPU_VERTEXELEMENTFORMAT_USHORT2,
     SDL_GPU_VERTEXELEMENTFORMAT_USHORT4,
 
-    // 16-bit Signed Normalized 
+    // 16-bit Signed Normalized
     SDL_GPU_VERTEXELEMENTFORMAT_SHORT2_NORM,
     SDL_GPU_VERTEXELEMENTFORMAT_SHORT4_NORM,
 
-    // 16-bit Unsigned Normalized 
+    // 16-bit Unsigned Normalized
     SDL_GPU_VERTEXELEMENTFORMAT_USHORT2_NORM,
     SDL_GPU_VERTEXELEMENTFORMAT_USHORT4_NORM,
 
-    // 16-bit Floats 
+    // 16-bit Floats
     SDL_GPU_VERTEXELEMENTFORMAT_HALF2,
     SDL_GPU_VERTEXELEMENTFORMAT_HALF4
 } SDL_GPUVertexElementFormat;
@@ -83,7 +83,7 @@ static int iterate_attributes(ecs_world_t *world, ecs_entity_t parent, SDL_GPUVe
 	ecs_iter_t it = ecs_children(world, parent);
 	int j = 0;
 	while (ecs_children_next(&it)) {
-		if (it.count > out_attr_length)	{
+		if (it.count > out_attr_length) {
 			ecs_warn("Too many attributes");
 			return -1;
 		}
@@ -93,41 +93,34 @@ static int iterate_attributes(ecs_world_t *world, ecs_entity_t parent, SDL_GPUVe
 			// Get member component from entity
 			EcsMember const *member = ecs_get(world, e, EcsMember);
 			EgGpuLocation const *location = ecs_get(world, e, EgGpuLocation);
-			if (member == NULL)	{
+			if (member == NULL) {
 				return -1;
 			}
-			if (member->count <= 0)	{
+			if (member->count <= 0) {
 				ecs_warn("Too little elements");
 				return -1;
 			}
 
-			if (member->count > 4)	{
+			if (member->count > 4) {
 				ecs_warn("Too many elements");
 				return -1;
 			}
 
 			if (member->type == ecs_id(ecs_f32_t) && (member->count <= 4)) {
 				out_attr->format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT + member->count - 1;
-			}
-			else if (member->type == ecs_id(ecs_i32_t) && (member->count <= 4)) {
+			} else if (member->type == ecs_id(ecs_i32_t) && (member->count <= 4)) {
 				out_attr->format = SDL_GPU_VERTEXELEMENTFORMAT_INT + member->count - 1;
-			}
-			else if (member->type == ecs_id(ecs_u32_t) && (member->count <= 4)) {
+			} else if (member->type == ecs_id(ecs_u32_t) && (member->count <= 4)) {
 				out_attr->format = SDL_GPU_VERTEXELEMENTFORMAT_UINT + member->count - 1;
-			}
-			else if (member->type == ecs_id(ecs_i8_t) && (member->count == 2)) {
+			} else if (member->type == ecs_id(ecs_i8_t) && (member->count == 2)) {
 				out_attr->format = SDL_GPU_VERTEXELEMENTFORMAT_BYTE2;
-			}
-			else if (member->type == ecs_id(ecs_i8_t) && (member->count == 4)) {
+			} else if (member->type == ecs_id(ecs_i8_t) && (member->count == 4)) {
 				out_attr->format = SDL_GPU_VERTEXELEMENTFORMAT_BYTE4;
-			}
-			else if (member->type == ecs_id(ecs_u8_t) && (member->count == 2)) {
+			} else if (member->type == ecs_id(ecs_u8_t) && (member->count == 2)) {
 				out_attr->format = SDL_GPU_VERTEXELEMENTFORMAT_UBYTE2;
-			}
-			else if (member->type == ecs_id(ecs_u8_t) && (member->count == 4)) {
+			} else if (member->type == ecs_id(ecs_u8_t) && (member->count == 4)) {
 				out_attr->format = SDL_GPU_VERTEXELEMENTFORMAT_UBYTE4;
 			}
-
 
 			out_attr->offset = member->offset;
 			out_attr->location = location->location;
@@ -144,19 +137,25 @@ static int iterate_attributes(ecs_world_t *world, ecs_entity_t parent, SDL_GPUVe
 void System_EgGpuPipeline_Create(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
-	EgGpuDevice *gpu = ecs_field(it, EgGpuDevice, 0);
-	EgGpuPipelineCreateInfo *field_info = ecs_field(it, EgGpuPipelineCreateInfo, 1);
-	EgGpuShaderVertex *field_svertex = ecs_field(it, EgGpuShaderVertex, 2);
-	EgGpuShaderFragment *field_sfragment = ecs_field(it, EgGpuShaderFragment, 3);
-	EcsComponent *field_component = ecs_field(it, EcsComponent, 4);
-	ecs_entity_t field_component_src_entity = ecs_field_src(it, 4);
+	EgGpuDevice *gpu = ecs_field(it, EgGpuDevice, 0);                                // shared, parent
+	EgGpuPipelineCreateInfo *field_info = ecs_field(it, EgGpuPipelineCreateInfo, 1); // self
+	EgGpuShaderVertex *field_svertex = ecs_field(it, EgGpuShaderVertex, 2);          // shared
+	EgGpuShaderFragment *field_sfragment = ecs_field(it, EgGpuShaderFragment, 3);    // shared
+	EcsComponent *field_component = ecs_field(it, EcsComponent, 4);                  // shared
+	ecs_entity_t field_component_src_entity = ecs_field_src(it, 4);                  // shared
 	ecs_log_set_level(1);
 	ecs_dbg("System_EgGpuPipeline_Create() count:%i", it->count);
 	ecs_log_push_1();
-	for (int i = 0; i < it->count; ++i, ++field_info) {
+
+	for (int i = 0; i < it->count; ++i) {
 		ecs_entity_t e = it->entities[i];
 		ecs_remove(world, e, EgBaseUpdate);
+		// Entities can be annotated with the Final trait, which prevents using them with IsA relationship.
+		ecs_add_id(world, e, EcsFinal);
+	}
 
+	for (int i = 0; i < it->count; ++i, ++field_info) {
+		ecs_entity_t e = it->entities[i];
 		ecs_dbg("Entity: '%s'", ecs_get_name(world, e));
 		ecs_log_push_1();
 		{
@@ -186,10 +185,6 @@ void System_EgGpuPipeline_Create(ecs_iter_t *it)
 			vertex_buffer_desc.input_rate = SDL_GPU_VERTEXINPUTRATE_VERTEX;
 			vertex_buffer_desc.instance_step_rate = 0;
 			vertex_buffer_desc.pitch = field_component->size;
-
-
-
-
 
 			/*
 			vertex_attributes[0].location = 0;
