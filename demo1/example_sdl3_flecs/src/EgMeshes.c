@@ -11,12 +11,9 @@
 ECS_TAG_DECLARE(EgMeshesExpand);
 ECS_COMPONENT_DECLARE(EgMeshesInfo);
 
-
-
-
-static void gen6_rectangle(EgBaseVertexIndexVec * vi, EgMeshesInfo * m)
+static void gen6_rectangle(EgBaseVertexIndexVec *vi, EgMeshesInfo *m)
 {
-	uint8_t * v = ecs_vec_grow(NULL, &vi->vertices, vi->stride_vertices, 6);
+	uint8_t *v = ecs_vec_grow(NULL, &vi->vertices, vi->stride_vertices, 6);
 	v4f32_xyzw((float *)(v + m->offset_col), 1.0f, 0.0f, 0.0f, 1.0f);
 	v3f32_xyz((float *)(v + m->offset_pos), -0.5f, -0.5f, 0.0f);
 	v += vi->stride_vertices;
@@ -34,11 +31,19 @@ static void gen6_rectangle(EgBaseVertexIndexVec * vi, EgMeshesInfo * m)
 	v += vi->stride_vertices;
 	v4f32_xyzw((float *)(v + m->offset_col), 1.0f, 0.0f, 0.0f, 1.0f);
 	v3f32_xyz((float *)(v + m->offset_pos), 0.5f, 0.5f, 0.0f);
+	uint16_t *i = ecs_vec_grow_t(NULL, &vi->indices, uint16_t, 6);
+	m->index_counter += 6;
+	i[0] = m->index_counter + 0;
+	i[1] = m->index_counter + 1;
+	i[2] = m->index_counter + 2;
+	i[3] = m->index_counter + 3;
+	i[4] = m->index_counter + 4;
+	i[5] = m->index_counter + 5;
 }
 
-static void gen3_triangle(EgBaseVertexIndexVec * vi, EgMeshesInfo * m)
+static void gen3_triangle(EgBaseVertexIndexVec *vi, EgMeshesInfo *m)
 {
-	uint8_t * v = ecs_vec_grow(NULL, &vi->vertices, vi->stride_vertices, 3);
+	uint8_t *v = ecs_vec_grow(NULL, &vi->vertices, vi->stride_vertices, 3);
 	v4f32_xyzw((float *)(v + m->offset_col), 1.0f, 0.0f, 0.0f, 1.0f);
 	v3f32_xyz((float *)(v + m->offset_pos), 0.0f, 0.5f, 0.0f);
 	v += vi->stride_vertices;
@@ -47,8 +52,12 @@ static void gen3_triangle(EgBaseVertexIndexVec * vi, EgMeshesInfo * m)
 	v += vi->stride_vertices;
 	v4f32_xyzw((float *)(v + m->offset_col), 0.0f, 0.0f, 1.0f, 1.0f);
 	v3f32_xyz((float *)(v + m->offset_pos), 0.5f, -0.5f, 0.0f);
+	uint16_t *i = ecs_vec_grow_t(NULL, &vi->indices, uint16_t, 3);
+	m->index_counter += 3;
+	i[0] = m->index_counter + 0;
+	i[1] = m->index_counter + 1;
+	i[2] = m->index_counter + 2;
 }
-
 
 static void System_EgMeshesMesh(ecs_iter_t *it)
 {
@@ -111,9 +120,9 @@ static void System_EgMeshesMesh(ecs_iter_t *it)
 			vi->stride_vertices = stride;
 			ecs_vec_reset(NULL, &vi->vertices, stride);
 			// Put example data into the vertices:
-			//uint8_t *v = ecs_vec_grow(NULL, vertices, stride, 3);
-			//gen3_triangle(v + offset_pos, stride);
-			//gen3_color(v + offset_col, stride);
+			// uint8_t *v = ecs_vec_grow(NULL, vertices, stride, 3);
+			// gen3_triangle(v + offset_pos, stride);
+			// gen3_color(v + offset_col, stride);
 		} // END FOR LOOP
 	}
 
@@ -125,13 +134,10 @@ on_error:
 	return;
 }
 
-
-
-
 static void System_Triangle(ecs_iter_t *it)
 {
 	EgBaseVertexIndexVec *vi0 = ecs_field(it, EgBaseVertexIndexVec, 0); // shared, parent
-	EgMeshesInfo *m0 = ecs_field(it, EgMeshesInfo, 1);               // shared, parent
+	EgMeshesInfo *m0 = ecs_field(it, EgMeshesInfo, 1);                  // shared, parent
 	for (int i = 0; i < it->count; ++i) {
 		int offset = ecs_vec_count(&vi0->vertices);
 		ecs_set(it->world, it->entities[i], EgBaseOffsetCount, {offset, 3});
@@ -139,11 +145,10 @@ static void System_Triangle(ecs_iter_t *it)
 	} // END FOR LOOP
 }
 
-
 static void System_Rectangle(ecs_iter_t *it)
 {
 	EgBaseVertexIndexVec *vi0 = ecs_field(it, EgBaseVertexIndexVec, 0); // shared, parent
-	EgMeshesInfo *m0 = ecs_field(it, EgMeshesInfo, 1);               // shared, parent
+	EgMeshesInfo *m0 = ecs_field(it, EgMeshesInfo, 1);                  // shared, parent
 	for (int i = 0; i < it->count; ++i) {
 		int offset = ecs_vec_count(&vi0->vertices);
 		ecs_set(it->world, it->entities[i], EgBaseOffsetCount, {offset, 6});
@@ -165,7 +170,7 @@ void EgMeshesImport(ecs_world_t *world)
 	{.name = "stride", .type = ecs_id(ecs_i32_t)},
 	{.name = "offset_pos", .type = ecs_id(ecs_i32_t)},
 	{.name = "offset_col", .type = ecs_id(ecs_i32_t)},
-	}});
+	{.name = "index_counter", .type = ecs_id(ecs_i32_t)}}});
 
 	ecs_system(world,
 	{.entity = ecs_entity(world, {.name = "System_EgMeshesMesh", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
