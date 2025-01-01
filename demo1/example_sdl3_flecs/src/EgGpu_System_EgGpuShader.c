@@ -13,8 +13,6 @@
 void System_EgGpuShaderFragment_Create(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
-	EgGpuDevice *gpu = ecs_field(it, EgGpuDevice, 0);                                        // shared, parent
-	EgGpuShaderFragmentCreateInfo *create = ecs_field(it, EgGpuShaderFragmentCreateInfo, 1); // self
 	ecs_log_set_level(1);
 	ecs_dbg("System Sampler_Create() count:%i", it->count);
 	ecs_log_push_1();
@@ -26,6 +24,8 @@ void System_EgGpuShaderFragment_Create(ecs_iter_t *it)
 		ecs_add_id(world, e, EcsFinal);
 	}
 
+	EgGpuDevice *gpu = ecs_field(it, EgGpuDevice, 0);                                        // shared, parent
+	EgGpuShaderFragmentCreateInfo *create = ecs_field(it, EgGpuShaderFragmentCreateInfo, 1); // self
 	for (int i = 0; i < it->count; ++i, ++create) {
 		ecs_entity_t e = it->entities[i];
 		ecs_dbg("Entity: '%s'", ecs_get_name(world, e));
@@ -51,8 +51,6 @@ void System_EgGpuShaderFragment_Create(ecs_iter_t *it)
 void System_EgGpuShaderVertex_Create(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
-	EgGpuDevice *gpu = ecs_field(it, EgGpuDevice, 0);                                    // shared, parent
-	EgGpuShaderVertexCreateInfo *create = ecs_field(it, EgGpuShaderVertexCreateInfo, 1); // self
 	ecs_log_set_level(1);
 	ecs_dbg("System Sampler_Create() count:%i", it->count);
 	ecs_log_push_1();
@@ -64,6 +62,8 @@ void System_EgGpuShaderVertex_Create(ecs_iter_t *it)
 		ecs_add_id(world, e, EcsFinal);
 	}
 
+	EgGpuDevice *gpu = ecs_field(it, EgGpuDevice, 0);                                    // shared, parent
+	EgGpuShaderVertexCreateInfo *create = ecs_field(it, EgGpuShaderVertexCreateInfo, 1); // self
 	for (int i = 0; i < it->count; ++i, ++create) {
 		ecs_entity_t e = it->entities[i];
 		ecs_dbg("Entity: '%s'", ecs_get_name(world, e));

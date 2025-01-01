@@ -137,12 +137,6 @@ static int iterate_attributes(ecs_world_t *world, ecs_entity_t parent, SDL_GPUVe
 void System_EgGpuPipeline_Create(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
-	EgGpuDevice *gpu = ecs_field(it, EgGpuDevice, 0);                                // shared, parent
-	EgGpuPipelineCreateInfo *field_info = ecs_field(it, EgGpuPipelineCreateInfo, 1); // self
-	EgGpuShaderVertex *field_svertex = ecs_field(it, EgGpuShaderVertex, 2);          // shared
-	EgGpuShaderFragment *field_sfragment = ecs_field(it, EgGpuShaderFragment, 3);    // shared
-	EcsComponent *field_component = ecs_field(it, EcsComponent, 4);                  // shared
-	ecs_entity_t field_component_src_entity = ecs_field_src(it, 4);                  // shared
 	ecs_log_set_level(1);
 	ecs_dbg("System_EgGpuPipeline_Create() count:%i", it->count);
 	ecs_log_push_1();
@@ -153,6 +147,13 @@ void System_EgGpuPipeline_Create(ecs_iter_t *it)
 		// Entities can be annotated with the Final trait, which prevents using them with IsA relationship.
 		ecs_add_id(world, e, EcsFinal);
 	}
+
+	EgGpuDevice *gpu = ecs_field(it, EgGpuDevice, 0);                                // shared, parent
+	EgGpuPipelineCreateInfo *field_info = ecs_field(it, EgGpuPipelineCreateInfo, 1); // self
+	EgGpuShaderVertex *field_svertex = ecs_field(it, EgGpuShaderVertex, 2);          // shared
+	EgGpuShaderFragment *field_sfragment = ecs_field(it, EgGpuShaderFragment, 3);    // shared
+	EcsComponent *field_component = ecs_field(it, EcsComponent, 4);                  // shared
+	ecs_entity_t field_component_src_entity = ecs_field_src(it, 4);                  // shared
 
 	for (int i = 0; i < it->count; ++i, ++field_info) {
 		ecs_entity_t e = it->entities[i];

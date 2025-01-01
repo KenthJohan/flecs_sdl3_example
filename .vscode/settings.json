@@ -103,7 +103,8 @@
 		"egmeta.h": "c",
 		"sdl_gpu_copy.h": "c",
 		"assert.h": "c",
-		"private_api.h": "c"
+		"private_api.h": "c",
+		"algorithm": "c"
 	},
 	"terminal.integrated.env.linux": {
 		"GTK_PATH": ""
