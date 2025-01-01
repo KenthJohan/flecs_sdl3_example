@@ -47,13 +47,15 @@ gpu0 {
 	}
 	
 	vbuf0 {
-		eg.gpu.BufferCreateInfo : {usage: 0, size: 1024*24}
+		eg.gpu.BufferCreateInfo : {usage: 1, size: 1024*24}
 		eg.base.Update
 		(flecs.core.DependsOn, xmeshes.m1)
 	}
 
-	vbuf1 {
-
+	ibuf0 {
+		eg.gpu.BufferCreateInfo : {usage: 2, size: 1024*24}
+		eg.base.Update
+		//(flecs.core.DependsOn, xmeshes.m1)
 	}
 
 	tex_depth {

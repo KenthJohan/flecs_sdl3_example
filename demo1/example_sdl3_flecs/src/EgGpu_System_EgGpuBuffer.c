@@ -99,7 +99,7 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 		ecs_log_push_1();
 		{
 			SDL_GPUBufferCreateInfo desc = {0};
-			desc.usage = SDL_GPU_BUFFERUSAGE_VERTEX;
+			desc.usage = create->usage;
 			desc.size = create[i].size;
 			desc.props = 0;
 			SDL_GPUBuffer *b = SDL_CreateGPUBuffer(c_gpu->device, &desc);
@@ -124,6 +124,10 @@ typedef struct {
 	float x, y, z, r, g, b, a;
 } vertex_xyz_rgba;
 
+/*
+This system fills the GPU buffer with only vertex data.
+TODO: We need to upload both vertex and index data to the GPU.
+*/
 void System_EgGpuBuffer_Fill(ecs_iter_t *it)
 {
 	ecs_log_set_level(1);
