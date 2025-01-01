@@ -12,7 +12,7 @@
 #include "EgMeshes.h"
 
 typedef struct VertexData {
-	float x, y, z;          /* 3D data. Vertex range -0.5..0.5 in all axes. Z -0.5 is near, 0.5 is far. */
+	float x, y, z;                 /* 3D data. Vertex range -0.5..0.5 in all axes. Z -0.5 is near, 0.5 is far. */
 	float red, green, blue, alpha; /* intensity 0 to 1 (alpha is always 1). */
 } VertexData;
 
@@ -118,7 +118,6 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 	ecs_log_set_level(0);
 }
 
-
 typedef struct {
 	float x, y, z, r, g, b, a;
 } vertex_xyz_rgba;
@@ -133,18 +132,18 @@ void System_EgGpuBuffer_Fill(ecs_iter_t *it)
 		ecs_remove(it->world, it->entities[i], EgBaseUpdate);
 	}
 
-	EgGpuDevice *d0 = ecs_field(it, EgGpuDevice, 0);                  // shared, parent
-	EgGpuBuffer *b = ecs_field(it, EgGpuBuffer, 1);                   // self
+	EgGpuDevice *d0 = ecs_field(it, EgGpuDevice, 0);                   // shared, parent
+	EgGpuBuffer *b = ecs_field(it, EgGpuBuffer, 1);                    // self
 	EgBaseVertexIndexVec *vi = ecs_field(it, EgBaseVertexIndexVec, 2); // self
 	for (int i = 0; i < it->count; ++i, ++vi, ++b) {
 		ecs_entity_t e = it->entities[i];
 		ecs_dbg("Entity: '%s'", ecs_get_name(it->world, e));
 
 		int32_t total = ecs_vec_count(&vi->vertices) * vi->stride_vertices;
-		vertex_xyz_rgba const * data = ecs_vec_first(&vi->vertices);
-		
-		//int32_t total = sizeof(vertex_data);
-		//vertex_xyz_rgba const *data = (vertex_xyz_rgba const *)vertex_data;
+		vertex_xyz_rgba const *data = ecs_vec_first(&vi->vertices);
+
+		// int32_t total = sizeof(vertex_data);
+		// vertex_xyz_rgba const *data = (vertex_xyz_rgba const *)vertex_data;
 
 		if ((int32_t)b[i].size < total) {
 			ecs_err("Buffer size is too small");

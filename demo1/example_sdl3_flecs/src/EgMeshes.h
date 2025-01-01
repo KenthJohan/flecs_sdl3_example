@@ -12,7 +12,6 @@ typedef struct
 	int32_t offset_col;
 } EgMeshesInfo;
 
-extern ECS_TAG_DECLARE(EgMeshesTriangle);
 extern ECS_TAG_DECLARE(EgMeshesExpand);
 extern ECS_COMPONENT_DECLARE(EgMeshesInfo);
 

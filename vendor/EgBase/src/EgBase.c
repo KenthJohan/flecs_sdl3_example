@@ -6,9 +6,6 @@ ECS_COMPONENT_DECLARE(EgBaseOffsetCount);
 ECS_TAG_DECLARE(EgBaseUpdate);
 ECS_TAG_DECLARE(EgBaseError);
 
-
-
-
 void EgBaseImport(ecs_world_t *world)
 {
 	ECS_MODULE(world, EgBase);
@@ -42,8 +39,6 @@ void EgBaseImport(ecs_world_t *world)
 #endif
 	}});
 
-
-
 	ecs_struct(world,
 	{.entity = ecs_id(EgBaseVertexIndexVec),
 	.members = {
@@ -52,17 +47,10 @@ void EgBaseImport(ecs_world_t *world)
 	{.name = "stride_vertices", .type = ecs_id(ecs_u32_t)},
 	}});
 
-
 	ecs_struct(world,
 	{.entity = ecs_id(EgBaseOffsetCount),
 	.members = {
 	{.name = "offset", .type = ecs_id(ecs_u32_t)},
 	{.name = "count", .type = ecs_id(ecs_u32_t)},
 	}});
-
-
-
-
-
-
 }

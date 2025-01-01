@@ -1,13 +1,12 @@
 #include "EgShapes.h"
 
-
-
 ECS_COMPONENT_DECLARE(EgShapesBox);
 ECS_COMPONENT_DECLARE(EgShapesTorus);
 ECS_COMPONENT_DECLARE(EgShapesCylinder);
 ECS_COMPONENT_DECLARE(EgShapesSphere);
 ECS_COMPONENT_DECLARE(EgShapesLine);
 ECS_COMPONENT_DECLARE(EgShapesRectangle);
+ECS_COMPONENT_DECLARE(EgShapesTriangle);
 
 void EgShapesImport(ecs_world_t *world)
 {
@@ -20,6 +19,7 @@ void EgShapesImport(ecs_world_t *world)
 	ECS_COMPONENT_DEFINE(world, EgShapesSphere);
 	ECS_COMPONENT_DEFINE(world, EgShapesLine);
 	ECS_COMPONENT_DEFINE(world, EgShapesRectangle);
+	ECS_COMPONENT_DEFINE(world, EgShapesTriangle);
 
 	ecs_struct(world,
 	{.entity = ecs_id(EgShapesBox),
@@ -29,7 +29,6 @@ void EgShapesImport(ecs_world_t *world)
 	{.name = "depth", .type = ecs_id(ecs_f32_t)},
 	{.name = "random_colors", .type = ecs_id(ecs_i32_t)},
 	}});
-
 
 	ecs_struct(world,
 	{.entity = ecs_id(EgShapesLine),
@@ -74,4 +73,10 @@ void EgShapesImport(ecs_world_t *world)
 	{.name = "h", .type = ecs_id(ecs_f32_t)},
 	}});
 
+	ecs_struct(world,
+	{.entity = ecs_id(EgShapesTriangle),
+	.members = {
+	{.name = "w", .type = ecs_id(ecs_f32_t)},
+	{.name = "h", .type = ecs_id(ecs_f32_t)},
+	}});
 }

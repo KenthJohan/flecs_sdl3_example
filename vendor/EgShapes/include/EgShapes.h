@@ -2,7 +2,6 @@
 
 #include <flecs.h>
 
-
 typedef struct {
 	float radius;
 	float ring_radius;
@@ -43,6 +42,10 @@ typedef struct {
 	float h;
 } EgShapesRectangle;
 
+typedef struct {
+	float w;
+	float h;
+} EgShapesTriangle;
 
 extern ECS_COMPONENT_DECLARE(EgShapesBox);
 extern ECS_COMPONENT_DECLARE(EgShapesTorus);
@@ -50,5 +53,6 @@ extern ECS_COMPONENT_DECLARE(EgShapesCylinder);
 extern ECS_COMPONENT_DECLARE(EgShapesSphere);
 extern ECS_COMPONENT_DECLARE(EgShapesLine);
 extern ECS_COMPONENT_DECLARE(EgShapesRectangle);
+extern ECS_COMPONENT_DECLARE(EgShapesTriangle);
 
 void EgShapesImport(ecs_world_t *world);
