@@ -45,15 +45,19 @@ gpu0 {
 		(flecs.core.DependsOn, shader_vertex)
 		eg.base.Update
 	}
+
+	tbuf0 {
+
+	}
 	
 	vbuf0 {
-		eg.gpu.BufferCreateInfo : {usage: 1, size: 1024*24}
+		eg.gpu.BufferCreateInfo : {is_vertex:true, size: 1024*24}
 		eg.base.Update
 		(flecs.core.DependsOn, xmeshes.m1)
 	}
 
 	ibuf0 {
-		eg.gpu.BufferCreateInfo : {usage: 2, size: 1024*24}
+		eg.gpu.BufferCreateInfo : {is_index:true, size: 1024*24}
 		eg.base.Update
 		//(flecs.core.DependsOn, xmeshes.m1)
 	}

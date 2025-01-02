@@ -21,7 +21,9 @@ ECS_COMPONENT_DECLARE(EgGpuShaderFragmentCreateInfo);
 ECS_COMPONENT_DECLARE(EgGpuPipeline);
 ECS_COMPONENT_DECLARE(EgGpuPipelineCreateInfo);
 ECS_COMPONENT_DECLARE(EgGpuDrawPrimitive);
-ECS_COMPONENT_DECLARE(EgGpuBuffer);
+ECS_COMPONENT_DECLARE(EgGpuBufferVertex);
+ECS_COMPONENT_DECLARE(EgGpuBufferIndex);
+ECS_COMPONENT_DECLARE(EgGpuBufferTransfer);
 ECS_COMPONENT_DECLARE(EgGpuBufferCreateInfo);
 ECS_COMPONENT_DECLARE(EgGpuTexture);
 ECS_COMPONENT_DECLARE(EgGpuTextureCreateInfo);
@@ -74,7 +76,9 @@ void EgGpuImport(ecs_world_t *world)
 	ECS_COMPONENT_DEFINE(world, EgGpuPipeline);
 	ECS_COMPONENT_DEFINE(world, EgGpuPipelineCreateInfo);
 	ECS_COMPONENT_DEFINE(world, EgGpuDrawPrimitive);
-	ECS_COMPONENT_DEFINE(world, EgGpuBuffer);
+	ECS_COMPONENT_DEFINE(world, EgGpuBufferVertex);
+	ECS_COMPONENT_DEFINE(world, EgGpuBufferIndex);
+	ECS_COMPONENT_DEFINE(world, EgGpuBufferTransfer);
 	ECS_COMPONENT_DEFINE(world, EgGpuBufferCreateInfo);
 	ECS_COMPONENT_DEFINE(world, EgGpuTexture);
 	ECS_COMPONENT_DEFINE(world, EgGpuTextureCreateInfo);
@@ -131,18 +135,33 @@ void EgGpuImport(ecs_world_t *world)
 	}});
 
 	ecs_struct(world,
-	{.entity = ecs_id(EgGpuBuffer),
+	{.entity = ecs_id(EgGpuBufferVertex),
 	.members = {
 	{.name = "object", .type = ecs_id(ecs_uptr_t)},
-	{.name = "usage", .type = ecs_id(ecs_u32_t)},
+	{.name = "size", .type = ecs_id(ecs_u32_t)},
+	}});
+
+	ecs_struct(world,
+	{.entity = ecs_id(EgGpuBufferIndex),
+	.members = {
+	{.name = "object", .type = ecs_id(ecs_uptr_t)},
+	{.name = "size", .type = ecs_id(ecs_u32_t)},
+	}});
+
+	ecs_struct(world,
+	{.entity = ecs_id(EgGpuBufferTransfer),
+	.members = {
+	{.name = "object", .type = ecs_id(ecs_uptr_t)},
 	{.name = "size", .type = ecs_id(ecs_u32_t)},
 	}});
 
 	ecs_struct(world,
 	{.entity = ecs_id(EgGpuBufferCreateInfo),
 	.members = {
-	{.name = "usage", .type = ecs_id(ecs_u32_t)},
 	{.name = "size", .type = ecs_id(ecs_u32_t)},
+	{.name = "is_vertex", .type = ecs_id(ecs_bool_t)},
+	{.name = "is_index", .type = ecs_id(ecs_bool_t)},
+	{.name = "is_transfer", .type = ecs_id(ecs_bool_t)},
 	}});
 
 	ecs_struct(world,
@@ -224,7 +243,9 @@ void EgGpuImport(ecs_world_t *world)
 	.query.terms = {
 	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuBufferCreateInfo), .src.id = EcsSelf},
-	{.id = ecs_id(EgGpuBuffer), .oper = EcsNot}, // Adds this
+	{.id = ecs_id(EgGpuBufferVertex), .oper = EcsNot}, // Adds this
+	{.id = ecs_id(EgGpuBufferIndex), .oper = EcsNot}, // Adds this
+	{.id = ecs_id(EgGpuBufferTransfer), .oper = EcsNot}, // Adds this
 	{.id = EgBaseError, .oper = EcsNot}}});
 
 	ecs_system(world,
@@ -232,7 +253,7 @@ void EgGpuImport(ecs_world_t *world)
 	.callback = System_EgGpuBuffer_Fill,
 	.query.terms = {
 	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
-	{.id = ecs_id(EgGpuBuffer)},
+	{.id = ecs_id(EgGpuBufferVertex)},
 	{.id = ecs_id(EgBaseVertexIndexVec), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = EgBaseUpdate}, // Removes this
 	{.id = EgBaseError, .oper = EcsNot}}});

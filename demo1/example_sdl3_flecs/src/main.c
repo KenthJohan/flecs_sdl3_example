@@ -46,7 +46,7 @@ static void System_Draw(ecs_iter_t *it)
 	EgShapesRectangle *c_rec = ecs_field(it, EgShapesRectangle, 1); // self
 	EgGpuDevice *c_gpu = ecs_field(it, EgGpuDevice, 2);             // shared
 	EgGpuPipeline *c_pipeline = ecs_field(it, EgGpuPipeline, 3);    // shared
-	EgGpuBuffer *c_buf = ecs_field(it, EgGpuBuffer, 4);             // shared
+	EgGpuBufferVertex *c_buf = ecs_field(it, EgGpuBufferVertex, 4); // shared
 	EgGpuTexture *c_texd = ecs_field(it, EgGpuTexture, 5);          // shared
 	EgWindowsWindow *c_win = ecs_field(it, EgWindowsWindow, 6);     // shared
 	EgGpuWindow *c_gwin = ecs_field(it, EgGpuWindow, 7);            // shared
@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
 	{.id = ecs_id(EgShapesRectangle), .src.id = EcsSelf, .inout = EcsInOut},
 	{.id = ecs_id(EgGpuDevice), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuPipeline), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
-	{.id = ecs_id(EgGpuBuffer), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgGpuBufferVertex), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuTexture), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsInOut}, // Depth texture
 	{.id = ecs_id(EgWindowsWindow), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuWindow), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},

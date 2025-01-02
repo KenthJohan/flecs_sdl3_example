@@ -84,6 +84,15 @@ static const VertexData vertex_data[] = {
 {0.5, -0.5, 0.5, 1.0, 0.0, 1.0, 1.0}    /* magenta */
 };
 
+/*
+#define SDL_GPU_BUFFERUSAGE_VERTEX                                  (1u << 0)
+#define SDL_GPU_BUFFERUSAGE_INDEX                                   (1u << 1)
+#define SDL_GPU_BUFFERUSAGE_INDIRECT                                (1u << 2)
+#define SDL_GPU_BUFFERUSAGE_GRAPHICS_STORAGE_READ                   (1u << 3)
+#define SDL_GPU_BUFFERUSAGE_COMPUTE_STORAGE_READ                    (1u << 4)
+#define SDL_GPU_BUFFERUSAGE_COMPUTE_STORAGE_WRITE                   (1u << 5)
+
+*/
 void System_EgGpuBuffer_Create(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
@@ -95,11 +104,17 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 
 	for (int i = 0; i < it->count; ++i) {
 		ecs_entity_t e = it->entities[i];
+		// Entities can be annotated with the Final trait, which prevents using them with IsA relationship.
+		ecs_add_id(world, e, EcsFinal);
+	}
+
+	for (int i = 0; i < it->count; ++i) {
+		ecs_entity_t e = it->entities[i];
 		ecs_dbg("Entity: '%s'", ecs_get_name(world, e));
 		ecs_log_push_1();
-		{
+		if (create[i].is_vertex) {
 			SDL_GPUBufferCreateInfo desc = {0};
-			desc.usage = create->usage;
+			desc.usage = SDL_GPU_BUFFERUSAGE_VERTEX;
 			desc.size = create[i].size;
 			desc.props = 0;
 			SDL_GPUBuffer *b = SDL_CreateGPUBuffer(c_gpu->device, &desc);
@@ -109,9 +124,33 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 			}
 			char const *name = ecs_get_name(world, e);
 			SDL_SetGPUBufferName(c_gpu->device, b, name);
-			ecs_set(world, e, EgGpuBuffer, {.object = b, .usage = desc.usage, .size = desc.size});
-			// Entities can be annotated with the Final trait, which prevents using them with IsA relationship. 
-			ecs_add_id(world, e, EcsFinal);
+			ecs_set(world, e, EgGpuBufferVertex, {.object = b, .size = desc.size});
+		} else if (create[i].is_index) {
+			SDL_GPUBufferCreateInfo desc = {0};
+			desc.usage = SDL_GPU_BUFFERUSAGE_VERTEX;
+			desc.size = create[i].size;
+			desc.props = 0;
+			SDL_GPUBuffer *b = SDL_CreateGPUBuffer(c_gpu->device, &desc);
+			if (b == NULL) {
+				ecs_add(world, e, EgBaseError);
+				continue;
+			}
+			char const *name = ecs_get_name(world, e);
+			SDL_SetGPUBufferName(c_gpu->device, b, name);
+			ecs_set(world, e, EgGpuBufferIndex, {.object = b, .size = desc.size});
+		} else if (create[i].is_transfer) {
+			SDL_GPUTransferBufferCreateInfo desc = {0};
+			desc.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
+			SDL_GPUTransferBuffer *b = SDL_CreateGPUTransferBuffer(c_gpu->device, &desc);
+			if (b == NULL) {
+				ecs_add(world, e, EgBaseError);
+				continue;
+			}
+			ecs_set(world, e, EgGpuBufferTransfer, {.object = b, .size = desc.size});
+		} else {
+			ecs_err("Unknown buffer type");
+			ecs_add(world, e, EgBaseError);
+			continue;
 		}
 		ecs_log_pop_1();
 	}
@@ -139,7 +178,7 @@ void System_EgGpuBuffer_Fill(ecs_iter_t *it)
 	}
 
 	EgGpuDevice *d0 = ecs_field(it, EgGpuDevice, 0);                   // shared, parent
-	EgGpuBuffer *b = ecs_field(it, EgGpuBuffer, 1);                    // self
+	EgGpuBufferVertex *b = ecs_field(it, EgGpuBufferVertex, 1);                    // self
 	EgBaseVertexIndexVec *vi = ecs_field(it, EgBaseVertexIndexVec, 2); // self
 	for (int i = 0; i < it->count; ++i, ++vi, ++b) {
 		ecs_entity_t e = it->entities[i];

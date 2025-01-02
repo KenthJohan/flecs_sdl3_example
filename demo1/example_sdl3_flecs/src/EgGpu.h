@@ -62,14 +62,27 @@ typedef struct
 typedef struct
 {
 	void * object;
-	uint32_t usage;
 	uint32_t size;
-} EgGpuBuffer;
+} EgGpuBufferVertex;
 
 typedef struct
 {
-	uint32_t usage;
+	void * object;
 	uint32_t size;
+} EgGpuBufferIndex;
+
+typedef struct
+{
+	void * object;
+	uint32_t size;
+} EgGpuBufferTransfer;
+
+typedef struct
+{
+	uint32_t size;
+	bool is_vertex;
+	bool is_index;
+	bool is_transfer;
 } EgGpuBufferCreateInfo;
 
 
@@ -96,6 +109,8 @@ typedef struct
 
 
 
+
+
 extern ECS_TAG_DECLARE(EgGpuVertexFormat);
 
 extern ECS_COMPONENT_DECLARE(EgGpuDevice);
@@ -108,7 +123,9 @@ extern ECS_COMPONENT_DECLARE(EgGpuShaderFragmentCreateInfo);
 extern ECS_COMPONENT_DECLARE(EgGpuPipeline);
 extern ECS_COMPONENT_DECLARE(EgGpuPipelineCreateInfo);
 extern ECS_COMPONENT_DECLARE(EgGpuDrawPrimitive);
-extern ECS_COMPONENT_DECLARE(EgGpuBuffer);
+extern ECS_COMPONENT_DECLARE(EgGpuBufferVertex);
+extern ECS_COMPONENT_DECLARE(EgGpuBufferIndex);
+extern ECS_COMPONENT_DECLARE(EgGpuBufferTransfer);
 extern ECS_COMPONENT_DECLARE(EgGpuBufferCreateInfo);
 extern ECS_COMPONENT_DECLARE(EgGpuTexture);
 extern ECS_COMPONENT_DECLARE(EgGpuTextureCreateInfo);
