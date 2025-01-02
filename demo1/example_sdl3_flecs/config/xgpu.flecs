@@ -47,7 +47,7 @@ gpu0 {
 	}
 
 	tbuf0 {
-
+		eg.gpu.BufferCreateInfo : {is_transfer:true, size: 1024*24}
 	}
 	
 	vbuf0 {
