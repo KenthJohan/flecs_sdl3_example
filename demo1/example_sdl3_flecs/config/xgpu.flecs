@@ -46,26 +46,30 @@ gpu0 {
 		eg.base.Update
 	}
 
+	tex_depth {
+		eg.gpu.TextureCreateInfo : {sample_count:0}
+		eg.base.Update
+		(flecs.core.DependsOn, window1)
+	}
+
 	tbuf0 {
 		eg.gpu.BufferCreateInfo : {is_transfer:true, size: 1024*24}
 	}
 	
 	vbuf0 {
 		eg.gpu.BufferCreateInfo : {is_vertex:true, size: 1024*24}
-		eg.base.Update
-		(flecs.core.DependsOn, xmeshes.m1)
+		g0 {
+			eg.base.Update
+			(flecs.core.DependsOn, xmeshes.m1)
+		}
 	}
 
 	ibuf0 {
 		eg.gpu.BufferCreateInfo : {is_index:true, size: 1024*24}
 		eg.base.Update
-		//(flecs.core.DependsOn, xmeshes.m1)
-	}
-
-	tex_depth {
-		eg.gpu.TextureCreateInfo : {sample_count:0}
-		eg.base.Update
-		(flecs.core.DependsOn, window1)
+		ins1 {
+			(flecs.core.DependsOn, xmeshes.m1)
+		}
 	}
 
 

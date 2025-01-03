@@ -139,6 +139,7 @@ void EgGpuImport(ecs_world_t *world)
 	.members = {
 	{.name = "object", .type = ecs_id(ecs_uptr_t)},
 	{.name = "size", .type = ecs_id(ecs_u32_t)},
+	{.name = "last", .type = ecs_id(ecs_u32_t)},
 	}});
 
 	ecs_struct(world,
@@ -253,7 +254,7 @@ void EgGpuImport(ecs_world_t *world)
 	.callback = System_EgGpuBuffer_Fill,
 	.query.terms = {
 	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
-	{.id = ecs_id(EgGpuBufferVertex)},
+	{.id = ecs_id(EgGpuBufferVertex), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgBaseVertexIndexVec), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = EgBaseUpdate}, // Removes this
 	{.id = EgBaseError, .oper = EcsNot}}});

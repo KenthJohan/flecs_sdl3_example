@@ -11,7 +11,6 @@
 #include "sdl_gpu_copy.h"
 #include "EgMeshes.h"
 
-
 /*
 #define SDL_GPU_BUFFERUSAGE_VERTEX                                  (1u << 0)
 #define SDL_GPU_BUFFERUSAGE_INDEX                                   (1u << 1)
@@ -87,7 +86,6 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 	ecs_log_set_level(0);
 }
 
-
 // TODO: This is a temporary structure for debugging. Will be deleted.
 typedef struct {
 	float x, y, z, r, g, b, a;
@@ -108,21 +106,25 @@ void System_EgGpuBuffer_Fill(ecs_iter_t *it)
 	}
 
 	EgGpuDevice *d0 = ecs_field(it, EgGpuDevice, 0);                   // shared, parent
-	EgGpuBufferVertex *b = ecs_field(it, EgGpuBufferVertex, 1);                    // self
-	EgBaseVertexIndexVec *vi = ecs_field(it, EgBaseVertexIndexVec, 2); // self
-	for (int i = 0; i < it->count; ++i, ++vi, ++b) {
+	EgGpuBufferVertex *b0 = ecs_field(it, EgGpuBufferVertex, 1);        // self
+	EgBaseVertexIndexVec *vi0 = ecs_field(it, EgBaseVertexIndexVec, 2); // self
+	for (int i = 0; i < it->count; ++i) {
 		ecs_entity_t e = it->entities[i];
 		ecs_dbg("Entity: '%s'", ecs_get_name(it->world, e));
 
-		int32_t total = ecs_vec_count(&vi->vertices) * vi->stride_vertices;
-		vertex_xyz_rgba const *data = ecs_vec_first(&vi->vertices);
 
-		if ((int32_t)b[i].size < total) {
+		int32_t total = ecs_vec_count(&vi0->vertices) * vi0->stride_vertices;
+		vertex_xyz_rgba const *data = ecs_vec_first(&vi0->vertices);
+
+		ecs_set(it->world, e, EgBaseOffsetCount, {b0->last, total});
+		b0->last += total;
+
+		if ((int32_t)b0->size < total) {
 			ecs_err("Buffer size is too small");
 			ecs_add(it->world, e, EgBaseError);
 			continue;
 		}
-		sdl_gpu_copy_simple1(d0->device, data, total, b->object);
+		sdl_gpu_copy_simple1(d0->device, data, total, b0->object);
 	} // END FOR LOOP
 
 	ecs_log_pop_1();

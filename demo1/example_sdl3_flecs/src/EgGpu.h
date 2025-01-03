@@ -63,6 +63,7 @@ typedef struct
 {
 	void * object;
 	uint32_t size;
+	uint32_t last;
 } EgGpuBufferVertex;
 
 typedef struct
