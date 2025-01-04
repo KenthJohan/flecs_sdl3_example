@@ -53,11 +53,11 @@ gpu0 {
 	}
 
 	tbuf0 {
-		eg.gpu.BufferCreateInfo : {is_transfer:true, size: 1024*24}
+		eg.gpu.BufferCreateInfo : {is_transfer:true, cap: 1024*24}
 	}
 	
 	vbuf0 {
-		eg.gpu.BufferCreateInfo : {is_vertex:true, size: 1024*24}
+		eg.gpu.BufferCreateInfo : {is_vertex:true, cap: 1024*24}
 		g0 {
 			eg.base.Update
 			(flecs.core.DependsOn, xmeshes.m1)
@@ -65,9 +65,10 @@ gpu0 {
 	}
 
 	ibuf0 {
-		eg.gpu.BufferCreateInfo : {is_index:true, size: 1024*24}
+		eg.gpu.BufferCreateInfo : {is_index:true, cap: 1024*24}
 		eg.base.Update
-		ins1 {
+		g0 {
+			eg.base.Update
 			(flecs.core.DependsOn, xmeshes.m1)
 		}
 	}

@@ -62,25 +62,27 @@ typedef struct
 typedef struct
 {
 	void * object;
-	uint32_t size;
+	uint32_t cap;
 	uint32_t last;
 } EgGpuBufferVertex;
 
 typedef struct
 {
 	void * object;
-	uint32_t size;
+	uint32_t cap;
+	uint32_t last;
 } EgGpuBufferIndex;
 
 typedef struct
 {
 	void * object;
-	uint32_t size;
+	uint32_t cap;
+	uint32_t last;
 } EgGpuBufferTransfer;
 
 typedef struct
 {
-	uint32_t size;
+	uint32_t cap;
 	bool is_vertex;
 	bool is_index;
 	bool is_transfer;

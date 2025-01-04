@@ -138,7 +138,7 @@ void EgGpuImport(ecs_world_t *world)
 	{.entity = ecs_id(EgGpuBufferVertex),
 	.members = {
 	{.name = "object", .type = ecs_id(ecs_uptr_t)},
-	{.name = "size", .type = ecs_id(ecs_u32_t)},
+	{.name = "cap", .type = ecs_id(ecs_u32_t)},
 	{.name = "last", .type = ecs_id(ecs_u32_t)},
 	}});
 
@@ -146,20 +146,22 @@ void EgGpuImport(ecs_world_t *world)
 	{.entity = ecs_id(EgGpuBufferIndex),
 	.members = {
 	{.name = "object", .type = ecs_id(ecs_uptr_t)},
-	{.name = "size", .type = ecs_id(ecs_u32_t)},
+	{.name = "cap", .type = ecs_id(ecs_u32_t)},
+	{.name = "last", .type = ecs_id(ecs_u32_t)},
 	}});
 
 	ecs_struct(world,
 	{.entity = ecs_id(EgGpuBufferTransfer),
 	.members = {
 	{.name = "object", .type = ecs_id(ecs_uptr_t)},
-	{.name = "size", .type = ecs_id(ecs_u32_t)},
+	{.name = "cap", .type = ecs_id(ecs_u32_t)},
+	{.name = "last", .type = ecs_id(ecs_u32_t)},
 	}});
 
 	ecs_struct(world,
 	{.entity = ecs_id(EgGpuBufferCreateInfo),
 	.members = {
-	{.name = "size", .type = ecs_id(ecs_u32_t)},
+	{.name = "cap", .type = ecs_id(ecs_u32_t)},
 	{.name = "is_vertex", .type = ecs_id(ecs_bool_t)},
 	{.name = "is_index", .type = ecs_id(ecs_bool_t)},
 	{.name = "is_transfer", .type = ecs_id(ecs_bool_t)},

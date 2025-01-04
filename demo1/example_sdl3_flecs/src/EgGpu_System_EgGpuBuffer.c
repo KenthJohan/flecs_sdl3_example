@@ -41,7 +41,7 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 		if (create[i].is_vertex) {
 			SDL_GPUBufferCreateInfo desc = {0};
 			desc.usage = SDL_GPU_BUFFERUSAGE_VERTEX;
-			desc.size = create[i].size;
+			desc.size = create[i].cap;
 			desc.props = 0;
 			SDL_GPUBuffer *b = SDL_CreateGPUBuffer(c_gpu->device, &desc);
 			if (b == NULL) {
@@ -50,11 +50,11 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 			}
 			char const *name = ecs_get_name(world, e);
 			SDL_SetGPUBufferName(c_gpu->device, b, name);
-			ecs_set(world, e, EgGpuBufferVertex, {.object = b, .size = desc.size});
+			ecs_set(world, e, EgGpuBufferVertex, {.object = b, .cap = desc.size});
 		} else if (create[i].is_index) {
 			SDL_GPUBufferCreateInfo desc = {0};
 			desc.usage = SDL_GPU_BUFFERUSAGE_VERTEX;
-			desc.size = create[i].size;
+			desc.size = create[i].cap;
 			desc.props = 0;
 			SDL_GPUBuffer *b = SDL_CreateGPUBuffer(c_gpu->device, &desc);
 			if (b == NULL) {
@@ -63,17 +63,17 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 			}
 			char const *name = ecs_get_name(world, e);
 			SDL_SetGPUBufferName(c_gpu->device, b, name);
-			ecs_set(world, e, EgGpuBufferIndex, {.object = b, .size = desc.size});
+			ecs_set(world, e, EgGpuBufferIndex, {.object = b, .cap = desc.size});
 		} else if (create[i].is_transfer) {
 			SDL_GPUTransferBufferCreateInfo desc = {0};
 			desc.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
-			desc.size = create[i].size;
+			desc.size = create[i].cap;
 			SDL_GPUTransferBuffer *b = SDL_CreateGPUTransferBuffer(c_gpu->device, &desc);
 			if (b == NULL) {
 				ecs_add(world, e, EgBaseError);
 				continue;
 			}
-			ecs_set(world, e, EgGpuBufferTransfer, {.object = b, .size = desc.size});
+			ecs_set(world, e, EgGpuBufferTransfer, {.object = b, .cap = desc.size});
 		} else {
 			ecs_err("Unknown buffer type");
 			ecs_add(world, e, EgBaseError);
@@ -105,13 +105,12 @@ void System_EgGpuBuffer_Fill(ecs_iter_t *it)
 		ecs_remove(it->world, it->entities[i], EgBaseUpdate);
 	}
 
-	EgGpuDevice *d0 = ecs_field(it, EgGpuDevice, 0);                   // shared, parent
-	EgGpuBufferVertex *b0 = ecs_field(it, EgGpuBufferVertex, 1);        // self
-	EgBaseVertexIndexVec *vi0 = ecs_field(it, EgBaseVertexIndexVec, 2); // self
+	EgGpuDevice *d0 = ecs_field(it, EgGpuDevice, 0);                    // shared, parent
+	EgGpuBufferVertex *b0 = ecs_field(it, EgGpuBufferVertex, 1);        // shared, dependent
+	EgBaseVertexIndexVec *vi0 = ecs_field(it, EgBaseVertexIndexVec, 2); // shared, dependent
 	for (int i = 0; i < it->count; ++i) {
 		ecs_entity_t e = it->entities[i];
 		ecs_dbg("Entity: '%s'", ecs_get_name(it->world, e));
-
 
 		int32_t total = ecs_vec_count(&vi0->vertices) * vi0->stride_vertices;
 		vertex_xyz_rgba const *data = ecs_vec_first(&vi0->vertices);
@@ -119,8 +118,8 @@ void System_EgGpuBuffer_Fill(ecs_iter_t *it)
 		ecs_set(it->world, e, EgBaseOffsetCount, {b0->last, total});
 		b0->last += total;
 
-		if ((int32_t)b0->size < total) {
-			ecs_err("Buffer size is too small");
+		if ((int32_t)b0->cap < total) {
+			ecs_err("Buffer cap is too small");
 			ecs_add(it->world, e, EgBaseError);
 			continue;
 		}
@@ -130,3 +129,53 @@ void System_EgGpuBuffer_Fill(ecs_iter_t *it)
 	ecs_log_pop_1();
 	ecs_log_set_level(0);
 }
+
+/*
+void System_Upload(ecs_iter_t *it)
+{
+	ecs_log_set_level(1);
+	ecs_dbg("System_Upload() count:%i", it->count);
+	ecs_log_push_1();
+
+	for (int i = 0; i < it->count; ++i) {
+		ecs_remove(it->world, it->entities[i], EgBaseUpdate);
+	}
+
+	EgGpuBufferVertex *d0 = ecs_field(it, EgGpuBufferVertex, 0);     // shared, parent
+	EgGpuBufferTransfer *t0 = ecs_field(it, EgGpuBufferTransfer, 1); // shared, dependent
+	for (int i = 0; i < it->count; ++i) {
+
+	} // END FOR LOOP
+
+	ecs_log_pop_1();
+	ecs_log_set_level(0);
+}
+
+
+
+
+void System_Transfer(ecs_iter_t *it)
+{
+	ecs_log_set_level(1);
+	ecs_dbg("System_Transfer() count:%i", it->count);
+	ecs_log_push_1();
+
+	for (int i = 0; i < it->count; ++i) {
+		ecs_remove(it->world, it->entities[i], EgBaseUpdate);
+	}
+
+	EgGpuDevice *d0 = ecs_field(it, EgGpuDevice, 0);                 // shared, parent
+	EgGpuBufferTransfer *t0 = ecs_field(it, EgGpuBufferTransfer, 1); // shared, dependent
+	for (int i = 0; i < it->count; ++i) {
+		void *map = SDL_MapGPUTransferBuffer(d0->device, t0->object, false);
+		if (map == NULL) {
+			ecs_err("Failed to map transfer buffer: %s", SDL_GetError());
+			continue;
+		}
+		SDL_UnmapGPUTransferBuffer(d0->device, t0->object);
+	} // END FOR LOOP
+
+	ecs_log_pop_1();
+	ecs_log_set_level(0);
+}
+*/
