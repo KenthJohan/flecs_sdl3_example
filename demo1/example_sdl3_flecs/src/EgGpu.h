@@ -109,6 +109,28 @@ typedef struct
 	int32_t location;
 } EgGpuLocation;
 
+typedef struct
+{
+	int32_t dummy;
+} EgGpuTransferCreateInfo;
+
+typedef struct
+{
+	void *dst; // SDL_GPUBuffer
+	uint32_t src_offset;
+	uint32_t dst_offset;
+	uint32_t size;
+} EgGpuTransferCmd;
+
+#define EG_GPU_TRANSFER_MAX_CMDS 16
+typedef struct
+{
+	ecs_query_t * query1;
+	uint8_t *data;
+	uint32_t cmd_last;
+	EgGpuTransferCmd cmd[EG_GPU_TRANSFER_MAX_CMDS];
+} EgGpuTransfer;
+
 
 
 
@@ -134,6 +156,10 @@ extern ECS_COMPONENT_DECLARE(EgGpuTexture);
 extern ECS_COMPONENT_DECLARE(EgGpuTextureCreateInfo);
 extern ECS_COMPONENT_DECLARE(EgGpuDraw1);
 extern ECS_COMPONENT_DECLARE(EgGpuLocation);
+extern ECS_COMPONENT_DECLARE(EgGpuTransferCreateInfo);
+extern ECS_COMPONENT_DECLARE(EgGpuTransferCmd);
+extern ECS_COMPONENT_DECLARE(EgGpuTransfer);
+
 
 void EgGpuImport(ecs_world_t *world);
 

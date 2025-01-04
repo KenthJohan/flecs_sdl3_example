@@ -27,6 +27,8 @@ extern ECS_COMPONENT_DECLARE(EgBaseVertexIndexVec);
 extern ECS_COMPONENT_DECLARE(EgBaseOffsetCount);
 
 
+extern ECS_TAG_DECLARE(EgBaseLoad);
+extern ECS_TAG_DECLARE(EgBaseCopyTo);
 extern ECS_TAG_DECLARE(EgBaseUpdate);
 extern ECS_TAG_DECLARE(EgBaseError);
 

@@ -73,5 +73,15 @@ gpu0 {
 		}
 	}
 
+	cmds {
+		(flecs.core.DependsOn, tbuf0)
+		eg.gpu.TransferCreateInfo
+		cmd0 {
+			(flecs.core.DependsOn, vbuf0)
+			(flecs.core.DependsOn, ibuf0)
+			(eg.base.Load, xmeshes.m1)
+		}
+	}
 
 }
+

@@ -9,6 +9,7 @@
 #include "EgGpu_System_EgGpuDevice.h"
 #include "EgGpu_System_EgGpuBuffer.h"
 #include "EgGpu_System_EgGpuTexture.h"
+#include "EgGpu_System_EgGpuTransfer.h"
 
 ECS_TAG_DECLARE(EgGpuVertexFormat);
 ECS_COMPONENT_DECLARE(EgGpuDevice);
@@ -29,7 +30,9 @@ ECS_COMPONENT_DECLARE(EgGpuTexture);
 ECS_COMPONENT_DECLARE(EgGpuTextureCreateInfo);
 ECS_COMPONENT_DECLARE(EgGpuDraw1);
 ECS_COMPONENT_DECLARE(EgGpuLocation);
-
+ECS_COMPONENT_DECLARE(EgGpuTransferCreateInfo);
+ECS_COMPONENT_DECLARE(EgGpuTransferCmd);
+ECS_COMPONENT_DECLARE(EgGpuTransfer);
 
 void System_Claim(ecs_iter_t *it)
 {
@@ -41,7 +44,7 @@ void System_Claim(ecs_iter_t *it)
 	ecs_log_push_1();
 	for (int i = 0; i < it->count; ++i, ++c_gpu) {
 		ecs_entity_t e = it->entities[i];
-		//printf("e=%s, e_win=%s\n", ecs_get_name(world, e), ecs_get_name(world, e_win1));
+		// printf("e=%s, e_win=%s\n", ecs_get_name(world, e), ecs_get_name(world, e_win1));
 		bool success = SDL_ClaimWindowForGPUDevice(c_gpu->device, c_win->object);
 		if (!success) {
 			ecs_add_id(world, e, EgBaseError);
@@ -54,9 +57,6 @@ void System_Claim(ecs_iter_t *it)
 	ecs_log_pop_1();
 	ecs_log_set_level(0);
 }
-
-
-
 
 void EgGpuImport(ecs_world_t *world)
 {
@@ -84,6 +84,14 @@ void EgGpuImport(ecs_world_t *world)
 	ECS_COMPONENT_DEFINE(world, EgGpuTextureCreateInfo);
 	ECS_COMPONENT_DEFINE(world, EgGpuDraw1);
 	ECS_COMPONENT_DEFINE(world, EgGpuLocation);
+	ECS_COMPONENT_DEFINE(world, EgGpuTransferCreateInfo);
+	ECS_COMPONENT_DEFINE(world, EgGpuTransferCmd);
+	ECS_COMPONENT_DEFINE(world, EgGpuTransfer);
+
+	/*
+	TODO: Might use opaque types for some of the following structs
+	https://github.com/SanderMertens/flecs/blob/3a4c120146638737dacd93f547139ee2b35bac40/examples/c/reflection/ser_opaque_type/src/main.c#L53
+	*/
 
 	ecs_struct(world,
 	{.entity = ecs_id(EgGpuDeviceCreateInfo),
@@ -131,8 +139,7 @@ void EgGpuImport(ecs_world_t *world)
 	ecs_struct(world,
 	{.entity = ecs_id(EgGpuPipeline),
 	.members = {
-	{.name = "object", .type = ecs_id(ecs_uptr_t)}
-	}});
+	{.name = "object", .type = ecs_id(ecs_uptr_t)}}});
 
 	ecs_struct(world,
 	{.entity = ecs_id(EgGpuBufferVertex),
@@ -195,6 +202,30 @@ void EgGpuImport(ecs_world_t *world)
 	{.name = "first_instance", .type = ecs_id(ecs_u32_t)},
 	}});
 
+	ecs_struct(world,
+	{.entity = ecs_id(EgGpuTransferCmd),
+	.members = {
+	{.name = "dst", .type = ecs_id(ecs_uptr_t)},
+	{.name = "src_offset", .type = ecs_id(ecs_u32_t)},
+	{.name = "dst_offset", .type = ecs_id(ecs_u32_t)},
+	{.name = "size", .type = ecs_id(ecs_u32_t)},
+	}});
+
+	ecs_struct(world,
+	{.entity = ecs_id(EgGpuTransferCreateInfo),
+	.members = {
+	{.name = "dummy", .type = ecs_id(ecs_u32_t)},
+	}});
+
+	ecs_struct(world,
+	{.entity = ecs_id(EgGpuTransfer),
+	.members = {
+	{.name = "query1", .type = ecs_id(ecs_uptr_t)},
+	{.name = "data", .type = ecs_id(ecs_uptr_t)},
+	{.name = "cmd_last", .type = ecs_id(ecs_u32_t)},
+	{.name = "cmd", .type = ecs_id(EgGpuTransferCmd)},
+	}});
+
 	ecs_system(world,
 	{.entity = ecs_entity(world, {.name = "System_EgGpuDevice_Create", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = System_EgGpuDevice_Create,
@@ -246,8 +277,8 @@ void EgGpuImport(ecs_world_t *world)
 	.query.terms = {
 	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuBufferCreateInfo), .src.id = EcsSelf},
-	{.id = ecs_id(EgGpuBufferVertex), .oper = EcsNot}, // Adds this
-	{.id = ecs_id(EgGpuBufferIndex), .oper = EcsNot}, // Adds this
+	{.id = ecs_id(EgGpuBufferVertex), .oper = EcsNot},   // Adds this
+	{.id = ecs_id(EgGpuBufferIndex), .oper = EcsNot},    // Adds this
 	{.id = ecs_id(EgGpuBufferTransfer), .oper = EcsNot}, // Adds this
 	{.id = EgBaseError, .oper = EcsNot}}});
 
@@ -269,7 +300,7 @@ void EgGpuImport(ecs_world_t *world)
 	{.id = ecs_id(EgShapesRectangle), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuTextureCreateInfo), .src.id = EcsSelf},
 	{.id = ecs_id(EgGpuTexture), .oper = EcsNot}, // Adds this
-	{.id = EgBaseUpdate}, // Removes this
+	{.id = EgBaseUpdate},                         // Removes this
 	{.id = EgBaseError, .oper = EcsNot}}});
 
 	ecs_system(world,
@@ -291,5 +322,21 @@ void EgGpuImport(ecs_world_t *world)
 	{.id = ecs_id(EgBaseError), .oper = EcsNot},
 	}});
 
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "System_Claim", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = System_Claim,
+	.query.terms = {
+	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgWindowsWindow), .src.id = EcsSelf, .inout = EcsIn},
+	{.id = ecs_id(EgGpuWindow), .oper = EcsNot},
+	{.id = ecs_id(EgBaseError), .oper = EcsNot},
+	}});
 
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "System_EgGpuTransfer", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = System_EgGpuTransfer,
+	.query.terms = {
+	{.id = ecs_id(EgGpuTransferCreateInfo)},
+	{.id = ecs_id(EgGpuTransfer), .oper = EcsNot}, // Adds this
+	}});
 }

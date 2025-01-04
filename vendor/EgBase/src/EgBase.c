@@ -3,6 +3,8 @@
 ECS_COMPONENT_DECLARE(EgBaseVec);
 ECS_COMPONENT_DECLARE(EgBaseVertexIndexVec);
 ECS_COMPONENT_DECLARE(EgBaseOffsetCount);
+ECS_TAG_DECLARE(EgBaseLoad);
+ECS_TAG_DECLARE(EgBaseCopyTo);
 ECS_TAG_DECLARE(EgBaseUpdate);
 ECS_TAG_DECLARE(EgBaseError);
 
@@ -13,9 +15,13 @@ void EgBaseImport(ecs_world_t *world)
 	ECS_COMPONENT_DEFINE(world, EgBaseVec);
 	ECS_COMPONENT_DEFINE(world, EgBaseVertexIndexVec);
 	ECS_COMPONENT_DEFINE(world, EgBaseOffsetCount);
+	ECS_TAG_DEFINE(world, EgBaseLoad);
+	ECS_TAG_DEFINE(world, EgBaseCopyTo);
 	ECS_TAG_DEFINE(world, EgBaseUpdate);
 	ECS_TAG_DEFINE(world, EgBaseError);
 
+	ecs_add_id(world, EgBaseLoad, EcsTraversable);
+	ecs_add_id(world, EgBaseCopyTo, EcsTraversable);
 	ecs_add_id(world, EgBaseUpdate, EcsTraversable);
 
 	/*
