@@ -1,7 +1,7 @@
 #include "test1.h"
 
 
-void gpu_transfer_begin(gpu_transfer_t *transfer, SDL_GPUDevice *device, EgGpuBufferTransfer *tb)
+void gpu_transfer_begin(EgGpuTransfer *transfer, SDL_GPUDevice *device, EgGpuBufferTransfer *tb)
 {
 	ecs_assert(transfer != NULL, ECS_INVALID_PARAMETER, NULL);
 	ecs_assert(device != NULL, ECS_INVALID_PARAMETER, NULL);
@@ -19,7 +19,7 @@ void gpu_transfer_begin(gpu_transfer_t *transfer, SDL_GPUDevice *device, EgGpuBu
 }
 
 
-void gpu_transfer_add(gpu_transfer_t *transfer, SDL_GPUDevice *device, EgGpuBufferTransfer *tb, const void *src, uint32_t src_size, SDL_GPUBuffer * dst, uint32_t dst_offset)
+void gpu_transfer_add(EgGpuTransfer *transfer, SDL_GPUDevice *device, EgGpuBufferTransfer *tb, const void *src, uint32_t src_size, SDL_GPUBuffer * dst, uint32_t dst_offset)
 {
 	ecs_assert(transfer != NULL, ECS_INVALID_PARAMETER, NULL);
 	ecs_assert(device != NULL, ECS_INVALID_PARAMETER, NULL);
@@ -28,7 +28,7 @@ void gpu_transfer_add(gpu_transfer_t *transfer, SDL_GPUDevice *device, EgGpuBuff
 	ecs_assert(tb->cap > 0, ECS_INVALID_PARAMETER, NULL);
 	ecs_assert(transfer->data != NULL, ECS_INVALID_PARAMETER, NULL);
 	// Check if the transfer buffer cap is too small:
-	if (tb->last + src_size <= tb->cap) {
+	if (tb->last + src_size >= tb->cap) {
 		ecs_err("Buffer cap is too small");
 		return;
 	}
@@ -38,7 +38,7 @@ void gpu_transfer_add(gpu_transfer_t *transfer, SDL_GPUDevice *device, EgGpuBuff
 		return;
 	}
 	memcpy(transfer->data + tb->last, src, src_size);
-	gpu_transfer_cmd_t * cmd = &transfer->cmd[transfer->cmd_last];
+	EgGpuTransferCmd * cmd = &transfer->cmd[transfer->cmd_last];
 	cmd->dst = dst;
 	cmd->src_offset = tb->last;
 	cmd->dst_offset = dst_offset;
@@ -47,7 +47,7 @@ void gpu_transfer_add(gpu_transfer_t *transfer, SDL_GPUDevice *device, EgGpuBuff
 	tb->last += src_size;
 }
 
-void gpu_transfer_end(gpu_transfer_t *transfer, SDL_GPUDevice *device, EgGpuBufferTransfer *tb)
+void gpu_transfer_end(EgGpuTransfer *transfer, SDL_GPUDevice *device, EgGpuBufferTransfer *tb)
 {
 	ecs_assert(transfer != NULL, ECS_INVALID_PARAMETER, NULL);
 	ecs_assert(device != NULL, ECS_INVALID_PARAMETER, NULL);
@@ -61,7 +61,7 @@ void gpu_transfer_end(gpu_transfer_t *transfer, SDL_GPUDevice *device, EgGpuBuff
 }
 
 
-void gpu_transfer_submit(gpu_transfer_t *transfer, SDL_GPUDevice *device, EgGpuBufferTransfer *tb)
+void gpu_transfer_submit(EgGpuTransfer *transfer, SDL_GPUDevice *device, EgGpuBufferTransfer *tb)
 {
 	ecs_assert(transfer != NULL, ECS_INVALID_PARAMETER, NULL);
 	ecs_assert(device != NULL, ECS_INVALID_PARAMETER, NULL);
@@ -83,7 +83,7 @@ void gpu_transfer_submit(gpu_transfer_t *transfer, SDL_GPUDevice *device, EgGpuB
 	}
 	// Encode the upload commands:
 	for (uint32_t i = 0; i < transfer->cmd_last; ++i) {
-		gpu_transfer_cmd_t * cmd = &transfer->cmd[i];
+		EgGpuTransferCmd * cmd = &transfer->cmd[i];
 		SDL_UploadToGPUBuffer(
 			pass,
 			&(SDL_GPUTransferBufferLocation) {

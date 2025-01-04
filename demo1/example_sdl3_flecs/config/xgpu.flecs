@@ -51,10 +51,6 @@ gpu0 {
 		eg.base.Update
 		(flecs.core.DependsOn, window1)
 	}
-
-	tbuf0 {
-		eg.gpu.BufferCreateInfo : {is_transfer:true, cap: 1024*24}
-	}
 	
 	vbuf0 {
 		eg.gpu.BufferCreateInfo : {is_vertex:true, cap: 1024*24}
@@ -73,15 +69,20 @@ gpu0 {
 		}
 	}
 
-	cmds {
-		(flecs.core.DependsOn, tbuf0)
-		eg.gpu.TransferCreateInfo
-		cmd0 {
-			(flecs.core.DependsOn, vbuf0)
-			(flecs.core.DependsOn, ibuf0)
-			(eg.base.Load, xmeshes.m1)
+	tbuf0 {
+		eg.gpu.BufferCreateInfo : {is_transfer:true, cap: 1024*24}
+		cmds {
+			(flecs.core.DependsOn, tbuf0)
+			eg.gpu.TransferCreateInfo
+			cmd0 {
+				(flecs.core.DependsOn, vbuf0)
+				(flecs.core.DependsOn, ibuf0)
+				(flecs.core.DependsOn, xmeshes.m1)
+			}
 		}
 	}
+
+
 
 }
 

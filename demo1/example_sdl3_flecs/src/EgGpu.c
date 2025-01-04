@@ -333,10 +333,19 @@ void EgGpuImport(ecs_world_t *world)
 	}});
 
 	ecs_system(world,
-	{.entity = ecs_entity(world, {.name = "System_EgGpuTransfer", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
-	.callback = System_EgGpuTransfer,
+	{.entity = ecs_entity(world, {.name = "System_EgGpuTransferCreateInfo", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = System_EgGpuTransferCreateInfo,
 	.query.terms = {
 	{.id = ecs_id(EgGpuTransferCreateInfo)},
 	{.id = ecs_id(EgGpuTransfer), .oper = EcsNot}, // Adds this
+	}});
+
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "System_EgGpuTransfer", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = System_EgGpuTransfer,
+	.query.terms = {
+	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn}, // parent, parant
+	{.id = ecs_id(EgGpuBufferTransfer), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn}, // parent
+	{.id = ecs_id(EgGpuTransfer)}
 	}});
 }
