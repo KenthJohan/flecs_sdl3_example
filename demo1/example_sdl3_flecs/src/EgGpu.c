@@ -344,8 +344,8 @@ void EgGpuImport(ecs_world_t *world)
 	{.entity = ecs_entity(world, {.name = "System_EgGpuTransfer", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = System_EgGpuTransfer,
 	.query.terms = {
-	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsInOut}, // parent, parant
+	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsInOut},         // parent, parant
 	{.id = ecs_id(EgGpuBufferTransfer), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsInOut}, // parent
-	{.id = ecs_id(EgGpuTransfer), .inout = EcsInOut}
+	{.id = ecs_id(EgGpuTransfer)},
 	}});
 }

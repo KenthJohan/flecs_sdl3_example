@@ -1,6 +1,27 @@
 
 #include <flecs.h>
 
+
+#include <stdio.h>
+#include <execinfo.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+
+void handler(int sig) {
+  void *array[10];
+  size_t size;
+
+  // get void*'s for all entries on the stack
+  size = backtrace(array, 10);
+
+  // print out all the frames to stderr
+  fprintf(stderr, "Error: signal %d:\n", sig);
+  backtrace_symbols_fd(array, size, STDERR_FILENO);
+  exit(1);
+}
+
 typedef struct
 {
 	int32_t dummy;
@@ -50,6 +71,7 @@ void System_QueryRunner(ecs_iter_t *it)
 
 int main(int argc, char *argv[])
 {
+	//signal(SIGSEGV, handler);   // install our handler
 	// ecs_os_set_api_defaults();
 	// ecs_os_api_t os_api = ecs_os_get_api();
 	// ecs_os_set_api(&os_api);
