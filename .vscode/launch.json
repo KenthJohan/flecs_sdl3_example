@@ -27,5 +27,28 @@
 				"externalConsole": false,
 			}
 		},
+		{
+			"name": "Launch bug_shared_out",
+			"type": "cppdbg",
+			"request": "launch",
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/demo1/bug_shared_out",
+			"environment": [
+				{
+					"name": "LD_LIBRARY_PATH",
+					"value": "${workspaceFolder}/bin/x64-Linux-debug:${env:HOME}/bake/x64-Linux/debug/lib/:/usr/local/lib/"
+				},
+			],
+			"program": "${workspaceFolder}/demo1/bug_shared_out/bin/x64-Linux-debug/bug_shared_out",
+			"args": [],
+			"osx": {
+				"MIMode": "lldb",
+				"targetArchitecture": "arm64",
+				"externalConsole": false,
+			},
+			"linux": {
+				"externalConsole": false,
+			}
+		},
 	]
 }

@@ -310,15 +310,13 @@ void EgSpatialsImport(ecs_world_t *world)
 	ECS_TAG_DEFINE(world, EgRotateOrder2);
 	ECS_TAG_DEFINE(world, EgPositionWorldNoReset);
 
-
-
-	// clang-format off
 	ecs_set_hooks(world, Orientation, {.ctor = ecs_ctor(Orientation)});
 	ecs_set_hooks(world, OrientationWorld, {.ctor = ecs_ctor(OrientationWorld)});
 	ecs_set_hooks(world, Transformation, {.ctor = ecs_ctor(Transformation)});
 	ecs_set_hooks(world, RotMat3, {.ctor = ecs_ctor(RotMat3)});
 	ecs_set_hooks(world, Scale3, {.ctor = ecs_ctor(Scale3)});
-	ecs_set_hooks(world, TransformationCollector, {
+	ecs_set_hooks(world, TransformationCollector,
+	{
 	.ctor = ecs_ctor(TransformationCollector),
 	.move = ecs_move(TransformationCollector),
 	.copy = ecs_copy(TransformationCollector),
@@ -421,14 +419,13 @@ void EgSpatialsImport(ecs_world_t *world)
 	{.name = "dz", .type = ecs_id(ecs_f32_t)},
 	}});
 
-	ecs_struct(world, {
-	.entity = ecs_id(Vector4),
-	.members = {
-	{.name = "x", .type = ecs_id(ecs_f32_t)},
-	{.name = "y", .type = ecs_id(ecs_f32_t)},
-	{.name = "z", .type = ecs_id(ecs_f32_t)},
-	{.name = "w", .type = ecs_id(ecs_f32_t)},
-	}});
+	ecs_struct(world, {.entity = ecs_id(Vector4),
+	                  .members = {
+	                  {.name = "x", .type = ecs_id(ecs_f32_t)},
+	                  {.name = "y", .type = ecs_id(ecs_f32_t)},
+	                  {.name = "z", .type = ecs_id(ecs_f32_t)},
+	                  {.name = "w", .type = ecs_id(ecs_f32_t)},
+	                  }});
 
 	ecs_struct(world,
 	{.entity = ecs_id(Transformation),
@@ -469,8 +466,8 @@ void EgSpatialsImport(ecs_world_t *world)
 	{.name = "amplitude", .type = ecs_id(ecs_f32_t)},
 	}});
 
-	ecs_system(world,{
-	.entity = ecs_entity(world, {.name = "RotateQuaternion1", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "RotateQuaternion1", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = RotateQuaternion1,
 	.query.terms = {
 	{.id = ecs_id(Orientation), .inout = EcsOut},
@@ -478,8 +475,8 @@ void EgSpatialsImport(ecs_world_t *world)
 	{.id = EgRotateOrder1},
 	}});
 
-	ecs_system(world,{
-	.entity = ecs_entity(world, {.name = "RotateQuaternion2", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "RotateQuaternion2", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = RotateQuaternion2,
 	.query.terms = {
 	{.id = ecs_id(Orientation), .inout = EcsOut},
@@ -487,72 +484,67 @@ void EgSpatialsImport(ecs_world_t *world)
 	{.id = EgRotateOrder2},
 	}});
 
-	ecs_system(world,{
-	.entity = ecs_entity(world, {.name = "Position3World_Reset", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "Position3World_Reset", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = Position3World_Reset,
-	.query.terms =
-	{
+	.query.terms = {
 	{.id = ecs_id(Position3World), .inout = EcsOut},
 	{.id = EgPositionWorldNoReset, .oper = EcsNot},
 	}});
 
-	ecs_system(world,{
-	.entity = ecs_entity(world, {.name = "EulerToQ", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "EulerToQ", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = EulerToQ,
-	.query.terms =
-	{
+	.query.terms = {
 	{.id = ecs_id(Orientation), .inout = EcsOut},
 	{.id = ecs_id(EulerAngles), .inout = EcsIn},
 	}});
 
-	ecs_system(world,{
-	.entity = ecs_entity(world, {.name = "Orientation_To_RotMat3", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "Orientation_To_RotMat3", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = Orientation_To_RotMat3,
-	.query.terms =
-	{
+	.query.terms = {
 	{.id = ecs_id(RotMat3), .inout = EcsOut},
 	{.id = ecs_id(Orientation), .inout = EcsIn},
 	}});
 
-	ecs_system(world,{
-	.entity = ecs_entity(world, {.name = "Move", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "Move", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = Move,
 	.query.terms = {
 	{.id = ecs_id(Position3), .inout = EcsOut},
 	{.id = ecs_id(Velocity3), .inout = EcsIn},
 	{.id = ecs_id(Orientation), .inout = EcsIn}}});
 
-	ecs_system(world,{
-	.entity = ecs_entity(world, {.name = "SinewaveSystem", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "SinewaveSystem", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = SinewaveSystem,
 	.query.terms = {
 	{.id = ecs_id(Position3World), .inout = EcsOut},
 	{.id = ecs_id(Sinewave), .inout = EcsIn},
 	}});
 
-	ecs_system(world,{
-	.entity = ecs_entity(world, {.name = "Orientation_Cascade", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "Orientation_Cascade", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = Orientation_Cascade,
-	.query.terms =
-	{
+	.query.terms = {
 	{.id = ecs_id(OrientationWorld), .inout = EcsOut},
 	{.id = ecs_id(Orientation), .inout = EcsIn},
 	{.id = ecs_id(OrientationWorld), .src.id = EcsCascade, .inout = EcsIn, .oper = EcsOptional},
 	}});
 
-	ecs_system(world,{
-	.entity = ecs_entity(world, {.name = "Position3_Cascade", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "Position3_Cascade", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = Position3_Cascade,
-	.query.terms =
-	{
+	.query.terms = {
 	{.id = ecs_id(Position3World), .inout = EcsOut},
 	{.id = ecs_id(Position3), .inout = EcsIn},
 	{.id = ecs_id(Position3World), .src.id = EcsCascade, .inout = EcsIn, .oper = EcsOptional},
 	{.id = ecs_id(OrientationWorld), .src.id = EcsUp, .inout = EcsIn, .oper = EcsOptional},
 	}});
 
-	ecs_system(world,{
-	.entity = ecs_entity(world, {.name = "TransformationPosition", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "TransformationPosition", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = TransformationPosition,
 	.query.terms = {
 	{.id = ecs_id(Transformation), .inout = EcsOut},
@@ -561,19 +553,18 @@ void EgSpatialsImport(ecs_world_t *world)
 	{.id = ecs_id(Scale3), .inout = EcsIn},
 	}});
 
-	ecs_system(world, {.entity = ecs_entity(world, {.name = "TransformationCollector_Append", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
-		.callback = TransformationCollector_Append,
-		.query.terms =
-		{
-		{.id = ecs_id(Transformation), .src.id = EcsSelf},
-		{.id = ecs_id(TransformationCollector), .trav = EcsDependsOn, .src.id = EcsUp},
-		}});
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "TransformationCollector_Append", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = TransformationCollector_Append,
+	.query.terms = {
+	{.id = ecs_id(Transformation), .src.id = EcsSelf},
+	{.id = ecs_id(TransformationCollector), .trav = EcsDependsOn, .src.id = EcsUp},
+	}});
 
-	ecs_system(world, {.entity = ecs_entity(world, {.name = "TransformationCollector_Reset", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
-		.callback = TransformationCollector_Reset,
-		.query.terms =
-		{
-		{.id = ecs_id(TransformationCollector), .src.id = EcsSelf},
-		}});
-	// clang-format on
+	ecs_system(world,
+	{.entity = ecs_entity(world, {.name = "TransformationCollector_Reset", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = TransformationCollector_Reset,
+	.query.terms = {
+	{.id = ecs_id(TransformationCollector), .src.id = EcsSelf},
+	}});
 }

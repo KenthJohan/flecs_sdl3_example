@@ -75,8 +75,8 @@ gpu0 {
 			(flecs.core.DependsOn, tbuf0)
 			eg.gpu.TransferCreateInfo
 			cmd0 {
-				(flecs.core.DependsOn, vbuf0)
-				(flecs.core.DependsOn, ibuf0)
+				//(flecs.core.DependsOn, vbuf0)
+				//(flecs.core.DependsOn, ibuf0)
 				(flecs.core.DependsOn, xmeshes.m1)
 			}
 		}
