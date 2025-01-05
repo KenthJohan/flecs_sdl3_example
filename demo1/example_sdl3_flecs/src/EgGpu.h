@@ -112,7 +112,7 @@ typedef struct
 typedef struct
 {
 	int32_t dummy;
-} EgGpuTransferCreateInfo;
+} QueryCreator;
 
 typedef struct
 {
@@ -129,7 +129,7 @@ typedef struct
 	uint8_t *data;
 	uint32_t cmd_last;
 	EgGpuTransferCmd cmd[EG_GPU_TRANSFER_MAX_CMDS];
-} EgGpuTransfer;
+} QueryRunner;
 
 
 

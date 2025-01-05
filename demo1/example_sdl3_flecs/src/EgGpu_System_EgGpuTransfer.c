@@ -18,7 +18,9 @@ void System_EgGpuTransferCreateInfo(ecs_iter_t *it)
 	for (int i = 0; i < it->count; ++i) {
 		ecs_add_id(it->world, it->entities[i], it->entities[i]);
 		ecs_query_t *q = ecs_query(it->world,
-		{.terms = {
+		{.cache_kind = EcsQueryCacheAll,
+			.terms = {
+
 		 {.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsInOut},
 		 //{.id = ecs_id(EgGpuTransfer), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
 		 //{.id = ecs_id(EgGpuBufferTransfer), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
