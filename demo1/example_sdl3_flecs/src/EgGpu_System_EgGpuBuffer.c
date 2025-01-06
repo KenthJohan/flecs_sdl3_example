@@ -34,6 +34,8 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 		ecs_add_id(world, e, EcsFinal);
 	}
 
+	EgGpuDeviceDebug * gpudbg = ecs_get_mut(world, ecs_field_src(it, 0), EgGpuDeviceDebug);
+
 	for (int i = 0; i < it->count; ++i) {
 		ecs_entity_t e = it->entities[i];
 		ecs_dbg("Entity: '%s'", ecs_get_name(world, e));
@@ -79,6 +81,11 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 			ecs_add(world, e, EgBaseError);
 			continue;
 		}
+
+		if (gpudbg != NULL) {
+			gpudbg->sum.buffers++;
+		}
+
 		ecs_log_pop_1();
 	}
 

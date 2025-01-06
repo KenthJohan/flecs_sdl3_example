@@ -3,7 +3,18 @@ xgpu {}
 module xgpu
 
 gpu0 {
-	eg.gpu.DeviceCreateInfo : {debug: true}
+	eg.gpu.DeviceCreateInfo : {
+		debug: true,
+	}
+
+	eg.gpu.DeviceDebug : {
+		max.windows: 1,
+		max.textures: 1,
+		max.buffers: 3,
+		max.shaders: 2,
+		max.pipelines: 1,
+	}
+
 	eg.base.Update
 
 	tex_depth {}
@@ -85,4 +96,3 @@ gpu0 {
 
 
 }
-

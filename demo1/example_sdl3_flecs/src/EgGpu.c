@@ -15,6 +15,8 @@ ECS_TAG_DECLARE(EgGpuVertexFormat);
 ECS_COMPONENT_DECLARE(EgGpuDevice);
 ECS_COMPONENT_DECLARE(EgGpuWindow);
 ECS_COMPONENT_DECLARE(EgGpuDeviceCreateInfo);
+ECS_COMPONENT_DECLARE(EgGpuDeviceDebug);
+ECS_COMPONENT_DECLARE(EgGpuStats);
 ECS_COMPONENT_DECLARE(EgGpuShaderVertex);
 ECS_COMPONENT_DECLARE(EgGpuShaderVertexCreateInfo);
 ECS_COMPONENT_DECLARE(EgGpuShaderFragment);
@@ -63,12 +65,15 @@ void EgGpuImport(ecs_world_t *world)
 	ECS_MODULE(world, EgGpu);
 	ECS_IMPORT(world, EgBase);
 	ECS_IMPORT(world, EgShapes);
+	ECS_IMPORT(world, FlecsAlerts);
 	ecs_set_name_prefix(world, "EgGpu");
 
 	ECS_TAG_DEFINE(world, EgGpuVertexFormat);
 	ECS_COMPONENT_DEFINE(world, EgGpuDevice);
 	ECS_COMPONENT_DEFINE(world, EgGpuWindow);
+	ECS_COMPONENT_DEFINE(world, EgGpuStats);
 	ECS_COMPONENT_DEFINE(world, EgGpuDeviceCreateInfo);
+	ECS_COMPONENT_DEFINE(world, EgGpuDeviceDebug);
 	ECS_COMPONENT_DEFINE(world, EgGpuShaderVertex);
 	ECS_COMPONENT_DEFINE(world, EgGpuShaderVertexCreateInfo);
 	ECS_COMPONENT_DEFINE(world, EgGpuShaderFragment);
@@ -103,6 +108,24 @@ void EgGpuImport(ecs_world_t *world)
 	{.entity = ecs_id(EgGpuDevice),
 	.members = {
 	{.name = "device", .type = ecs_id(ecs_uptr_t)},
+	}});
+
+	ecs_struct(world,
+	{.entity = ecs_id(EgGpuStats),
+	.members = {
+	{.name = "windows", .type = ecs_id(ecs_u32_t)},
+	{.name = "textures", .type = ecs_id(ecs_u32_t)},
+	{.name = "buffers", .type = ecs_id(ecs_u32_t)},
+	{.name = "shaders", .type = ecs_id(ecs_u32_t)},
+	{.name = "pipelines", .type = ecs_id(ecs_u32_t)},
+	}});
+
+
+	ecs_struct(world,
+	{.entity = ecs_id(EgGpuDeviceDebug),
+	.members = {
+	{.name = "max", .type = ecs_id(EgGpuStats)},
+	{.name = "total", .type = ecs_id(EgGpuStats)},
 	}});
 
 	ecs_struct(world,
@@ -225,6 +248,28 @@ void EgGpuImport(ecs_world_t *world)
 	{.name = "cmd_last", .type = ecs_id(ecs_u32_t)},
 	{.name = "cmd", .type = ecs_id(EgGpuTransferCmd)},
 	}});
+
+
+	ecs_alert(world, {
+		.entity = ecs_entity(world, { .name = "texture_without_device" }),
+		.query.expr = "eg.gpu.Texture($this), ChildOf($this, $parent), !eg.gpu.Device($parent)",
+		.severity = EcsAlertError,
+		.message = "$this: parent $parent does not have Device"
+	});
+
+	ecs_alert(world, {
+		.entity = ecs_entity(world, { .name = "shader_fragment_without_device" }),
+		.query.expr = "eg.gpu.ShaderFragment($this), ChildOf($this, $parent), !eg.gpu.Device($parent)",
+		.severity = EcsAlertError,
+		.message = "$this: parent $parent does not have Device"
+	});
+
+	ecs_alert(world, {
+		.entity = ecs_entity(world, { .name = "shader_vertex_without_device" }),
+		.query.expr = "eg.gpu.ShaderVertex($this), ChildOf($this, $parent), !eg.gpu.Device($parent)",
+		.severity = EcsAlertError,
+		.message = "$this: parent $parent does not have Device"
+	});
 
 	ecs_system(world,
 	{.entity = ecs_entity(world, {.name = "System_EgGpuDevice_Create", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),

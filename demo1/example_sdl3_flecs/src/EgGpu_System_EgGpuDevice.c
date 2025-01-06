@@ -30,7 +30,10 @@ void System_EgGpuDevice_Create(ecs_iter_t *it)
 				ecs_enable(world, e, false);
 				continue;
 			}
-			ecs_set(world, e, EgGpuDevice, {.device = device});
+			ecs_set(world, e, EgGpuDevice,
+			{
+			.device = device,
+			});
 			ecs_dbg("SDL_CreateGPUDevice() -> %p", device);
 			char buf[128];
 			snprintf(buf, 128, "%s", ecs_get_name(world, e));
@@ -40,7 +43,7 @@ void System_EgGpuDevice_Create(ecs_iter_t *it)
 			// ecs_doc_set_color(world, e, color);
 			snprintf(buf, 128, "Driver: %s, %08X", driver, formats);
 			ecs_doc_set_brief(world, e, buf);
-			// Entities can be annotated with the Final trait, which prevents using them with IsA relationship. 
+			// Entities can be annotated with the Final trait, which prevents using them with IsA relationship.
 			ecs_add_id(world, e, EcsFinal);
 		}
 		ecs_log_pop_1();

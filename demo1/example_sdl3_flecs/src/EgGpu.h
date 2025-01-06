@@ -4,18 +4,33 @@
 
 typedef struct
 {
+	bool debug;
+} EgGpuDeviceCreateInfo;
+typedef struct
+{
 	void * device;
 } EgGpuDevice;
+
+typedef struct
+{
+	uint32_t windows;
+	uint32_t textures;
+	uint32_t buffers;
+	uint32_t shaders;
+	uint32_t pipelines;
+} EgGpuStats;
+
+typedef struct
+{
+	EgGpuStats max;
+	EgGpuStats sum;
+} EgGpuDeviceDebug;
 
 typedef struct
 {
 	int dummy;
 } EgGpuWindow;
 
-typedef struct
-{
-	bool debug;
-} EgGpuDeviceCreateInfo;
 
 typedef struct
 {
@@ -140,7 +155,9 @@ extern ECS_TAG_DECLARE(EgGpuVertexFormat);
 
 extern ECS_COMPONENT_DECLARE(EgGpuDevice);
 extern ECS_COMPONENT_DECLARE(EgGpuWindow);
+extern ECS_COMPONENT_DECLARE(EgGpuStats);
 extern ECS_COMPONENT_DECLARE(EgGpuDeviceCreateInfo);
+extern ECS_COMPONENT_DECLARE(EgGpuDeviceDebug);
 extern ECS_COMPONENT_DECLARE(EgGpuShaderVertex);
 extern ECS_COMPONENT_DECLARE(EgGpuShaderVertexCreateInfo);
 extern ECS_COMPONENT_DECLARE(EgGpuShaderFragment);
