@@ -44,12 +44,12 @@ void System_QueryCreator(ecs_iter_t *it)
 {
 	QueryCreator *c = ecs_field(it, QueryCreator, 0); // self
 	for (int i = 0; i < it->count; ++i) {
-		ecs_query_t *q = ecs_query(it->world,
+		ecs_query_t *q = ecs_query(it->real_world,
 		{.terms = {
 		 {.id = ecs_id(SharedComponent), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsInOut}, // EcsInOut causes segfault
 		 //{.id = ecs_id(SharedComponent), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn}, // EcsIn: It works
 		 }});
-		ecs_set(it->world, it->entities[i], QueryRunner, {.query = q});
+		ecs_set(it->real_world, it->entities[i], QueryRunner, {.query = q});
 	}
 }
 
@@ -105,9 +105,22 @@ int main(int argc, char *argv[])
 	ecs_entity_t query_creator = ecs_entity(world, {.name = "query_runner"});
 	ecs_add(world, query_creator, QueryCreator);
 
+
+	
+/*
+
+		ecs_query_t *q = ecs_query(world,
+		{.terms = {
+		 {.id = ecs_id(SharedComponent), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsInOut}, // EcsInOut causes segfault
+		 //{.id = ecs_id(SharedComponent), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn}, // EcsIn: It works
+		 }});
+		 ecs_entity_t query_runner = ecs_entity(world, {.name = "query_runner"});
+		ecs_set(world, query_runner, QueryRunner, {.query = q});
+		*/
+
+
 	ecs_entity_t common = ecs_entity(world, {.name = "common"});
 	ecs_add(world, common, SharedComponent);
-
 	ecs_entity_t e0 = ecs_entity(world, {.name = "e0"});
 	ecs_entity_t e1 = ecs_entity(world, {.name = "e1"});
 	ecs_add_pair(world, e0, EcsChildOf, common);
