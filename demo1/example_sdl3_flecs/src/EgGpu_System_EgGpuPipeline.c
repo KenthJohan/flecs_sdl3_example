@@ -143,7 +143,6 @@ void System_EgGpuPipeline_Create(ecs_iter_t *it)
 
 	for (int i = 0; i < it->count; ++i) {
 		ecs_entity_t e = it->entities[i];
-		ecs_remove(world, e, EgBaseUpdate);
 		// Entities can be annotated with the Final trait, which prevents using them with IsA relationship.
 		ecs_add_id(world, e, EcsFinal);
 	}

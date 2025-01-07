@@ -15,8 +15,6 @@ gpu0 {
 		max.pipelines: 1,
 	}
 
-	eg.base.Update
-
 	tex_depth {}
 	tex_depth2 {}
 
@@ -36,13 +34,11 @@ gpu0 {
 	@brief "shaders/cube"
 	shader_fragment {
 		eg.gpu.ShaderFragmentCreateInfo : {stage: 0}
-		eg.base.Update
 	}
 
 	@brief "shaders/cube"
 	shader_vertex {
 		eg.gpu.ShaderVertexCreateInfo : {stage: 1}
-		eg.base.Update
 	}
 
 
@@ -54,12 +50,10 @@ gpu0 {
 		}
 		(flecs.core.DependsOn, shader_fragment)
 		(flecs.core.DependsOn, shader_vertex)
-		eg.base.Update
 	}
 
 	tex_depth {
 		eg.gpu.TextureCreateInfo : {sample_count:0}
-		eg.base.Update
 		(flecs.core.DependsOn, window1)
 	}
 	
@@ -73,7 +67,6 @@ gpu0 {
 
 	ibuf0 {
 		eg.gpu.BufferCreateInfo : {is_index:true, cap: 1024*24}
-		eg.base.Update
 		g0 {
 			eg.base.Update
 			(flecs.core.DependsOn, xmeshes.m1)
@@ -95,4 +88,8 @@ gpu0 {
 
 
 
+}
+
+aaa {
+	eg.gpu.Texture
 }

@@ -22,12 +22,12 @@ void System_EgGpuTransferCreateInfo(ecs_iter_t *it)
 			.terms = {
 
 		 {.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
-		 //{.id = ecs_id(EgGpuTransfer), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
-		 //{.id = ecs_id(EgGpuBufferTransfer), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
-		 //{.id = ecs_id(EgGpuBufferVertex), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
-		 //{.id = ecs_id(EgGpuBufferIndex), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
-		 //{.id = ecs_id(EgBaseVertexIndexVec), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsInOut}, // This causes segfault
-		 //{.id = it->entities[i], .trav = EcsChildOf, .src.id = EcsUp},
+		 {.id = ecs_id(EgGpuTransfer), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
+		 {.id = ecs_id(EgGpuBufferTransfer), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
+		 {.id = ecs_id(EgGpuBufferVertex), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+		 {.id = ecs_id(EgGpuBufferIndex), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+		 {.id = ecs_id(EgBaseVertexIndexVec), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsInOut}, // This causes segfault
+		 {.id = it->entities[i], .trav = EcsChildOf, .src.id = EcsUp},
 		 }});
 		ecs_set(it->world, it->entities[i], EgGpuTransfer, {.query1 = q});
 	} // END FOR LOOP
@@ -61,13 +61,11 @@ void System_EgGpuTransfer(ecs_iter_t *it)
 	EgGpuBufferTransfer *bt0 = ecs_field(it, EgGpuBufferTransfer, 1); // shared, parent
 	EgGpuTransfer *c = ecs_field(it, EgGpuTransfer, 2);               // self
 	for (int i = 0; i < it->count; ++i, ++c) {
-		/*
 		bool exist = ecs_query_is_true(c->query1);
 		if (!exist) {
 		    // ecs_dbg("System_EgGpuTransfer: query1 is false");
 		    continue;
 		}
-		*/
 		// gpu_transfer_begin(c, d0->device, bt0);
 		ecs_iter_t it2 = ecs_query_iter(it->world, c->query1);
 		while (ecs_iter_next(&it2)) {
