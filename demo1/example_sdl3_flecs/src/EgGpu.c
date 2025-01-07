@@ -36,7 +36,6 @@ ECS_COMPONENT_DECLARE(EgGpuTransferCreateInfo);
 ECS_COMPONENT_DECLARE(EgGpuTransferCmd);
 ECS_COMPONENT_DECLARE(EgGpuTransfer);
 
-
 void EgGpuDevice_remove(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
@@ -60,7 +59,6 @@ void EgGpuTexture_remove(ecs_iter_t *it)
 		ecs_get_name(world, event), ecs_get_name(world, e));
 	}
 }
-
 
 /*
 void CommonQuit(Context* context)
@@ -230,6 +228,7 @@ void EgGpuImport(ecs_world_t *world)
 	{.name = "object", .type = ecs_id(ecs_uptr_t)},
 	{.name = "cap", .type = ecs_id(ecs_u32_t)},
 	{.name = "last", .type = ecs_id(ecs_u32_t)},
+	{.name = "mapped", .type = ecs_id(ecs_uptr_t)},
 	}});
 
 	ecs_struct(world,
@@ -292,8 +291,6 @@ void EgGpuImport(ecs_world_t *world)
 	{.name = "cmd_last", .type = ecs_id(ecs_u32_t)},
 	{.name = "cmd", .type = ecs_id(EgGpuTransferCmd)},
 	}});
-
-
 
 	ecs_alert(world,
 	{.entity = ecs_entity(world, {.name = "texture_without_device"}),
@@ -395,16 +392,7 @@ void EgGpuImport(ecs_world_t *world)
 	{.id = ecs_id(EgBaseError), .oper = EcsNot},
 	}});
 
-	ecs_system(world,
-	{.entity = ecs_entity(world, {.name = "System_Claim", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
-	.callback = System_Claim,
-	.query.terms = {
-	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsIn},
-	{.id = ecs_id(EgWindowsWindow), .src.id = EcsSelf, .inout = EcsIn},
-	{.id = ecs_id(EgGpuWindow), .oper = EcsNot},
-	{.id = ecs_id(EgBaseError), .oper = EcsNot},
-	}});
-
+	/*
 	ecs_system(world,
 	{.entity = ecs_entity(world, {.name = "System_EgGpuTransferCreateInfo", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = System_EgGpuTransferCreateInfo,
@@ -412,13 +400,17 @@ void EgGpuImport(ecs_world_t *world)
 	{.id = ecs_id(EgGpuTransferCreateInfo)},
 	{.id = ecs_id(EgGpuTransfer), .oper = EcsNot}, // Adds this
 	}});
+	*/
 
 	ecs_system(world,
-	{.entity = ecs_entity(world, {.name = "System_EgGpuTransfer", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
-	.callback = System_EgGpuTransfer,
+	{.entity = ecs_entity(world, {.name = "Runner_EgGpuTransfer", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.run = Runner_EgGpuTransfer,
 	.query.terms = {
 	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsInOut},         // parent, parant
 	{.id = ecs_id(EgGpuBufferTransfer), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsInOut}, // parent
-	{.id = ecs_id(EgGpuTransfer)},
+	{.id = ecs_id(EgGpuBufferVertex), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgGpuBufferIndex), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
+	{.id = ecs_id(EgBaseVertexIndexVec), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsInOut},
+	{.id = EcsDisabled, .oper = EcsNot}, // parent, parant
 	}});
 }

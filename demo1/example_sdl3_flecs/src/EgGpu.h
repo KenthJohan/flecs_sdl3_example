@@ -93,6 +93,7 @@ typedef struct
 	void * object;
 	uint32_t cap;
 	uint32_t last;
+	void * mapped;
 } EgGpuBufferTransfer;
 
 typedef struct

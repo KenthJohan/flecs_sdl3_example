@@ -76,11 +76,9 @@ gpu0 {
 	tbuf0 {
 		eg.gpu.BufferCreateInfo : {is_transfer:true, cap: 1024*24}
 		cmds {
-			(flecs.core.DependsOn, tbuf0)
-			eg.gpu.TransferCreateInfo
 			cmd0 {
-				//(flecs.core.DependsOn, vbuf0)
-				//(flecs.core.DependsOn, ibuf0)
+				(flecs.core.DependsOn, vbuf0)
+				(flecs.core.DependsOn, ibuf0)
 				(flecs.core.DependsOn, xmeshes.m1)
 			}
 		}
