@@ -88,6 +88,17 @@ gpu0 {
 
 }
 
+/*
+Work in progress.
+The goal is to have ability to send commands from CPU flecs to GPU.
+For example:
+	* To send a command to copy data from CPU vertex buffer to GPU vertex buffer.
+	* To send a command to copy data from CPU index buffer to GPU index buffer.
+	* To send a command to copy data from CPU texture to GPU texture.
+*/
 aaa {
 	eg.gpu.Texture
+	cmd1 {
+		
+	}
 }

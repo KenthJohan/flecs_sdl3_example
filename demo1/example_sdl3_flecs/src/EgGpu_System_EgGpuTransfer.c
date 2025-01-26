@@ -12,10 +12,18 @@
 
 #include "test1.h"
 
+/*
+Work in progress.
+The goal is to have ability to send commands from CPU flecs to GPU.
+For example:
+	* To send a command to copy data from CPU vertex buffer to GPU vertex buffer.
+	* To send a command to copy data from CPU index buffer to GPU index buffer.
+	* To send a command to copy data from CPU texture to GPU texture.
+*/
 void Runner_EgGpuTransfer(ecs_iter_t *it)
 {
 	ecs_log_set_level(1);
-	ecs_dbg("Runner_EgGpuTransfer() count:%i", it->count);
+	//ecs_dbg("Runner_EgGpuTransfer() count:%i", it->count);
 	ecs_log_push_1();
 	while (ecs_query_next(it)) {
 		EgGpuDevice *d0 = ecs_field(it, EgGpuDevice, 0);                    // shared, parent

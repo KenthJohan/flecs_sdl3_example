@@ -8,6 +8,7 @@
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL_log.h>
+#include <SDL3/SDL_version.h>
 
 #include <flecs.h>
 
@@ -111,8 +112,9 @@ static void System_Draw(ecs_iter_t *it)
 		SDL_GPURenderPass *pass = SDL_BeginGPURenderPass(cmd, &color_target, 1, &depth_target);
 		SDL_BindGPUGraphicsPipeline(pass, c_pipeline->object);
 		SDL_BindGPUVertexBuffers(pass, 0, &vertex_binding, 1);
+		// call the inner system:
 		ecs_iter_t it2 = ecs_query_iter(it->world, c_draw1->query);
-		System_Draw1(&it2, cmd, pass); // call the inner system
+		System_Draw1(&it2, cmd, pass);
 		SDL_EndGPURenderPass(pass);
 	}
 
@@ -131,6 +133,8 @@ int main(int argc, char *argv[])
 		SDL_Log("Couldn't initialize video driver: %s\n", SDL_GetError());
 		return 1;
 	}
+
+	SDL_Log("SDL_GetRevision: %s", SDL_GetRevision());
 
 	ecs_os_set_api_defaults();
 	ecs_os_api_t os_api = ecs_os_get_api();
@@ -180,6 +184,7 @@ int main(int argc, char *argv[])
 	ecs_log_set_level(-1);
 
 	{
+		// Create a query for the draw system
 		ecs_entity_t e_draw1 = ecs_lookup(world, "xapp.renderer");
 		ecs_query_t *q = ecs_query(world,
 		{.terms = {
