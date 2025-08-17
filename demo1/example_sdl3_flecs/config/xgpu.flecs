@@ -68,8 +68,8 @@ gpu0 {
 	ibuf0 {
 		eg.gpu.BufferCreateInfo : {is_index:true, cap: 1024*24}
 		g0 {
-			eg.base.Update
-			(flecs.core.DependsOn, xmeshes.m1)
+			//eg.base.Update
+			//(flecs.core.DependsOn, xmeshes.m1)
 		}
 	}
 
@@ -97,7 +97,6 @@ For example:
 	* To send a command to copy data from CPU texture to GPU texture.
 */
 aaa {
-	eg.gpu.Texture
 	cmd1 {
 		
 	}

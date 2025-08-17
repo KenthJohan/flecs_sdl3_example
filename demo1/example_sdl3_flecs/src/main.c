@@ -24,6 +24,7 @@
 #include "EgDisplay.h"
 #include "EgGpu.h"
 #include "EgMeshes.h"
+#include "EgRenderers.h"
 
 static void System_Draw1(ecs_iter_t *it, SDL_GPUCommandBuffer *cmd, SDL_GPURenderPass *pass)
 {
@@ -155,6 +156,7 @@ int main(int argc, char *argv[])
 	ECS_IMPORT(world, EgKeyboards);
 	ECS_IMPORT(world, EgMeshes);
 	ECS_IMPORT(world, EgCamcontrols);
+	ECS_IMPORT(world, EgRenderers);
 
 	ecs_set(world, EcsWorld, EcsRest, {.port = 0});
 	printf("Remote: %s\n", "https://www.flecs.dev/explorer/?remote=true");

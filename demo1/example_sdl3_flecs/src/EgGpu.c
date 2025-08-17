@@ -98,6 +98,7 @@ void EgGpuImport(ecs_world_t *world)
 	ECS_MODULE(world, EgGpu);
 	ECS_IMPORT(world, EgBase);
 	ECS_IMPORT(world, EgShapes);
+	ECS_IMPORT(world, EgWindows);
 	ECS_IMPORT(world, FlecsAlerts);
 	ecs_set_name_prefix(world, "EgGpu");
 
