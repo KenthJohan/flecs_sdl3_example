@@ -383,6 +383,17 @@ void EgGpuImport(ecs_world_t *world)
 	{.id = ecs_id(EgGpuTexture), .oper = EcsNot}, // Adds this
 	{.id = EgBaseError, .oper = EcsNot}}});
 
+	ecs_observer_init(world,
+	&(ecs_observer_desc_t){
+	.entity = ecs_entity(world, {.name = "Observer_EgGpuTexture", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	.callback = Observer_EgGpuTexture,
+	.events = {EcsOnSet},
+	.query.terms = {
+	{.id = ecs_id(EgShapesRectangle)},
+	{.id = ecs_id(EgGpuTexture), .inout = EcsInOutFilter},
+	{.id = ecs_id(EgGpuDevice), .trav = EcsChildOf, .src.id = EcsUp, .inout = EcsInOutFilter},
+	}});
+
 	ecs_system(world,
 	{.entity = ecs_entity(world, {.name = "System_Claim", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = System_Claim,

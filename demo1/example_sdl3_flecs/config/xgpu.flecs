@@ -84,7 +84,18 @@ gpu0 {
 		}
 	}
 
-
+	renderer1 {
+		eg.gpu.Draw1
+		eg.shapes.Rectangle
+		(flecs.core.DependsOn, xgpu.gpu0.window1)
+		(flecs.core.DependsOn, xgpu.gpu0.pipeline)
+		(flecs.core.DependsOn, xgpu.gpu0.vbuf0)
+		(flecs.core.DependsOn, xgpu.gpu0.vbuf0.g0)
+		(flecs.core.DependsOn, xgpu.gpu0.ibuf0)
+		(flecs.core.DependsOn, xgpu.gpu0.ibuf0.g0)
+		(flecs.core.DependsOn, xgpu.gpu0.tex_depth)
+		eg.renderers.CreateInfo : {}
+	}
 
 }
 

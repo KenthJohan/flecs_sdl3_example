@@ -13,19 +13,7 @@ prefab transform {
 	eg.spatials.Position3 : {x: 0, y: 0, z: 0}
 }
 
-renderer {
-	eg.gpu.Draw1
-	eg.shapes.Rectangle
-	(flecs.core.DependsOn, xgpu.gpu0)
-	(flecs.core.DependsOn, xgpu.gpu0.window1)
-	(flecs.core.DependsOn, xgpu.gpu0.pipeline)
-	(flecs.core.DependsOn, xgpu.gpu0.vbuf0)
-	(flecs.core.DependsOn, xgpu.gpu0.vbuf0.g0)
-	(flecs.core.DependsOn, xgpu.gpu0.ibuf0)
-	(flecs.core.DependsOn, xgpu.gpu0.ibuf0.g0)
-	(flecs.core.DependsOn, xgpu.gpu0.tex_depth)
-	eg.renderers.CreateInfo : {}
-}
+
 
 
 
@@ -33,7 +21,7 @@ renderer {
 drawobjs
 {
 	c1 : transform {
-		(flecs.core.DependsOn, renderer)
+		(flecs.core.DependsOn, xgpu.gpu0.renderer1)
 		(flecs.core.DependsOn, xcam.cam0)
 		(flecs.core.DependsOn, xmeshes.m1.triangle2)
 		//eg.gpu.DrawPrimitive : {instance: xgpu.gpu0.vbuf0.i1, num_vertices: 36, num_instances: 1, first_vertex: 0, first_instance: 0}
@@ -43,7 +31,7 @@ drawobjs
 	}
 
 	c2 : transform {
-		(flecs.core.DependsOn, renderer)
+		(flecs.core.DependsOn, xgpu.gpu0.renderer1)
 		(flecs.core.DependsOn, xcam.cam0)
 		(flecs.core.DependsOn, xmeshes.m1.r1)
 		//eg.gpu.DrawPrimitive : {instance: xgpu.gpu0.vbuf0.i1, num_vertices: 36, num_instances: 1, first_vertex: 0, first_instance: 0}
@@ -52,7 +40,7 @@ drawobjs
 		eg.spatials.Rotate3 : {dx: 0.00, dy: 0.01, dz: 0}
 
 		c3 : transform {
-			(flecs.core.DependsOn, renderer)
+			(flecs.core.DependsOn, xgpu.gpu0.renderer1)
 			(flecs.core.DependsOn, xcam.cam0)
 			(flecs.core.DependsOn, xmeshes.m1.r1)
 			//eg.gpu.DrawPrimitive : {instance: xgpu.gpu0.vbuf0.i1, num_vertices: 36, num_instances: 1, first_vertex: 0, first_instance: 0}
@@ -61,7 +49,7 @@ drawobjs
 			eg.spatials.Rotate3 : {dx: 0.00, dy: 0.01, dz: 0}
 
 			c4 : transform {
-				(flecs.core.DependsOn, renderer)
+				(flecs.core.DependsOn, xgpu.gpu0.renderer1)
 				(flecs.core.DependsOn, xcam.cam0)
 				(flecs.core.DependsOn, xmeshes.m1.r1)
 				//eg.gpu.DrawPrimitive : {instance: xgpu.gpu0.vbuf0.i1, num_vertices: 36, num_instances: 1, first_vertex: 0, first_instance: 0}
