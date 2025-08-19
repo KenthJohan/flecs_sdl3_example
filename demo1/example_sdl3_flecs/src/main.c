@@ -45,7 +45,7 @@ static void System_Draw1(ecs_iter_t *it, SDL_GPUCommandBuffer *cmd, SDL_GPURende
 static void System_Draw(ecs_iter_t *it)
 {
 	EgGpuDraw1 *c_draw1 = ecs_field(it, EgGpuDraw1, 0);             // self
-	EgShapesRectangle *c_rec = ecs_field(it, EgShapesRectangle, 1); // self
+	EgShapesRectangle *r = ecs_field(it, EgShapesRectangle, 1); // self
 	EgGpuDevice *c_gpu = ecs_field(it, EgGpuDevice, 2);             // shared
 	EgGpuPipeline *c_pipeline = ecs_field(it, EgGpuPipeline, 3);    // shared
 	EgGpuBufferVertex *c_buf = ecs_field(it, EgGpuBufferVertex, 4); // shared
@@ -54,45 +54,52 @@ static void System_Draw(ecs_iter_t *it)
 	EgGpuWindow *c_gwin = ecs_field(it, EgGpuWindow, 7);            // shared
 	(void)c_gwin;
 
+	ecs_world_t * world = it->world;
+	SDL_GPUDevice * device = c_gpu->device;
+	SDL_Window * window = c_win->object;
+	SDL_GPUTexture *texture_depth = c_texd->object;
+	SDL_GPUGraphicsPipeline * pipeline = c_pipeline->object;
+	SDL_GPUBuffer * buffer = c_buf->object;
+	ecs_query_t * query = c_draw1->query;
 
 	for (int i = 0; i < it->count; ++i) {
 		ecs_entity_t e = it->entities[i];
 		
-		SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(c_gpu->device);
+		SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(device);
 		if (!cmd) {
 			SDL_Log("Failed to acquire command buffer :%s", SDL_GetError());
 			return;
 		}
 
-		SDL_GPUTexture *tex;
-		Uint32 drawableh = 0;
-		Uint32 drawablew = 0;
-		if (!SDL_WaitAndAcquireGPUSwapchainTexture(cmd, c_win->object, &tex, &drawablew, &drawableh)) {
+		SDL_GPUTexture *texture_swapchain;
+		Uint32 w = 0;
+		Uint32 h = 0;
+		if (!SDL_WaitAndAcquireGPUSwapchainTexture(cmd, window, &texture_swapchain, &w, &h)) {
 			SDL_Log("Failed to acquire swapchain texture: %s", SDL_GetError());
 			return;
 		}
 
-		if (c_rec->w != drawablew || c_rec->h != drawableh) {
-			c_rec->w = drawablew;
-			c_rec->h = drawableh;
+		if (r->w != w || r->h != h) {
+			r->w = w;
+			r->h = h;
 			ecs_entity_t et = ecs_field_src(it, 5);
-			ecs_set(it->world, et, EgShapesRectangle, {drawablew, drawableh});
+			ecs_set(it->world, et, EgShapesRectangle, {r->w, r->h});
 		}
 
-		if (tex == NULL) {
+		if (texture_swapchain == NULL) {
 			// No swapchain was acquired, probably too many frames in flight.
 			// you must always submit the command buffer.
 			SDL_SubmitGPUCommandBuffer(cmd);
 			return;
 		}
 
-		if (c_texd->object) {
+		if (texture_depth) {
 			SDL_GPUColorTargetInfo color_target = {0};
 			SDL_zero(color_target);
 			color_target.clear_color.a = 1.0f;
 			color_target.load_op = SDL_GPU_LOADOP_CLEAR;
 			color_target.store_op = SDL_GPU_STOREOP_STORE;
-			color_target.texture = tex;
+			color_target.texture = texture_swapchain;
 			SDL_GPUDepthStencilTargetInfo depth_target;
 			SDL_zero(depth_target);
 			depth_target.clear_depth = 1.0f;
@@ -100,16 +107,16 @@ static void System_Draw(ecs_iter_t *it)
 			depth_target.store_op = SDL_GPU_STOREOP_DONT_CARE;
 			depth_target.stencil_load_op = SDL_GPU_LOADOP_DONT_CARE;
 			depth_target.stencil_store_op = SDL_GPU_STOREOP_DONT_CARE;
-			depth_target.texture = c_texd->object;
+			depth_target.texture = texture_depth;
 			depth_target.cycle = true;
 			SDL_GPUBufferBinding vertex_binding;
-			vertex_binding.buffer = c_buf->object;
+			vertex_binding.buffer = buffer;
 			vertex_binding.offset = 0;
 			SDL_GPURenderPass *pass = SDL_BeginGPURenderPass(cmd, &color_target, 1, &depth_target);
-			SDL_BindGPUGraphicsPipeline(pass, c_pipeline->object);
+			SDL_BindGPUGraphicsPipeline(pass, pipeline);
 			SDL_BindGPUVertexBuffers(pass, 0, &vertex_binding, 1);
 			// call the inner system:
-			ecs_iter_t it2 = ecs_query_iter(it->world, c_draw1->query);
+			ecs_iter_t it2 = ecs_query_iter(world, query);
 			System_Draw1(&it2, cmd, pass);
 			SDL_EndGPURenderPass(pass);
 		}
