@@ -1,0 +1,9 @@
+@color #FF99FF
+script1 {}
+module script1
+
+@color #9b2316
+@brief Hello123
+hello {
+
+}
