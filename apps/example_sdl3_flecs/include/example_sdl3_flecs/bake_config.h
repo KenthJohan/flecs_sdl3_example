@@ -18,15 +18,17 @@
 #define EXAMPLE_SDL3_FLECS_BAKE_CONFIG_H
 
 /* Headers of public dependencies */
-#include <flecs.h>
-#include <egmath.h>
-#include <EgBase.h>
 #include <EgCameras.h>
 #include <EgShapes.h>
 #include <EgSpatials.h>
 #include <EgKeyboards.h>
 #include <EgWindows.h>
 #include <EgCamcontrols.h>
+#include <EgFs.h>
+#include <EgBase.h>
+#include <flecs.h>
+#include <egmisc.h>
+#include <egmath.h>
 #include <ecsx.h>
 
 #endif

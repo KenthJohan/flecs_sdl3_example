@@ -96,6 +96,7 @@ static void System_Draw(ecs_iter_t *it)
 			r->h = h;
 			ecs_entity_t depth = ecs_field_src(it, 5);
 			ecs_set(it->world, depth, EgShapesRectangle, {r->w, r->h});
+			//ecs_modified(it->world, depth, EgShapesRectangle);
 		}
 
 		if (texture_depth) {
