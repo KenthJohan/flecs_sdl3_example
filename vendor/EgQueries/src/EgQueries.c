@@ -1,6 +1,5 @@
-#include "ecsx/EcsxQueries.h"
-#include "ecsx/ecsx_trace.h"
-
+#include "EgQueries.h"
+#include <ecsx.h>
 
 
 static void test_query(ecs_world_t *world, ecs_query_t *q, ecs_entity_t parent)
@@ -53,10 +52,10 @@ static void SystemCreateGuiQuery(ecs_iter_t *it)
 	ecs_log_set_level(0);
 }
 
-void EcsxQueriesImport(ecs_world_t *world)
+void EgQueriesImport(ecs_world_t *world)
 {
-	ECS_MODULE(world, EcsxQueries);
-	ecs_set_name_prefix(world, "EcsxQueries");
+	ECS_MODULE(world, EgQueries);
+	ecs_set_name_prefix(world, "EgQueries");
 
 	ecs_system_init(world,
 	&(ecs_system_desc_t){

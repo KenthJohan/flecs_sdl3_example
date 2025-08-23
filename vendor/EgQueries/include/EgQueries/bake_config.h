@@ -14,25 +14,25 @@
  * dependencies will automatically show up in this file. Include bake_config.h
  * in your main project file. Do not edit! */
 
-#ifndef FLECS_EXTRA_BAKE_CONFIG_H
-#define FLECS_EXTRA_BAKE_CONFIG_H
+#ifndef EGQUERIES_BAKE_CONFIG_H
+#define EGQUERIES_BAKE_CONFIG_H
 
 /* Headers of public dependencies */
-#include <flecs.h>
+/* No dependencies */
 
 /* Convenience macro for exporting symbols */
-#ifndef flecs_extra_STATIC
-#if defined(flecs_extra_EXPORTS) && (defined(_MSC_VER) || defined(__MINGW32__))
-  #define FLECS_EXTRA_API __declspec(dllexport)
-#elif defined(flecs_extra_EXPORTS)
-  #define FLECS_EXTRA_API __attribute__((__visibility__("default")))
+#ifndef EgQueries_STATIC
+#if defined(EgQueries_EXPORTS) && (defined(_MSC_VER) || defined(__MINGW32__))
+  #define EGQUERIES_API __declspec(dllexport)
+#elif defined(EgQueries_EXPORTS)
+  #define EGQUERIES_API __attribute__((__visibility__("default")))
 #elif defined(_MSC_VER)
-  #define FLECS_EXTRA_API __declspec(dllimport)
+  #define EGQUERIES_API __declspec(dllimport)
 #else
-  #define FLECS_EXTRA_API
+  #define EGQUERIES_API
 #endif
 #else
-  #define FLECS_EXTRA_API
+  #define EGQUERIES_API
 #endif
 
 #endif

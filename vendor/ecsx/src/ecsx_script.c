@@ -1,3 +1,4 @@
+
 // #define _GNU_SOURCE /* To get defns of NI_MAXSERV and NI_MAXHOST */
 
 // Fixes: error: variable ‘ifr’ has initializer but incomplete type
@@ -5,7 +6,8 @@
 #define _DEFAULT_SOURCE
 #endif
 
-#include "flecs_extra.h"
+
+#include "ecsx/ecsx_script.h"
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -7,21 +7,12 @@
 #include <SDL3/SDL_filesystem.h>
 
 #include <ecsx.h>
+#include <egmisc.h>
 
 ECS_TAG_DECLARE(EgFsDir);
 ECS_TAG_DECLARE(EgFsFile);
 ECS_TAG_DECLARE(EgFsUpdate);
 
-static void str_replace_ab(char *str, char a, char b)
-{
-	char *p = str;
-	while (p[0]) {
-		if (p[0] == a) {
-			p[0] = b;
-		}
-		p++;
-	}
-}
 
 typedef struct {
 	ecs_world_t *world;
