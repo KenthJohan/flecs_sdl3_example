@@ -8,7 +8,7 @@
 int eg_popen(const char *command, int *out_exit_code, ecs_strbuf_t *str)
 {
 	FILE *f = NULL;
-	printf("popen: %s\n", command);
+	//printf("popen: %s\n", command);
 	f = popen(command, "r");
 	if (f == NULL) {
 		ecs_err("popen() returns NULL");

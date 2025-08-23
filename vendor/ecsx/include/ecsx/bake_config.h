@@ -14,20 +14,26 @@
  * dependencies will automatically show up in this file. Include bake_config.h
  * in your main project file. Do not edit! */
 
-#ifndef EXAMPLE_SDL3_FLECS_BAKE_CONFIG_H
-#define EXAMPLE_SDL3_FLECS_BAKE_CONFIG_H
+#ifndef ECSX_BAKE_CONFIG_H
+#define ECSX_BAKE_CONFIG_H
 
 /* Headers of public dependencies */
-#include <flecs.h>
-#include <egmath.h>
-#include <EgBase.h>
-#include <EgCameras.h>
-#include <EgShapes.h>
-#include <EgSpatials.h>
-#include <EgKeyboards.h>
-#include <EgWindows.h>
-#include <EgCamcontrols.h>
-#include <ecsx.h>
+/* No dependencies */
+
+/* Convenience macro for exporting symbols */
+#ifndef ecsx_STATIC
+#if defined(ecsx_EXPORTS) && (defined(_MSC_VER) || defined(__MINGW32__))
+  #define ECSX_API __declspec(dllexport)
+#elif defined(ecsx_EXPORTS)
+  #define ECSX_API __attribute__((__visibility__("default")))
+#elif defined(_MSC_VER)
+  #define ECSX_API __declspec(dllimport)
+#else
+  #define ECSX_API
+#endif
+#else
+  #define ECSX_API
+#endif
 
 #endif
 

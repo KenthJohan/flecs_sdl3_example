@@ -45,7 +45,7 @@ static void System_Draw1(ecs_iter_t *it, SDL_GPUCommandBuffer *cmd, SDL_GPURende
 static void System_Draw(ecs_iter_t *it)
 {
 	EgGpuDraw1 *c_draw1 = ecs_field(it, EgGpuDraw1, 0);             // self
-	EgShapesRectangle *r = ecs_field(it, EgShapesRectangle, 1); // self
+	EgShapesRectangle *r = ecs_field(it, EgShapesRectangle, 1);     // self
 	EgGpuDevice *c_gpu = ecs_field(it, EgGpuDevice, 2);             // shared
 	EgGpuPipeline *c_pipeline = ecs_field(it, EgGpuPipeline, 3);    // shared
 	EgGpuBufferVertex *c_buf = ecs_field(it, EgGpuBufferVertex, 4); // shared
@@ -54,43 +54,48 @@ static void System_Draw(ecs_iter_t *it)
 	EgGpuWindow *c_gwin = ecs_field(it, EgGpuWindow, 7);            // shared
 	(void)c_gwin;
 
-	ecs_world_t * world = it->world;
-	SDL_GPUDevice * device = c_gpu->device;
-	SDL_Window * window = c_win->object;
+	ecs_world_t *world = it->world;
+	SDL_GPUDevice *device = c_gpu->device;
+	SDL_Window *window = c_win->object;
 	SDL_GPUTexture *texture_depth = c_texd->object;
-	SDL_GPUGraphicsPipeline * pipeline = c_pipeline->object;
-	SDL_GPUBuffer * buffer = c_buf->object;
-	ecs_query_t * query = c_draw1->query;
+	SDL_GPUGraphicsPipeline *pipeline = c_pipeline->object;
+	SDL_GPUBuffer *buffer = c_buf->object;
+	ecs_query_t *query = c_draw1->query;
 
-	for (int i = 0; i < it->count; ++i) {
+	for (int i = 0; i < it->count; ++i, ++r) {
 		ecs_entity_t e = it->entities[i];
-		
+
 		SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(device);
-		if (!cmd) {
+		if (cmd == NULL) {
 			SDL_Log("Failed to acquire command buffer :%s", SDL_GetError());
-			return;
+			ecs_add(world, e, EgBaseError);
+			ecs_enable(world, e, false);
+			continue;
 		}
 
-		SDL_GPUTexture *texture_swapchain;
+		SDL_GPUTexture *texture_swapchain = NULL;
 		Uint32 w = 0;
 		Uint32 h = 0;
 		if (!SDL_WaitAndAcquireGPUSwapchainTexture(cmd, window, &texture_swapchain, &w, &h)) {
 			SDL_Log("Failed to acquire swapchain texture: %s", SDL_GetError());
-			return;
-		}
-
-		if (r->w != w || r->h != h) {
-			r->w = w;
-			r->h = h;
-			ecs_entity_t et = ecs_field_src(it, 5);
-			ecs_set(it->world, et, EgShapesRectangle, {r->w, r->h});
+			ecs_add(world, e, EgBaseError);
+			ecs_enable(world, e, false);
+			continue;
 		}
 
 		if (texture_swapchain == NULL) {
 			// No swapchain was acquired, probably too many frames in flight.
 			// you must always submit the command buffer.
 			SDL_SubmitGPUCommandBuffer(cmd);
-			return;
+			continue;
+		}
+
+		// Update the depth texture size if window has been resized:
+		if (r->w != w || r->h != h) {
+			r->w = w;
+			r->h = h;
+			ecs_entity_t depth = ecs_field_src(it, 5);
+			ecs_set(it->world, depth, EgShapesRectangle, {r->w, r->h});
 		}
 
 		if (texture_depth) {
@@ -186,6 +191,10 @@ int main(int argc, char *argv[])
 
 	ecs_log_set_level(0);
 	ecs_script_run_file(world, "config/xkeybinds.flecs");
+	ecs_log_set_level(-1);
+
+	ecs_log_set_level(0);
+	ecs_script_run_file(world, "config/xfiles.flecs");
 	ecs_log_set_level(-1);
 
 	{

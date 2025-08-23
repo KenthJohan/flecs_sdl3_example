@@ -3,11 +3,8 @@
 #include <EgBase.h>
 #include <EgWindows.h>
 
-
 ECS_COMPONENT_DECLARE(EgRenderersContext);
 ECS_COMPONENT_DECLARE(EgRenderersCreateInfo);
-
-
 
 void System_Create(ecs_iter_t *it)
 {
@@ -28,8 +25,9 @@ void EgRenderersImport(ecs_world_t *world)
 	ECS_COMPONENT_DEFINE(world, EgRenderersContext);
 	ECS_COMPONENT_DEFINE(world, EgRenderersCreateInfo);
 
-	ecs_system(world,
-	{.entity = ecs_entity(world, {.name = "System_Create", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
+	ecs_system_init(world,
+	&(ecs_system_desc_t){
+	.entity = ecs_entity(world, {.name = "System_Create", .add = ecs_ids(ecs_dependson(EcsOnUpdate))}),
 	.callback = System_Create,
 	.query.terms = {
 	{.id = ecs_id(EgRenderersCreateInfo)},
@@ -40,6 +38,6 @@ void EgRenderersImport(ecs_world_t *world)
 	{.id = ecs_id(EgWindowsWindow), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgGpuWindow), .trav = EcsDependsOn, .src.id = EcsUp, .inout = EcsIn},
 	{.id = ecs_id(EgRenderersContext), .oper = EcsNot}, // Adds this
-	{.id = EgBaseError, .oper = EcsNot}}});
-
+	{.id = EgBaseError, .oper = EcsNot},
+	}});
 }

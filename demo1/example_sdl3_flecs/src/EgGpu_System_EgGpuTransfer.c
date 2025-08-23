@@ -22,9 +22,9 @@ For example:
 */
 void Runner_EgGpuTransfer(ecs_iter_t *it)
 {
-	ecs_log_set_level(1);
+	ecs_log_set_level(0);
 	//ecs_dbg("Runner_EgGpuTransfer() count:%i", it->count);
-	ecs_log_push_1();
+	ecs_log_push_(0);
 	while (ecs_query_next(it)) {
 		EgGpuDevice *d0 = ecs_field(it, EgGpuDevice, 0);                    // shared, parent
 		EgGpuBufferTransfer *bt0 = ecs_field(it, EgGpuBufferTransfer, 1);   // shared, parent
@@ -36,6 +36,6 @@ void Runner_EgGpuTransfer(ecs_iter_t *it)
 			ecs_enable(it->world, it->entities[i], false);
 		} // END FOR LOOP
 	}
-	ecs_log_pop_1();
+	ecs_log_pop_(0);
 	ecs_log_set_level(0);
 }

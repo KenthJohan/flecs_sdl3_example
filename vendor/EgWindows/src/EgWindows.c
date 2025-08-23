@@ -29,12 +29,12 @@ static void System_EgWindowsWindow_Create(ecs_iter_t *it)
 	ecs_world_t *world = it->world;
 	EgWindowsWindowCreateInfo *create = ecs_field(it, EgWindowsWindowCreateInfo, 0);
 	ecs_log_set_level(1);
-	ecs_dbg("System_EgWindowsWindow_Create() count:%i", it->count);
-	ecs_log_push_1();
+	ecs_trace("System_EgWindowsWindow_Create() count:%i", it->count);
+	ecs_log_push_(0);
 	for (int i = 0; i < it->count; ++i, ++create) {
 		ecs_entity_t e = it->entities[i];
-		ecs_dbg("Entity: '%s'", ecs_get_name(world, e));
-		ecs_log_push_1();
+		ecs_trace("Entity: '%s'", ecs_get_name(world, e));
+		ecs_log_push_(0);
 		{
 			SDL_PropertiesID props = SDL_CreateProperties();
 			SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, ecs_get_name(world, e));
@@ -52,12 +52,12 @@ static void System_EgWindowsWindow_Create(ecs_iter_t *it)
 			SDL_WindowID id = SDL_GetWindowID(window);
 			ecs_map_insert(&static_window_map, id, e);
 			ecs_set(world, e, EgWindowsWindow, {.object = window});
-			ecs_dbg("SDL_CreateWindowWithProperties() -> %p", window);
+			ecs_trace("SDL_CreateWindowWithProperties() -> %p", window);
 		}
-		ecs_log_pop_1();
+		ecs_log_pop_(0);
 
 	} // END FOR LOOP
-	ecs_log_pop_1();
+	ecs_log_pop_(0);
 	ecs_log_set_level(0);
 }
 
@@ -147,7 +147,7 @@ static void System_Resize(ecs_iter_t *it)
 {
 	ecs_id_t pair = ecs_field_id(it, 1);
 	ecs_entity_t food = ecs_pair_second(it->world, pair);
-	printf("food: %s\n", ecs_get_name(it->world, food));
+	ecs_trace("food: %s\n", ecs_get_name(it->world, food));
 	ecs_add(it->world, food, EgBaseUpdate);
 	for (int i = 0; i < it->count; ++i) {
 		ecs_remove(it->world, it->entities[i], EgWindowsEventResize);

@@ -137,9 +137,9 @@ static int iterate_attributes(ecs_world_t *world, ecs_entity_t parent, SDL_GPUVe
 void System_EgGpuPipeline_Create(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
-	ecs_log_set_level(1);
-	ecs_dbg("System_EgGpuPipeline_Create() count:%i", it->count);
-	ecs_log_push_1();
+	ecs_log_set_level(0);
+	ecs_trace("System_EgGpuPipeline_Create() count:%i", it->count);
+	ecs_log_push_(0);
 
 	for (int i = 0; i < it->count; ++i) {
 		ecs_entity_t e = it->entities[i];
@@ -156,8 +156,8 @@ void System_EgGpuPipeline_Create(ecs_iter_t *it)
 
 	for (int i = 0; i < it->count; ++i, ++field_info) {
 		ecs_entity_t e = it->entities[i];
-		ecs_dbg("Entity: '%s'", ecs_get_name(world, e));
-		ecs_log_push_1();
+		ecs_trace("Entity: '%s'", ecs_get_name(world, e));
+		ecs_log_push_(0);
 		{
 			SDL_GPUColorTargetDescription color_target_desc = {0};
 			SDL_GPUVertexAttribute vertex_attributes[MAX_ATRTIBUTES] = {0};
@@ -221,10 +221,10 @@ void System_EgGpuPipeline_Create(ecs_iter_t *it)
 				continue;
 			}
 			ecs_set(world, e, EgGpuPipeline, {.object = pipeline});
-			ecs_dbg("SDL_CreateGPUGraphicsPipeline(%p) -> %p", gpu->device, pipeline);
+			ecs_trace("SDL_CreateGPUGraphicsPipeline(%p) -> %p", gpu->device, pipeline);
 		}
-		ecs_log_pop_1();
+		ecs_log_pop_(0);
 	} // END FOR LOOP
-	ecs_log_pop_1();
+	ecs_log_pop_(0);
 	ecs_log_set_level(0);
 }

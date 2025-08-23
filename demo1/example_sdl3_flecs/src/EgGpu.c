@@ -75,8 +75,8 @@ void System_Claim(ecs_iter_t *it)
 	EgGpuDevice *c_gpu = ecs_field(it, EgGpuDevice, 0);         // up
 	EgWindowsWindow *c_win = ecs_field(it, EgWindowsWindow, 1); // self
 	ecs_log_set_level(1);
-	ecs_dbg("System_Claim() count:%i", it->count);
-	ecs_log_push_1();
+	ecs_trace("System_Claim() count:%i", it->count);
+	ecs_log_push_(0);
 	for (int i = 0; i < it->count; ++i, ++c_gpu) {
 		ecs_entity_t e = it->entities[i];
 		// printf("e=%s, e_win=%s\n", ecs_get_name(world, e), ecs_get_name(world, e_win1));
@@ -85,11 +85,11 @@ void System_Claim(ecs_iter_t *it)
 			ecs_add_id(world, e, EgBaseError);
 			ecs_err("SDL_ClaimWindowForGPUDevice() failed");
 		} else {
-			ecs_dbg("SDL_ClaimWindowForGPUDevice() success");
+			ecs_trace("SDL_ClaimWindowForGPUDevice() success");
 			ecs_add(world, e, EgGpuWindow);
 		}
 	} // END FOR LOOP
-	ecs_log_pop_1();
+	ecs_log_pop_(0);
 	ecs_log_set_level(0);
 }
 

@@ -107,7 +107,8 @@
 		"algorithm": "c",
 		"eggpu_system_eggputransferbuffer.h": "c",
 		"eggpu_system_eggputransfer.h": "c",
-		"egrenderers.h": "c"
+		"egrenderers.h": "c",
+		"ecsx.h": "c"
 	},
 	"terminal.integrated.env.linux": {
 		"GTK_PATH": ""

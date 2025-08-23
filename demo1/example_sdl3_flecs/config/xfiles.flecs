@@ -1,0 +1,9 @@
+@color #FF99FF
+xfiles {}
+module xfiles
+
+files {
+	(flecs.doc.Description, flecs.core.Name) : {"."}
+	eg.fs.Dir
+	eg.fs.Update
+}

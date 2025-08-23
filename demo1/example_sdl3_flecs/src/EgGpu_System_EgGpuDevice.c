@@ -18,12 +18,12 @@ void System_EgGpuDevice_Create(ecs_iter_t *it)
 	EgGpuDeviceCreateInfo *create = ecs_field(it, EgGpuDeviceCreateInfo, 0);
 
 	ecs_log_set_level(1);
-	ecs_dbg("System Sampler_Create() count:%i", it->count);
-	ecs_log_push_1();
+	ecs_trace("System Sampler_Create() count:%i", it->count);
+	ecs_log_push_(0);
 	for (int i = 0; i < it->count; ++i, ++create) {
 		ecs_entity_t e = it->entities[i];
-		ecs_dbg("Entity: '%s'", ecs_get_name(world, e));
-		ecs_log_push_1();
+		ecs_trace("Entity: '%s'", ecs_get_name(world, e));
+		ecs_log_push_(0);
 		{
 			SDL_GPUDevice *device = SDL_CreateGPUDevice(TESTGPU_SUPPORTED_FORMATS, true, NULL);
 			if (device == NULL) {
@@ -34,7 +34,7 @@ void System_EgGpuDevice_Create(ecs_iter_t *it)
 			{
 			.device = device,
 			});
-			ecs_dbg("SDL_CreateGPUDevice() -> %p", device);
+			ecs_trace("SDL_CreateGPUDevice() -> %p", device);
 			char buf[128];
 			snprintf(buf, 128, "%s", ecs_get_name(world, e));
 			ecs_doc_set_name(world, e, buf);
@@ -46,9 +46,9 @@ void System_EgGpuDevice_Create(ecs_iter_t *it)
 			// Entities can be annotated with the Final trait, which prevents using them with IsA relationship.
 			ecs_add_id(world, e, EcsFinal);
 		}
-		ecs_log_pop_1();
+		ecs_log_pop_(0);
 
 	} // END FOR LOOP
-	ecs_log_pop_1();
+	ecs_log_pop_(0);
 	ecs_log_set_level(0);
 }

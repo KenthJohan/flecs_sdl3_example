@@ -13,8 +13,8 @@ void System_EgGpuTexture_Create(ecs_iter_t *it)
 {
 	ecs_world_t *world = it->world;
 	ecs_log_set_level(1);
-	ecs_dbg("System_EgGpuTexture_Create() count:%i", it->count);
-	ecs_log_push_1();
+	ecs_trace("System_EgGpuTexture_Create() count:%i", it->count);
+	ecs_log_push_(0);
 
 	for (int i = 0; i < it->count; ++i) {
 		ecs_entity_t e = it->entities[i];
@@ -27,8 +27,8 @@ void System_EgGpuTexture_Create(ecs_iter_t *it)
 	EgGpuTextureCreateInfo *c_create = ecs_field(it, EgGpuTextureCreateInfo, 2); // self
 	for (int i = 0; i < it->count; ++i, ++c_create) {
 		ecs_entity_t e = it->entities[i];
-		ecs_dbg("Entity: '%s'", ecs_get_name(world, e));
-		ecs_log_push_1();
+		ecs_trace("Entity: '%s'", ecs_get_name(world, e));
+		ecs_log_push_(0);
 		{
 			SDL_GPUTextureCreateInfo createinfo = {0};
 			createinfo.type = SDL_GPU_TEXTURETYPE_2D;
@@ -44,12 +44,12 @@ void System_EgGpuTexture_Create(ecs_iter_t *it)
 			if (tex) {
 				ecs_set(world, e, EgGpuTexture, {.object = tex});
 			}
-			ecs_dbg("w: '%f', h: '%f'", c_rect->w, c_rect->h);
+			ecs_trace("w: '%f', h: '%f'", c_rect->w, c_rect->h);
 		}
-		ecs_log_pop_1();
+		ecs_log_pop_(0);
 
 	} // END FOR LOOP
-	ecs_log_pop_1();
+	ecs_log_pop_(0);
 	ecs_log_set_level(0);
 }
 
@@ -62,7 +62,7 @@ void Observer_EgGpuTexture(ecs_iter_t *it)
 	EgGpuTexture *t = ecs_field(it, EgGpuTexture, 1); // self
 	EgGpuDevice *g = ecs_field(it, EgGpuDevice, 2); // shared
 	for (int i = 0; i < it->count; ++i, ++r, ++t) {
-		printf("Changing texture size: %s\n", ecs_get_name(world, it->entities[i]));
+		printf("Changing texture (%s) to size (%f %f)\n", ecs_get_name(world, it->entities[i]), r->w, r->h);
 		SDL_ReleaseGPUTexture(g->device, t->object);
 		SDL_GPUTextureCreateInfo createinfo = {0};
 		createinfo.type = SDL_GPU_TEXTURETYPE_2D;

@@ -24,9 +24,9 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 	ecs_world_t *world = it->world;
 	EgGpuDevice *c_gpu = ecs_field(it, EgGpuDevice, 0);                      // shared, parent
 	EgGpuBufferCreateInfo *create = ecs_field(it, EgGpuBufferCreateInfo, 1); // self
-	ecs_log_set_level(1);
-	ecs_dbg("System_EgGpuBuffer_Create() count:%i", it->count);
-	ecs_log_push_1();
+	ecs_log_set_level(0);
+	ecs_trace("System_EgGpuBuffer_Create() count:%i", it->count);
+	ecs_log_push_(0);
 
 	for (int i = 0; i < it->count; ++i) {
 		ecs_entity_t e = it->entities[i];
@@ -38,8 +38,8 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 
 	for (int i = 0; i < it->count; ++i) {
 		ecs_entity_t e = it->entities[i];
-		ecs_dbg("Entity: '%s'", ecs_get_name(world, e));
-		ecs_log_push_1();
+		ecs_trace("Entity: '%s'", ecs_get_name(world, e));
+		ecs_log_push_(0);
 		if (create[i].is_vertex) {
 			SDL_GPUBufferCreateInfo desc = {0};
 			desc.usage = SDL_GPU_BUFFERUSAGE_VERTEX;
@@ -86,10 +86,10 @@ void System_EgGpuBuffer_Create(ecs_iter_t *it)
 			gpudbg->sum.buffers++;
 		}
 
-		ecs_log_pop_1();
+		ecs_log_pop_(0);
 	}
 
-	ecs_log_pop_1();
+	ecs_log_pop_(0);
 	ecs_log_set_level(0);
 }
 
@@ -105,8 +105,8 @@ TODO: We need to upload both vertex and index data to the GPU.
 void System_EgGpuBuffer_Fill(ecs_iter_t *it)
 {
 	ecs_log_set_level(1);
-	ecs_dbg("System_EgGpuBuffer_Fill() count:%i", it->count);
-	ecs_log_push_1();
+	ecs_trace("System_EgGpuBuffer_Fill() count:%i", it->count);
+	ecs_log_push_(0);
 
 	for (int i = 0; i < it->count; ++i) {
 		ecs_remove(it->world, it->entities[i], EgBaseUpdate);
@@ -117,7 +117,7 @@ void System_EgGpuBuffer_Fill(ecs_iter_t *it)
 	EgBaseVertexIndexVec *vi0 = ecs_field(it, EgBaseVertexIndexVec, 2); // shared, dependent
 	for (int i = 0; i < it->count; ++i) {
 		ecs_entity_t e = it->entities[i];
-		ecs_dbg("Entity: '%s'", ecs_get_name(it->world, e));
+		ecs_trace("Entity: '%s'", ecs_get_name(it->world, e));
 
 		int32_t total = ecs_vec_count(&vi0->vertices) * vi0->stride_vertices;
 		vertex_xyz_rgba const *data = ecs_vec_first(&vi0->vertices);
@@ -133,7 +133,7 @@ void System_EgGpuBuffer_Fill(ecs_iter_t *it)
 		sdl_gpu_copy_simple1(d0->device, data, total, b0->object);
 	} // END FOR LOOP
 
-	ecs_log_pop_1();
+	ecs_log_pop_(0);
 	ecs_log_set_level(0);
 }
 

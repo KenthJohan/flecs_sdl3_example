@@ -14,7 +14,8 @@
 			"EgSpatials",
 			"EgKeyboards",
 			"EgWindows",
-			"EgCamcontrols"
+			"EgCamcontrols",
+			"ecsx"
 		]
 	},
 	"lang.c": {
@@ -33,6 +34,7 @@
 			"EgWindows",
 			"EgKeyboards",
 			"egmath",
+			"ecsx",
 			"SDL3",
 			"m"
 		],
