@@ -19,3 +19,9 @@ shader {
 	eg.fs.Read
 	eg.fs.Content
 }
+
+
+program1 {
+	(flecs.core.DependsOn, shader)
+	eg.glslang.Create
+}

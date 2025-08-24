@@ -26,6 +26,7 @@
 #include <EgCamcontrols.h>
 #include <EgFs.h>
 #include <EgBase.h>
+#include <EgGlslang.h>
 #include <flecs.h>
 #include <egmisc.h>
 #include <egmath.h>

@@ -83,3 +83,7 @@ void System_EgGpuShaderVertex_Create(ecs_iter_t *it)
 	ecs_log_pop_(0);
 	ecs_log_set_level(0);
 }
+
+
+
+

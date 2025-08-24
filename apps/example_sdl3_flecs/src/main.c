@@ -19,6 +19,7 @@
 #include <EgShapes.h>
 #include <EgKeyboards.h>
 #include <EgWindows.h>
+#include <EgGlslang.h>
 
 #include "EgFs.h"
 #include "EgDisplay.h"
@@ -169,6 +170,7 @@ int main(int argc, char *argv[])
 	ECS_IMPORT(world, EgMeshes);
 	ECS_IMPORT(world, EgCamcontrols);
 	ECS_IMPORT(world, EgRenderers);
+	ECS_IMPORT(world, EgGlslang);
 
 	ecs_set(world, EcsWorld, EcsRest, {.port = 0});
 	printf("Remote: %s\n", "https://www.flecs.dev/explorer/?remote=true");
