@@ -14,7 +14,7 @@ static void private_list_modes(ecs_world_t *world, ecs_entity_t parent, SDL_Disp
 	const SDL_DisplayMode *mode;
 	modes = SDL_GetFullscreenDisplayModes(displayID, &m);
 	if (m == 0) {
-		ecs_err("No available fullscreen video modes\n");
+		ecs_err("No available fullscreen video modes");
 		return;
 	}
 	
@@ -47,10 +47,10 @@ static void private_list_displays(ecs_world_t *world)
 #endif
 	int n;
 	displays = SDL_GetDisplays(&n);
-	ecs_trace("Number of displays: %d\n", n);
+	ecs_trace("Number of displays: %d", n);
 	for (int i = 0; i < n; ++i) {
 		SDL_DisplayID displayID = displays[i];
-		ecs_trace("Display %" SDL_PRIu32 ": %s\n", displayID, SDL_GetDisplayName(displayID));
+		ecs_trace("Display %" SDL_PRIu32 ": %s", displayID, SDL_GetDisplayName(displayID));
 
 		char buf[64];
 		snprintf(buf, sizeof(buf), "Display %i", displayID);
@@ -63,21 +63,21 @@ static void private_list_displays(ecs_world_t *world)
 		SDL_zero(usablebounds);
 		SDL_GetDisplayUsableBounds(displayID, &usablebounds);
 
-		ecs_trace("Bounds: %dx%d at %d,%d\n", bounds.w, bounds.h, bounds.x, bounds.y);
-		ecs_trace("Usable bounds: %dx%d at %d,%d\n", usablebounds.w, usablebounds.h, usablebounds.x, usablebounds.y);
+		ecs_trace("Bounds: %dx%d at %d,%d", bounds.w, bounds.h, bounds.x, bounds.y);
+		ecs_trace("Usable bounds: %dx%d at %d,%d", usablebounds.w, usablebounds.h, usablebounds.x, usablebounds.y);
 
 		const SDL_DisplayMode *mode = SDL_GetDesktopDisplayMode(displayID);
 		SDL_GetMasksForPixelFormat(mode->format, &bpp, &Rmask, &Gmask,
 		&Bmask, &Amask);
-		ecs_trace("  Desktop mode: %dx%d@%gx %gHz, %d bits-per-pixel (%s)\n",
+		ecs_trace("  Desktop mode: %dx%d@%gx %gHz, %d bits-per-pixel (%s)",
 		mode->w, mode->h, mode->pixel_density, mode->refresh_rate, bpp,
 		SDL_GetPixelFormatName(mode->format));
 		if (Rmask || Gmask || Bmask) {
-			ecs_trace("      Red Mask   = 0x%.8" SDL_PRIx32 "\n", Rmask);
-			ecs_trace("      Green Mask = 0x%.8" SDL_PRIx32 "\n", Gmask);
-			ecs_trace("      Blue Mask  = 0x%.8" SDL_PRIx32 "\n", Bmask);
+			ecs_trace("      Red Mask   = 0x%.8" SDL_PRIx32 "", Rmask);
+			ecs_trace("      Green Mask = 0x%.8" SDL_PRIx32 "", Gmask);
+			ecs_trace("      Blue Mask  = 0x%.8" SDL_PRIx32 "", Bmask);
 			if (Amask) {
-				ecs_trace("      Alpha Mask = 0x%.8" SDL_PRIx32 "\n", Amask);
+				ecs_trace("      Alpha Mask = 0x%.8" SDL_PRIx32 "", Amask);
 			}
 		}
 

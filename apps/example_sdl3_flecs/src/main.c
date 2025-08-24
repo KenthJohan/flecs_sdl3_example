@@ -67,7 +67,7 @@ static void System_Draw(ecs_iter_t *it)
 
 		SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(device);
 		if (cmd == NULL) {
-			SDL_Log("Failed to acquire command buffer :%s", SDL_GetError());
+			ecs_err("Failed to acquire command buffer :%s", SDL_GetError());
 			ecs_add(world, e, EgBaseError);
 			ecs_enable(world, e, false);
 			continue;
@@ -77,7 +77,7 @@ static void System_Draw(ecs_iter_t *it)
 		Uint32 w = 0;
 		Uint32 h = 0;
 		if (!SDL_WaitAndAcquireGPUSwapchainTexture(cmd, window, &texture_swapchain, &w, &h)) {
-			SDL_Log("Failed to acquire swapchain texture: %s", SDL_GetError());
+			ecs_err("Failed to acquire swapchain texture: %s", SDL_GetError());
 			ecs_add(world, e, EgBaseError);
 			ecs_enable(world, e, false);
 			continue;
@@ -133,22 +133,25 @@ static void System_Draw(ecs_iter_t *it)
 
 int main(int argc, char *argv[])
 {
-	printf("SDL_GetRevision %s\n", SDL_GetRevision());
-	if (!SDL_InitSubSystem(SDL_INIT_VIDEO)) {
-		SDL_Log("Couldn't initialize video driver: %s\n", SDL_GetError());
-		return 1;
-	}
-
-	if (!SDL_InitSubSystem(SDL_INIT_VIDEO)) {
-		SDL_Log("Couldn't initialize video driver: %s\n", SDL_GetError());
-		return 1;
-	}
-
-	SDL_Log("SDL_GetRevision: %s", SDL_GetRevision());
-
 	ecs_os_set_api_defaults();
 	ecs_os_api_t os_api = ecs_os_get_api();
 	ecs_os_set_api(&os_api);
+
+	ecs_log_set_level(0);
+	ecs_trace("SDL_GetRevision %s\n", SDL_GetRevision());
+
+	if (!SDL_InitSubSystem(SDL_INIT_VIDEO)) {
+		ecs_err("Couldn't initialize video driver: %s\n", SDL_GetError());
+		return 1;
+	}
+
+	if (!SDL_InitSubSystem(SDL_INIT_VIDEO)) {
+		ecs_err("Couldn't initialize video driver: %s\n", SDL_GetError());
+		return 1;
+	}
+	ecs_log_set_level(-1);
+
+
 
 	ecs_world_t *world = ecs_init();
 	ECS_IMPORT(world, FlecsUnits);

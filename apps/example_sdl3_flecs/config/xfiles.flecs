@@ -7,3 +7,15 @@ files {
 	eg.fs.Dir
 	eg.fs.Update
 }
+
+/*
+Adding (eg.fs.Stream) with (eg.fs.File) and (flecs.core.Name) will open a file stream.
+Adding (eg.fs.Read) with (eg.fs.File) and (flecs.core.Name) will open a file stream.
+*/
+shader {
+	(flecs.doc.Description, flecs.core.Name) : {"./shaders/cube.frag.glsl"}
+	eg.fs.Stream 
+	eg.fs.File
+	eg.fs.Read
+	eg.fs.Content
+}
