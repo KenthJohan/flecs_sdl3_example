@@ -12,8 +12,16 @@ files {
 Adding (eg.fs.Stream) with (eg.fs.File) and (flecs.core.Name) will open a file stream.
 Adding (eg.fs.Read) with (eg.fs.File) and (flecs.core.Name) will open a file stream.
 */
-shader {
+shader_file1 {
 	(flecs.doc.Description, flecs.core.Name) : {"./shaders/cube.frag.glsl"}
+	eg.fs.Stream 
+	eg.fs.File
+	eg.fs.Read
+	eg.fs.Content
+}
+
+shader_file2 {
+	(flecs.doc.Description, flecs.core.Name) : {"./shaders/cube.vert.glsl"}
 	eg.fs.Stream 
 	eg.fs.File
 	eg.fs.Read
@@ -22,6 +30,11 @@ shader {
 
 
 program1 {
-	(flecs.core.DependsOn, shader)
-	eg.glslang.Create
+	(flecs.core.DependsOn, shader_file1)
+	eg.glslang.Create : {dummy : 4}
+}
+
+program2 {
+	(flecs.core.DependsOn, shader_file2)
+	eg.glslang.Create : {dummy : 0}
 }
