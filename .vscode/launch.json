@@ -50,5 +50,31 @@
 				"externalConsole": false,
 			}
 		},
+		{
+			"name": "Launch test_inotify",
+			"type": "cppdbg",
+			"request": "launch",
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/apps/test_inotify",
+			"environment": [
+				{
+					"name": "LD_LIBRARY_PATH",
+					"value": "${workspaceFolder}/bin/x64-Linux-debug:${env:HOME}/bake/x64-Linux/debug/lib/:/usr/local/lib/"
+				},
+			],
+			"program": "${workspaceFolder}/apps/test_inotify/bin/x64-Linux-debug/test_inotify",
+			"args": [
+				"./config",
+				"./src"
+			],
+			"osx": {
+				"MIMode": "lldb",
+				"targetArchitecture": "arm64",
+				"externalConsole": false,
+			},
+			"linux": {
+				"externalConsole": false,
+			}
+		},
 	]
 }

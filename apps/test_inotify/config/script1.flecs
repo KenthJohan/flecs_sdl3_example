@@ -1,0 +1,24 @@
+@color #FF99FF
+script1 {}
+module script1
+
+
+a {
+	eg.fs.Path : {"./config/script1.flecs"}
+}
+
+
+
+@color #9b2316
+@brief Hello123
+hello {
+	//eg.fs.Epoll
+	i1 {
+		eg.fs.Inotify
+		w1 {
+			eg.fs.Watch : {file:eg.fs.entfile("./config/script1.flecs")}
+			eg.fs.Path : {"./config"}
+		}
+	}
+}
+

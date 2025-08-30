@@ -1,0 +1,45 @@
+{
+	"id": "test_inotify",
+	"type": "application",
+	"value": {
+		"language": "c",
+		"public": false,
+		"use": [
+			"flecs",
+			"EgFs"
+		]
+	},
+	"lang.c": {
+		"c-standard": "gnu99",
+		"defines": [
+			"_FORTIFY_SOURCE=2"
+		],
+		"lib": [
+			"flecs",
+			"EgFs",
+			"m"
+		],
+		"cflags": [
+			"-Werror",
+			"-Wall",
+			"-Wextra",
+			"-Wno-error=unused-local-typedefs",
+			"-Wno-error=unused-const-variable=",
+			"-Wno-error=unused-variable",
+			"-Wno-error=unused-function",
+			"-ftrapv",
+			"-Werror=format-security",
+			"-Wl,-z,defs",
+			"-fstack-clash-protection",
+			"-fstack-protector-strong",
+			"-fstack-protector",
+			"-fstack-protector-all",
+			"-grecord-gcc-switches",
+			"-pipe",
+			"-Werror=implicit-function-declaration",
+			"-Wl,-z,now",
+			"-Wl,-z,relro",
+			"-Wwrite-strings"
+		]
+	}
+}
