@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
 	ecs_os_set_api(&os_api);
 
 	ecs_world_t *world = ecs_init();
+	printf("ecs_get_max_id: %ld\n", ecs_get_max_id(world));
 	ecs_set_entity_range(world, 5000, 0); // Some modules uses entity below 5000
 	printf("ecs_get_max_id: %ld\n", ecs_get_max_id(world));
 

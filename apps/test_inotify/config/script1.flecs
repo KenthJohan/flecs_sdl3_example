@@ -4,7 +4,7 @@ module script1
 
 
 a {
-	eg.fs.Path : {"./config/script1.flecs"}
+	eg.fs.Path : {"./config/script2.flecs"}
 }
 
 
@@ -12,13 +12,17 @@ a {
 @color #9b2316
 @brief Hello123
 hello {
-	//eg.fs.Epoll
+	eg.fs.Epoll
 	i1 {
-		eg.fs.Inotify
+		eg.fs.Fanotify
 		w1 {
 			eg.fs.Watch : {file:eg.fs.entfile("./config/script1.flecs")}
-			eg.fs.Path : {"./config"}
+		}
+		w2 {
+			eg.fs.Watch : {file:eg.fs.entfile("./src/main.c")}
 		}
 	}
 }
+
+
 
