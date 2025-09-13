@@ -12,15 +12,17 @@ a {
 @color #9b2316
 @brief Hello123
 hello {
-	eg.fs.Epoll
+	eg.fs.epoll.Fd
 	i1 {
-		eg.fs.Fanotify
+		eg.fs.fanotify.Fd
+		/*
 		w1 {
 			eg.fs.Watch : {file:eg.fs.entfile("./config/script1.flecs")}
 		}
 		w2 {
 			eg.fs.Watch : {file:eg.fs.entfile("./src/main.c")}
 		}
+		*/
 	}
 }
 
