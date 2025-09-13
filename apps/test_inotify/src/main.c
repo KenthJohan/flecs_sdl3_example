@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
 	ECS_IMPORT(world, EgFs);
 	ECS_IMPORT(world, EgFsEpoll);
 	ECS_IMPORT(world, EgFsFanotify);
+	ECS_IMPORT(world, EgFsInotify);
 
 	ecs_set(world, EcsWorld, EcsRest, {.port = 0});
 	printf("Remote: %s\n", "https://www.flecs.dev/explorer/?remote=true");
