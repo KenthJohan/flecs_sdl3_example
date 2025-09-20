@@ -15,10 +15,10 @@ hello {
 	eg.fs.epoll.Fd
 	i1 {
 		eg.fs.fanotify.Fd
-		/*
 		w1 {
-			eg.fs.Watch : {file:eg.fs.entfile("./config/script1.flecs")}
+			eg.fs.Watch : {file:eg.fs.entfile("./config")}
 		}
+		/*
 		w2 {
 			eg.fs.Watch : {file:eg.fs.entfile("./src/main.c")}
 		}
@@ -28,3 +28,4 @@ hello {
 
 
 
+// 4 ss f s  d s s s  s   7  7 s s s s
