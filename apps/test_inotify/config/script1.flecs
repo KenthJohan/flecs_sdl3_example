@@ -3,11 +3,13 @@ script1 {}
 module script1
 
 
-a {
-	eg.fs.Path : {"./config/script2.flecs"}
+
+c {
+	eg.fs.Watch : {file:eg.fs.paths.new("./config/script2.flecs")}
 }
-
-
+d {
+	eg.fs.Watch : {file:eg.fs.paths.new("./config/script2.flecs")}
+}
 
 @color #9b2316
 @brief Hello123
@@ -16,7 +18,7 @@ hello {
 	i1 {
 		eg.fs.fanotify.Fd
 		w1 {
-			eg.fs.Watch : {file:eg.fs.entfile("./config")}
+			eg.fs.Watch : {file:eg.fs.paths.new("./config")}
 		}
 		/*
 		w2 {

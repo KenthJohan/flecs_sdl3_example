@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
 	ECS_IMPORT(world, FlecsStats);
 	ECS_IMPORT(world, FlecsScriptMath);
 	ECS_IMPORT(world, EgFs);
+	ECS_IMPORT(world, EgFsPaths);
 	ECS_IMPORT(world, EgFsEpoll);
 	ECS_IMPORT(world, EgFsFanotify);
 	ECS_IMPORT(world, EgFsInotify);
