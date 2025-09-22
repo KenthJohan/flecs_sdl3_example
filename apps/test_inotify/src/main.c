@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
 	ecs_world_t *world = ecs_init();
 	printf("ecs_get_max_id: %ld\n", ecs_get_max_id(world));
-	ecs_set_entity_range(world, 5000, 0); // Some modules uses entity below 5000
+	ecs_set_entity_range(world, 5000, 0); // Some modules uses entity below 5000 a
 	printf("ecs_get_max_id: %ld\n", ecs_get_max_id(world));
 
 	ECS_IMPORT(world, FlecsUnits);
@@ -43,7 +43,6 @@ int main(int argc, char *argv[])
 	ECS_IMPORT(world, FlecsStats);
 	ECS_IMPORT(world, FlecsScriptMath);
 	ECS_IMPORT(world, EgFs);
-	ECS_IMPORT(world, EgFsPaths);
 	ECS_IMPORT(world, EgFsEpoll);
 	ECS_IMPORT(world, EgFsFanotify);
 	ECS_IMPORT(world, EgFsInotify);
