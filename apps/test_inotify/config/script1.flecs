@@ -4,23 +4,21 @@ module script1
 
 
 
-c {
-	eg.fs.Watch : {file:eg.fs.paths.new("./config/script2.flecs")}
-}
-d {
-	eg.fs.Watch : {file:eg.fs.paths.new("./config/script2.flecs")}
-}
+
 
 @color #9b2316
 @brief Hello123
 hello {
 	eg.fs.epoll.Fd
 	i1 {
-		eg.fs.fanotify.Fd
+		eg.fs.inotify.Fd
 		w1 {
-			eg.fs.Watch : {file:eg.fs.paths.new("./config")}
+			eg.fs.Watch : {file:eg.fs.new("./config")}
 		}
-		/*
+		w2 {
+			eg.fs.Watch : {file:eg.fs.new("./src")}
+		}
+		/* a a a a a a a a a a a a a a a a a  a a a a a a a a a a a a a a a a a a a  a
 		w2 {
 			eg.fs.Watch : {file:eg.fs.entfile("./src/main.c")}
 		}

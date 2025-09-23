@@ -8,3 +8,4 @@ SortIncludes: false
 ContinuationIndentWidth: 0
 AllowAllParametersOfDeclarationOnNextLine: false
 AlignAfterOpenBracket: DontAlign
+AlignConsecutiveMacros: true
