@@ -2,9 +2,7 @@
 script1 {}
 module script1
 
-
-
-
+// a
 
 @color #9b2316
 @brief Hello123
@@ -18,10 +16,13 @@ hello {
 		w2 {
 			eg.fs.Watch : {file:eg.fs.new("./src")}
 		}
-		/* a a a a a a a a a a a a a a a a a  a a a a a a a a a a a a a a a a a a a  a
-		w2 {
-			eg.fs.Watch : {file:eg.fs.entfile("./src/main.c")}
-		}
-		*/
+	}
+	s1 {
+		eg.fs.socket.Udp : {s:eg.fs.new("udp://0.0.0.0:9999")}
+	}
+	s2 {
+		eg.fs.socket.Udp : {s:eg.fs.new("udp://0.0.0.0:9999")}
 	}
 }
+
+

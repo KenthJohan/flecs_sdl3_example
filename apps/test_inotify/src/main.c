@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
 	ecs_world_t *world = ecs_init();
 	printf("ecs_get_max_id: %ld\n", ecs_get_max_id(world));
-	ecs_set_entity_range(world, 5000, 0); // Some modules uses entity below 5000 a
+	ecs_set_entity_range(world, 5000, 0); // Some modules uses entity below 5000 a a
 	printf("ecs_get_max_id: %ld\n", ecs_get_max_id(world));
 
 	ECS_IMPORT(world, FlecsUnits);
@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
 	ECS_IMPORT(world, EgFs);
 	ECS_IMPORT(world, EgFsEpoll);
 	ECS_IMPORT(world, EgFsInotify);
+	ECS_IMPORT(world, EgFsSocket);
 
 	ecs_set(world, EcsWorld, EcsRest, {.port = 0});
 	printf("Remote: %s\n", "https://www.flecs.dev/explorer/?remote=true");
