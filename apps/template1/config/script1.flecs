@@ -5,5 +5,28 @@ module script1
 @color #9b2316
 @brief Hello123
 hello {
-
+	C1
+	w1 {
+		C1
+		Tag1
+		g1 {
+			C1
+		}
+		g2 {
+			C1
+		}
+		g3 {
+			C1
+		}
+	}
+	w2 {
+		C1
+		Tag1
+		g1 {
+			C1
+		}
+		g2 {
+			C1
+		}
+	}
 }

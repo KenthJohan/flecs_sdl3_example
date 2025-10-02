@@ -3,6 +3,9 @@
 #define FLECS_SCRIPT_MATH
 #include <flecs.h>
 #include <EgFs.h>
+// include header for getcwd
+#include <unistd.h>
+#include <limits.h> // For PATH_MAX
 
 static ecs_os_api_t os_api_default = {0};
 
@@ -17,7 +20,7 @@ void main_log(int32_t level, const char *file, int32_t line, const char *msg)
 	switch (level) {
 	case -3:
 	case -4:
-		printf("Break here\n");
+		printf("Break here.\n");
 		break;
 	}
 }
@@ -37,6 +40,14 @@ int main(int argc, char *argv[])
 	printf("ecs_get_max_id: %ld\n", ecs_get_max_id(world));
 	ecs_set_entity_range(world, 5000, 0); // Some modules uses entity below 5000 a a
 	printf("ecs_get_max_id: %ld\n", ecs_get_max_id(world));
+
+	// print current directory
+	char cwd[1024];
+	if (getcwd(cwd, sizeof(cwd)) != NULL) {
+		printf("Current working dir: %s\n", cwd);
+	} else {
+		perror("getcwd() error");
+	}
 
 	ECS_IMPORT(world, FlecsUnits);
 	ECS_IMPORT(world, FlecsDoc);

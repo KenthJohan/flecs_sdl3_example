@@ -2,27 +2,28 @@
 script1 {}
 module script1
 
-// a
+// a a a1  a a a a a a
 
 @color #9b2316
 @brief Hello123
 hello {
-	eg.fs.epoll.Fd
+	eg.fs.epoll.Create
 	i1 {
-		eg.fs.inotify.Fd
+		eg.fs.inotify.Create
 		w1 {
-			eg.fs.Watch : {file:eg.fs.new("./config")}
+			eg.fs.Watch : {path:eg.fs.new("./config")}
 		}
 		w2 {
-			eg.fs.Watch : {file:eg.fs.new("./src")}
+			eg.fs.Watch : {path:eg.fs.new("./src")}
 		}
 	}
+	/*
 	s1 {
 		eg.fs.socket.Udp : {s:eg.fs.new("udp://0.0.0.0:9999")}
 	}
 	s2 {
 		eg.fs.socket.Udp : {s:eg.fs.new("udp://0.0.0.0:9999")}
 	}
+	*/
 }
-
 

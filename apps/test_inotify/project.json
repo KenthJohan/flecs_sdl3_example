@@ -6,7 +6,8 @@
 		"public": false,
 		"use": [
 			"flecs",
-			"EgFs"
+			"EgFs",
+			"ecsx"
 		]
 	},
 	"lang.c": {
@@ -17,6 +18,7 @@
 		"lib": [
 			"flecs",
 			"EgFs",
+			"ecsx",
 			"m"
 		],
 		"cflags": [
