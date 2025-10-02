@@ -17,10 +17,10 @@ hello {
 			eg.fs.Watch : {path:eg.fs.new("./src")}
 		}
 	}
-	/*
 	s1 {
-		eg.fs.socket.Udp : {s:eg.fs.new("udp://0.0.0.0:9999")}
+		eg.fs.socket.Create : {path:eg.fs.new("udp://0.0.0.0:9999")}
 	}
+	/*
 	s2 {
 		eg.fs.socket.Udp : {s:eg.fs.new("udp://0.0.0.0:9999")}
 	}
