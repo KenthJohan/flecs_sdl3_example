@@ -2,7 +2,9 @@
 script1 {}
 module script1
 
-// a a a1  a a a a a a
+// a a a1  a a a a a a a a s a a a a a l a s s a a a a a a a
+
+const e: eg.fs.new("./config")
 
 @color #9b2316
 @brief Hello123
@@ -11,7 +13,7 @@ hello {
 	i1 {
 		eg.fs.inotify.Create
 		w1 {
-			eg.fs.Watch : {path:eg.fs.new("./config")}
+			eg.fs.Watch : {path:e}
 		}
 		w2 {
 			eg.fs.Watch : {path:eg.fs.new("./src")}

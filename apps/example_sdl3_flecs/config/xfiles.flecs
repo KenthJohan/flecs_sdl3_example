@@ -2,31 +2,34 @@
 xfiles {}
 module xfiles
 
-files {
-	(flecs.doc.Description, flecs.core.Name) : {"."}
-	eg.fs.Dir
-	eg.fs.Update
-}
 
 /*
 Adding (eg.fs.Stream) with (eg.fs.File) and (flecs.core.Name) will open a file stream.
 Adding (eg.fs.Read) with (eg.fs.File) and (flecs.core.Name) will open a file stream.
-*/
+
 shader_file_frag {
-	(flecs.doc.Description, flecs.core.Name) : {"./shaders/cube.frag.glsl"}
-	eg.fs.Stream 
-	eg.fs.File
-	eg.fs.Read
-	eg.fs.Content
+	eg.fs.Watch : {path:eg.fs.new("./shaders/cube.frag.glsl")}
 }
 
 shader_file_vert {
-	(flecs.doc.Description, flecs.core.Name) : {"./shaders/cube.vert.glsl"}
-	eg.fs.Stream 
-	eg.fs.File
-	eg.fs.Read
-	eg.fs.Content
+	eg.fs.Watch : {path:eg.fs.new("./shaders/cube.vert.glsl")}
 }
+*/
+
+@color #9b2316
+@brief Hello123
+hello {
+	eg.fs.epoll.Create
+	i1 {
+		eg.fs.inotify.Create
+		w1 {
+			eg.fs.Watch : {path:eg.fs.new("./shaders")}
+		}
+	}
+}
+
+
+
 
 
 program_frag {

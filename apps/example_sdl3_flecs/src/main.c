@@ -20,12 +20,16 @@
 #include <EgKeyboards.h>
 #include <EgWindows.h>
 #include <EgGlslang.h>
+#include <EgFs.h>
 
-#include "EgFs.h"
 #include "EgDisplay.h"
 #include "EgGpu.h"
 #include "EgMeshes.h"
 #include "EgRenderers.h"
+
+// include header for getcwd
+#include <unistd.h>
+#include <limits.h> // For PATH_MAX
 
 static void System_Draw1(ecs_iter_t *it, SDL_GPUCommandBuffer *cmd, SDL_GPURenderPass *pass)
 {
@@ -141,6 +145,14 @@ int main(int argc, char *argv[])
 	ecs_log_set_level(0);
 	ecs_trace("SDL_GetRevision %s\n", SDL_GetRevision());
 
+	// print current directory
+	char cwd[1024];
+	if (getcwd(cwd, sizeof(cwd)) != NULL) {
+		printf("Current working dir: %s\n", cwd);
+	} else {
+		perror("getcwd() error");
+	}
+
 	if (!SDL_InitSubSystem(SDL_INIT_VIDEO)) {
 		ecs_err("Couldn't initialize video driver: %s\n", SDL_GetError());
 		return 1;
@@ -163,6 +175,9 @@ int main(int argc, char *argv[])
 	ECS_IMPORT(world, EgShapes);
 	ECS_IMPORT(world, EgCameras);
 	ECS_IMPORT(world, EgFs);
+	ECS_IMPORT(world, EgFsEpoll);
+	ECS_IMPORT(world, EgFsInotify);
+	ECS_IMPORT(world, EgFsSocket);
 	ECS_IMPORT(world, EgDisplay);
 	ECS_IMPORT(world, EgGpu);
 	ECS_IMPORT(world, EgWindows);
