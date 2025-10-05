@@ -2,9 +2,15 @@
 script1 {}
 module script1
 
-// a a a1  a a a a a a a a s a a a a a l a s s a a a a a a a
+// a
 
-const e: eg.fs.new("./config")
+const e: eg.fs.path1("./config")
+
+const e1: eg.fs.path1("./include/test_inotify/bake_config.h")
+
+const x: new  {
+	eg.fs.Descriptors
+}
 
 @color #9b2316
 @brief Hello123
@@ -16,15 +22,15 @@ hello {
 			eg.fs.Watch : {path:e}
 		}
 		w2 {
-			eg.fs.Watch : {path:eg.fs.new("./src")}
+			eg.fs.Watch : {path:eg.fs.path1("./src")}
 		}
 	}
 	s1 {
-		eg.fs.socket.Create : {path:eg.fs.new("udp://0.0.0.0:9999")}
+		eg.fs.socket.Create : {path:eg.fs.path1("udp://0.0.0.0:9999")}
 	}
 	/*
 	s2 {
-		eg.fs.socket.Udp : {s:eg.fs.new("udp://0.0.0.0:9999")}
+		eg.fs.socket.Udp : {s:eg.fs.path("udp://0.0.0.0:9999")}
 	}
 	*/
 }

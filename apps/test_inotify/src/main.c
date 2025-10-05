@@ -62,7 +62,12 @@ int main(int argc, char *argv[])
 	printf("Remote: %s\n", "https://www.flecs.dev/explorer/?remote=true");
 
 	ecs_log_set_level(0);
-	ecs_script_run_file(world, "config/script1.flecs");
+	// Managed scripts can be inspected and modified from the explorer.
+	ecs_entity_t s1 = ecs_script_init(world, &(ecs_script_desc_t){.filename = "config/script1.flecs"});
+	if (!s1) {
+		ecs_err("failed to load script");
+		return -1;
+	}
 	ecs_log_set_level(-1);
 
 	while (1) {
