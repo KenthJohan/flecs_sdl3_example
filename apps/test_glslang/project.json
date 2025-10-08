@@ -7,6 +7,7 @@
 		"use": [
 			"flecs",
 			"EgFs",
+			"EgGlslang",
 			"ecsx"
 		]
 	},
@@ -18,6 +19,12 @@
 		"lib": [
 			"flecs",
 			"EgFs",
+			"EgGlslang",
+			"glslang-default-resource-limits",
+			"glslang",
+			"SPIRV-Tools-opt",
+			"SPIRV-Tools",
+			"stdc++",
 			"ecsx",
 			"m"
 		],

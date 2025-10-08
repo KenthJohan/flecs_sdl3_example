@@ -3,6 +3,7 @@
 #define FLECS_SCRIPT_MATH
 #include <flecs.h>
 #include <EgFs.h>
+#include <EgGlslang.h>
 // include header for getcwd
 #include <unistd.h>
 #include <limits.h> // For PATH_MAX
@@ -57,6 +58,7 @@ int main(int argc, char *argv[])
 	ECS_IMPORT(world, EgFsEpoll);
 	ECS_IMPORT(world, EgFsInotify);
 	ECS_IMPORT(world, EgFsSocket);
+	ECS_IMPORT(world, EgGlslang);
 
 	ecs_set(world, EcsWorld, EcsRest, {.port = 0});
 	printf("Remote: %s\n", "https://www.flecs.dev/explorer/?remote=true");

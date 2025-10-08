@@ -2,7 +2,16 @@
 script1 {}
 module script1
 
-// a a a1  a a a a a a a
+// a a a1  a a a a a a a 1 a 1 2 a 1 s 4 1 a
+
+program {
+	eg.glslang.Create : {path1:eg.fs.path1("./shaders/cube.frag.glsl"), stage:4}
+}
+
+
+prefab prefab_add_on_modify {
+	eg.fs.Content
+}
 
 @color #9b2316
 @brief Hello123
@@ -11,10 +20,7 @@ hello {
 	i1 {
 		eg.fs.inotify.Create
 		w1 {
-			eg.fs.Watch : {path:eg.fs.new("./config")}
-		}
-		w2 {
-			eg.fs.Watch : {path:eg.fs.new("./src")}
+			eg.fs.Watch : {path1:eg.fs.path1("./shaders"), prefab:prefab_add_on_modify}
 		}
 	}
 }
