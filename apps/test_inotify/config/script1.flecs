@@ -2,11 +2,17 @@
 script1 {}
 module script1
 
-// a
+// a a1 2 a a a a a aa a s a a a a a a a 1 a 1 a 1 2 s 1 1 2 1 2
+
+// Add these components to files that get modified:
+prefab prefab_add_on_modify {
+	eg.fs.Content
+}
 
 const e: eg.fs.path1("./config")
 
 const e1: eg.fs.path1("./include/test_inotify/bake_config.h")
+
 
 const x: new  {
 	eg.fs.Descriptors
@@ -19,14 +25,14 @@ hello {
 	i1 {
 		eg.fs.inotify.Create
 		w1 {
-			eg.fs.Watch : {path:e}
+			eg.fs.Watch : {path1:e, prefab:prefab_add_on_modify}
 		}
 		w2 {
-			eg.fs.Watch : {path:eg.fs.path1("./src")}
+			eg.fs.Watch : {path1:eg.fs.path1("./src"), prefab:prefab_add_on_modify}
 		}
 	}
 	s1 {
-		eg.fs.socket.Create : {path:eg.fs.path1("udp://0.0.0.0:9999")}
+		eg.fs.socket.Create : {path1:eg.fs.path1("udp://0.0.0.0:9999")}
 	}
 	/*
 	s2 {
