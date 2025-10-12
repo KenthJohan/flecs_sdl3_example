@@ -10,7 +10,7 @@ $path_config {
 script1 {}
 module script1
 
-// a a a a a a a
+// a a a a a a a a a
  
 // Add these components to files that get modified:
 prefab prefab_add_on_modify {

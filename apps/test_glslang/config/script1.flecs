@@ -1,21 +1,21 @@
+const path_cube_vs: eg.fs.path1("./shaders/cube.vert.glsl")
+const path_cube_fs: eg.fs.path1("./shaders/cube.frag.glsl")
+
 @color #FF99FF
 script1 {}
 module script1
 
-// a a a1  a a a a a a a 1 a 1 2 a 1 s 4 1 a
+// a a a1  a a a a a a a 1 a 1 2 a 1 s 4 1 a aa §
 
 program1 {
-	eg.glslang.Create : {path1:eg.fs.path1("./shaders/cube.vert.glsl"), stage:1}
+	(eg.fs.EventModify, path_cube_vs)
+	eg.glslang.Create : {stage:0}
 }
 
 program2 {
-	eg.glslang.Create : {path1:eg.fs.path1("./shaders/cube.frag.glsl"), stage:4}
+	(eg.fs.EventModify, path_cube_fs)
+	eg.glslang.Create : {stage:4}
 }
-
-program3 {
-	eg.glslang.Create : {path1:eg.fs.path1("./shaders/cube.frag.h"), stage:4}
-}
-
 
 
 
@@ -28,6 +28,7 @@ prefab prefab_add_on_modify {
 hello {
 	eg.fs.epoll.Create
 	i1 {
+		eg.fs.epoll.Event : {0}
 		eg.fs.inotify.Create
 		w1 {
 			eg.fs.Watch : {path1:eg.fs.path1("./shaders"), prefab:prefab_add_on_modify}

@@ -1,6 +1,6 @@
 #version 450
 
-// comment a a 1 1 2 1 2
+// comment a a 1 1 2 1 2 1 1 1 1 1 1
 
 layout (location = 0) in vec3 in_position;
 layout (location = 1) in vec4 in_color;
