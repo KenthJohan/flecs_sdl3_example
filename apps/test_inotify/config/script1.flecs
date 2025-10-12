@@ -1,22 +1,23 @@
+const path_config: eg.fs.path1("./config")
+const path_config_script1: eg.fs.path1("./config/script1.flecs")
+const path_bc: eg.fs.path1("./include/test_inotify/bake_config.h")
+
+$path_config {
+	eg.fs.epoll.Event : {0}
+}
+
 @color #FF99FF
 script1 {}
 module script1
 
-// a a a
-
+// a a a a a a a
+ 
 // Add these components to files that get modified:
 prefab prefab_add_on_modify {
 	eg.fs.Content
 }
 
-const e: eg.fs.path1("./config")
 
-const e1: eg.fs.path1("./include/test_inotify/bake_config.h")
-
-
-const x: new  {
-	eg.fs.Descriptors
-}
 
 @color #9b2316
 @brief Hello123
@@ -26,7 +27,7 @@ hello {
 		eg.fs.epoll.Event : {0}
 		eg.fs.inotify.Create
 		w1 {
-			eg.fs.Watch : {path1:e, prefab:prefab_add_on_modify}
+			eg.fs.Watch : {path1:path_config, prefab:prefab_add_on_modify}
 		}
 		w2 {
 			eg.fs.Watch : {path1:eg.fs.path1("./src"), prefab:prefab_add_on_modify}
@@ -36,6 +37,13 @@ hello {
 		eg.fs.epoll.Event : {0}
 		eg.fs.socket.Create : {path1:eg.fs.path1("udp://0.0.0.0:9999")}
 	}
-
 }
 
+
+orange {
+	(eg.fs.EventModify, path_config_script1)
+}
+
+grape {
+	(eg.fs.EventModify, path_config_script1)
+}
