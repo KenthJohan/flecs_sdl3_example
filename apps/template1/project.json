@@ -5,7 +5,8 @@
 		"language": "c",
 		"public": false,
 		"use": [
-			"flecs"
+			"flecs",
+			"ecsx"
 		]
 	},
 	"lang.c": {
@@ -15,6 +16,7 @@
 		],
 		"lib": [
 			"flecs",
+			"ecsx",
 			"m"
 		],
 		"cflags": [

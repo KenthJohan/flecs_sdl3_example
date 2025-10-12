@@ -4,9 +4,19 @@ module script1
 
 // a a a1  a a a a a a a 1 a 1 2 a 1 s 4 1 a
 
-program {
+program1 {
+	eg.glslang.Create : {path1:eg.fs.path1("./shaders/cube.vert.glsl"), stage:1}
+}
+
+program2 {
 	eg.glslang.Create : {path1:eg.fs.path1("./shaders/cube.frag.glsl"), stage:4}
 }
+
+program3 {
+	eg.glslang.Create : {path1:eg.fs.path1("./shaders/cube.frag.h"), stage:4}
+}
+
+
 
 
 prefab prefab_add_on_modify {

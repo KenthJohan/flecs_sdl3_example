@@ -20,6 +20,7 @@
 /* Headers of public dependencies */
 #include <flecs.h>
 #include <EgFs.h>
+#include <EgBase.h>
 #include <ecsx.h>
 
 #endif

@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 	ecs_log_set_level(-1);
 
 	while (1) {
-		ecs_progress(world, 0.0f);
+		ecs_progress(world, 0.1f);
 	}
 
 	return 0;

@@ -1,6 +1,6 @@
 #version 450
 
-// hej1 1 1
+// hej1 1 1 1 s 1
 
 layout (location = 0) in vec4 in_color;
 layout (location = 0) out vec4 out_color;

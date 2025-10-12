@@ -2,7 +2,7 @@
 script1 {}
 module script1
 
-// a a1 2 a a a a a aa a s a a a a a a a 1 a 1 a 1 2 s 1 1 2 1 2
+// a a a
 
 // Add these components to files that get modified:
 prefab prefab_add_on_modify {
@@ -23,6 +23,7 @@ const x: new  {
 hello {
 	eg.fs.epoll.Create
 	i1 {
+		eg.fs.epoll.Event : {0}
 		eg.fs.inotify.Create
 		w1 {
 			eg.fs.Watch : {path1:e, prefab:prefab_add_on_modify}
@@ -32,12 +33,9 @@ hello {
 		}
 	}
 	s1 {
+		eg.fs.epoll.Event : {0}
 		eg.fs.socket.Create : {path1:eg.fs.path1("udp://0.0.0.0:9999")}
 	}
-	/*
-	s2 {
-		eg.fs.socket.Udp : {s:eg.fs.path("udp://0.0.0.0:9999")}
-	}
-	*/
+
 }
 

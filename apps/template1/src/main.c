@@ -2,6 +2,7 @@
 #include <stdio.h>
 #define FLECS_SCRIPT_MATH
 #include <flecs.h>
+#include "ecsx.h"
 
 static ecs_os_api_t os_api_default = {0};
 
@@ -36,17 +37,13 @@ ECS_ENTITY_DECLARE(Tag2);
 
 static void System_test(ecs_iter_t *it)
 {
-	ecs_log_set_level(-1);
-	ecs_world_t *world = it->world;
-	C1 *parent = ecs_field(it, C1, 0); // shared, parent
-	C1 *this = ecs_field(it, C1, 1); // self
-	ecs_entity_t parent_entity = ecs_field_src(it, 0);
-	printf("parent: %s\n", ecs_get_name(world, parent_entity));
+	ecs_log_set_level(0);
+	ecsx_trace_system_iter(it);
 	for (int i = 0; i < it->count; ++i) {
-		// print name of entity
 		ecs_entity_t e = it->entities[i];
-		printf("%s\n", ecs_get_name(world, e));
-	} // END FOR LOOP
+		// Print entity name
+		printf("Entity %08jX: %s\n", (uintmax_t)e, ecs_get_name(it->world, e));
+	}
 	ecs_log_set_level(-1);
 }
 
@@ -86,6 +83,7 @@ int main(int argc, char *argv[])
 	{.id = ecs_id(C1), .src.id = EcsSelf},
 	{.id = Tag1},
 	}});
+
 
 
 	while (1) {
