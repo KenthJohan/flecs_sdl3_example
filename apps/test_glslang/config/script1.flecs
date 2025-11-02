@@ -1,6 +1,14 @@
 const path_cube_vs: eg.fs.path1("./shaders/cube.vert.glsl")
 const path_cube_fs: eg.fs.path1("./shaders/cube.frag.glsl")
 
+$path_cube_vs {
+	eg.fs.Content
+}
+
+$path_cube_fs {
+	eg.fs.Content
+}
+
 @color #FF99FF
 script1 {}
 module script1
@@ -18,10 +26,11 @@ program2 {
 }
 
 
-
+/*
 prefab prefab_add_on_modify {
 	eg.fs.Content
 }
+*/
 
 @color #9b2316
 @brief Hello123
@@ -31,7 +40,7 @@ hello {
 		eg.fs.epoll.Event : {0}
 		eg.fs.inotify.Create
 		w1 {
-			eg.fs.Watch : {path1:eg.fs.path1("./shaders"), prefab:prefab_add_on_modify}
+			eg.fs.Watch : {path1:eg.fs.path1("./shaders"), prefab:0}
 		}
 	}
 }

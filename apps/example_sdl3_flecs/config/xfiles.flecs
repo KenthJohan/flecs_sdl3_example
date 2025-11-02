@@ -16,6 +16,7 @@ shader_file_vert {
 }
 */
 
+/*
 @color #9b2316
 @brief Hello123
 hello {
@@ -41,3 +42,4 @@ program_vert {
 	(flecs.core.DependsOn, shader_file_vert)
 	eg.glslang.Create : {dummy : 0}
 }
+*/
