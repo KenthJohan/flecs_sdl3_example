@@ -9,6 +9,7 @@
 			"EgShapes",
 			"EgMeshes",
 			"EgSpatials",
+			"EgBase",
 			"ecsx"
 		]
 	},
@@ -22,6 +23,7 @@
 			"EgShapes",
 			"EgMeshes",
 			"EgSpatials",
+			"EgBase",
 			"egmath",
 			"ecsx",
 			"m"

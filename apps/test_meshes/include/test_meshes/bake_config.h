@@ -22,6 +22,7 @@
 #include <EgShapes.h>
 #include <EgMeshes.h>
 #include <EgSpatials.h>
+#include <EgBase.h>
 #include <ecsx.h>
 
 #endif
