@@ -1,0 +1,29 @@
+using eg.meshes
+using eg.shapes
+using flecs.units
+
+@color #FF99FF
+script1 {}
+module script1
+
+@brief Hello123
+struct Vertex123 {
+  p = f32,3,Length.Meters
+  c = f32,4,Color.Rgb
+  VertexInfo : {0} // Force trigger EcsOnSet by setting a field
+}
+
+
+@color #9b2316
+@brief Hello123
+hello {
+	(DependsOn, Vertex123)
+	Vertices
+	rectangle_mesh {
+		//Rectangle : { width: 2.0, height: 1.0 }
+	}
+}
+
+
+
+
