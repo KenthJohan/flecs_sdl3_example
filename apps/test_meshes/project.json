@@ -8,6 +8,7 @@
 			"flecs",
 			"EgShapes",
 			"EgMeshes",
+			"EgSpatials",
 			"ecsx"
 		]
 	},
@@ -20,6 +21,8 @@
 			"flecs",
 			"EgShapes",
 			"EgMeshes",
+			"EgSpatials",
+			"egmath",
 			"ecsx",
 			"m"
 		],

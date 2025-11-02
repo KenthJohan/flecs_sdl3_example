@@ -1,5 +1,6 @@
 using eg.meshes
 using eg.shapes
+using eg.spatials
 using flecs.units
 
 @color #FF99FF
@@ -14,13 +15,33 @@ struct Vertex123 {
 }
 
 
+prefab transform {
+	eg.spatials.EgRotateOrder1
+	eg.spatials.Transformation
+	eg.spatials.Position3World
+	eg.spatials.Orientation
+	eg.spatials.OrientationWorld
+	eg.spatials.Scale3 : {x: 1, y: 1, z: 1}
+	eg.spatials.Position3 : {x: 0, y: 0, z: 0}
+}
+
+
 @color #9b2316
 @brief Hello123
 hello {
 	(DependsOn, Vertex123)
 	Vertices
-	rectangle_mesh {
-		//Rectangle : { width: 2.0, height: 1.0 }
+	base : transform {
+		Position3 : { 0.0, 0.0, 1.0 }
+		Rectangle : { 2.0, 1.0 }
+		a : transform {
+			Position3 : { 0.0, 0.0, 0.0 }
+			Rectangle : { 2.0, 1.0 }
+		}
+		b : transform {
+			Position3 : { 0.0, 0.0, 0.0 }
+			Rectangle : { 2.0, 1.0 }
+		}
 	}
 }
 

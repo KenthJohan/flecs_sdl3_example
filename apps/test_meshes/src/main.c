@@ -5,6 +5,7 @@
 #include <flecs.h>
 #include <EgShapes.h>
 #include <EgMeshes.h>
+#include <EgSpatials.h>
 #include <ecsx.h>
 
 static ecs_os_api_t os_api_default = {0};
@@ -66,6 +67,7 @@ int main(int argc, char *argv[])
 	ECS_IMPORT(world, FlecsScriptMath);
 	ECS_IMPORT(world, EgShapes);
 	ECS_IMPORT(world, EgMeshes);
+	ECS_IMPORT(world, EgSpatials);
 
 	ECS_COMPONENT_DEFINE(world, C1);
 	ECS_TAG_DEFINE(world, Tag1);
