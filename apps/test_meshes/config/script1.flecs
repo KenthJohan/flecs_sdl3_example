@@ -26,11 +26,7 @@ prefab transform {
 }
 
 
-@color #9b2316
-@brief Hello123
-hello {
-	(DependsOn, Vertex123)
-	Vertices
+template Template1 {
 	base : transform {
 		Position3 : { 0.0, 0.0, 1.0 }
 		Rectangle : { 2.0, 1.0 }
@@ -44,6 +40,37 @@ hello {
 		}
 	}
 }
+
+
+template Template2 {
+	base : transform {
+		Color3 : { 1.0, 0.0, 1.0 }
+		a : transform {
+			Color3 : { 1.0, 0.0, 1.0 }
+		}
+		b : transform {
+			Color3 : { 1.0, 0.0, 1.0 }
+		}
+	}
+}
+
+my_entity {
+	Template1 : {}
+	Template2 : {}
+}
+
+Template1 mesh1 {
+
+}
+
+
+
+
+Template1 mesh2 {
+
+}
+
+
 
 
 

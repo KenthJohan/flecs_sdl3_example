@@ -124,6 +124,29 @@
 			"linux": {
 				"externalConsole": false,
 			}
+		},
+		{
+			"name": "Launch test_raylib",
+			"type": "cppdbg",
+			"request": "launch",
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/apps/test_raylib",
+			"environment": [
+				{
+					"name": "LD_LIBRARY_PATH",
+					"value": "${workspaceFolder}/bin/x64-Linux-debug:${env:HOME}/bake/x64-Linux/debug/lib/:/usr/local/lib/"
+				},
+			],
+			"program": "${workspaceFolder}/apps/test_raylib/bin/x64-Linux-debug/test_raylib",
+			"args": [],
+			"osx": {
+				"MIMode": "lldb",
+				"targetArchitecture": "arm64",
+				"externalConsole": false,
+			},
+			"linux": {
+				"externalConsole": false,
+			}
 		}
 	]
 }

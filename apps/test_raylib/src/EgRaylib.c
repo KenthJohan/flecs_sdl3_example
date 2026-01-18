@@ -1,0 +1,157 @@
+#include "EgRaylib.h"
+#include <EgBase.h>
+#include <EgCameras.h>
+#include <EgSpatials.h>
+
+#include <raylib.h>
+
+#define RLIGHTS_IMPLEMENTATION
+#include "rlights.h"
+#include "raymath.h"
+
+#define GLSL_VERSION 330
+
+ECS_COMPONENT_DECLARE(EgRaylibMode3D);
+ECS_COMPONENT_DECLARE(EgRaylibMode3DCreateInfo);
+
+static Camera camera = {0};
+
+// Load default material (using raylib intenral default shader) for non-instanced mesh drawing
+// WARNING: Default shader enables vertex color attribute BUT GenMeshCube() does not generate vertex colors, so,
+// when drawing the color attribute is disabled and a default color value is provided as input for thevertex attribute
+Material matDefault;
+
+// NOTE: We are assigning the intancing shader to material.shader
+// to be used on mesh drawing with DrawMeshInstanced()
+Material matInstances;
+
+Mesh cube;
+
+Shader shader;
+
+static void System_EgRaylibMode3D_Init(ecs_iter_t *it)
+{
+	ecs_world_t *world = it->world;
+	EgRaylibMode3DCreateInfo const *info = ecs_field(it, EgRaylibMode3DCreateInfo, 0); // self, in
+	for (int i = 0; i < it->count; ++i) {
+		ecs_entity_t e = it->entities[i];
+		ecs_query_t *query = ecs_query_init(world,
+		&(ecs_query_desc_t){
+		.entity = ecs_entity(world, {.name = "flecs.systems.sokol.LightsQuery"}),
+		.terms = {
+		{ecs_id(Transformation)}},
+		.cache_kind = EcsQueryCacheAuto});
+		ecs_set(it->world, e, EgRaylibMode3D, {.query = query});
+	}
+}
+
+static void draw(ecs_world_t *world, ecs_query_t *query)
+{
+	ecs_iter_t it = ecs_query_iter(world, query);
+	while (ecs_query_next(&it)) {
+		Transformation const *transforms = ecs_field(&it, Transformation, 0);
+		// EcsTransform3 *m = ecs_field(&it, EcsTransform3, 1);
+		DrawMeshInstancedColumnMajor(cube, matInstances, transforms, it.count);
+	}
+}
+
+static void System_EgRaylibMode3D_Draw(ecs_iter_t *it)
+{
+	EgRaylibMode3D *raylib3d = ecs_field(it, EgRaylibMode3D, 0);
+	UpdateCamera(&camera, CAMERA_FREE);
+	// Update the light shader with the camera view position
+	float cameraPos[3] = {camera.position.x, camera.position.y, camera.position.z};
+	SetShaderValue(shader, shader.locs[SHADER_LOC_VECTOR_VIEW], cameraPos, SHADER_UNIFORM_VEC3);
+	BeginDrawing();
+	ClearBackground(RAYWHITE);
+	for (int i = 0; i < it->count; ++i) {
+		ecs_entity_t e = it->entities[i];
+		// Print entity name
+		printf("Entity %08jX: %s\n", (uintmax_t)e, ecs_get_name(it->world, e));
+		BeginMode3D(camera);
+		DrawMesh(cube, matDefault, MatrixTranslate(-10.0f, 0.0f, 0.0f));
+		draw(it->world, raylib3d[i].query);
+		DrawMesh(cube, matDefault, MatrixTranslate(10.0f, 0.0f, 0.0f));
+		EndMode3D();
+	}
+	DrawFPS(10, 10);
+	EndDrawing();
+}
+
+void EgRaylibImport(ecs_world_t *world)
+{
+	ECS_MODULE(world, EgRaylib);
+	ECS_IMPORT(world, EgSpatials);
+	ECS_IMPORT(world, EgCameras);
+	ecs_set_name_prefix(world, "EgRaylib");
+	ECS_COMPONENT_DEFINE(world, EgRaylibMode3D);
+	ECS_COMPONENT_DEFINE(world, EgRaylibMode3DCreateInfo);
+
+	ecs_struct_init(world,
+	&(ecs_struct_desc_t){
+	.entity = ecs_id(EgRaylibMode3DCreateInfo),
+	.members = {
+	{.name = "dummy", .type = ecs_id(ecs_i32_t)},
+	}});
+
+	#define MAX_INSTANCES  10000
+    // Define transforms to be uploaded to GPU for instances
+    Matrix *transforms = (Matrix *)RL_CALLOC(MAX_INSTANCES, sizeof(Matrix));   // Pre-multiplied transformations passed to rlgl
+
+    // Translate and rotate cubes randomly
+    for (int i = 0; i < MAX_INSTANCES; i++)
+    {
+        Matrix translation = MatrixTranslate((float)GetRandomValue(-50, 50), (float)GetRandomValue(-50, 50), (float)GetRandomValue(-50, 50));
+        Vector3 axis = Vector3Normalize((Vector3){ (float)GetRandomValue(0, 360), (float)GetRandomValue(0, 360), (float)GetRandomValue(0, 360) });
+        float angle = (float)GetRandomValue(0, 180)*DEG2RAD;
+        Matrix rotation = MatrixRotate(axis, angle);
+
+        transforms[i] = MatrixMultiply(rotation, translation);
+    }
+
+	camera.position = (Vector3){-125.0f, 125.0f, -125.0f}; // Camera position
+	camera.target = (Vector3){0.0f, 0.0f, 0.0f};           // Camera looking at point
+	camera.up = (Vector3){0.0f, 1.0f, 0.0f};               // Camera up vector (rotation towards target)
+	camera.fovy = 45.0f;                                   // Camera field-of-view Y
+	camera.projection = CAMERA_PERSPECTIVE;                // Camera projection type
+
+	cube = GenMeshCube(1.0f, 1.0f, 1.0f);
+
+	// Load lighting shader
+	shader = LoadShader(TextFormat("config/glsl%i/lighting_instancing.vs", GLSL_VERSION),
+	TextFormat("config/glsl%i/lighting.fs", GLSL_VERSION));
+	// Get shader locations
+	shader.locs[SHADER_LOC_MATRIX_MVP] = GetShaderLocation(shader, "mvp");
+	shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(shader, "viewPos");
+
+	// Set shader value: ambient light level
+	int ambientLoc = GetShaderLocation(shader, "ambient");
+	SetShaderValue(shader, ambientLoc, (float[4]){0.2f, 0.2f, 0.2f, 1.0f}, SHADER_UNIFORM_VEC4);
+
+	// Create one light
+	CreateLight(LIGHT_DIRECTIONAL, (Vector3){50.0f, 50.0f, 0.0f}, Vector3Zero(), WHITE, shader);
+
+	matInstances = LoadMaterialDefault();
+	matInstances.shader = shader;
+	matInstances.maps[MATERIAL_MAP_DIFFUSE].color = RED;
+	matDefault = LoadMaterialDefault();
+	matDefault.maps[MATERIAL_MAP_DIFFUSE].color = BLUE;
+
+	ecs_system_init(world,
+	&(ecs_system_desc_t){
+	.entity = ecs_entity(world, {.name = "System_EgRaylibMode3D_Init", .add = ecs_ids(ecs_dependson(EcsOnLoad))}),
+	.callback = System_EgRaylibMode3D_Init,
+	.immediate = true,
+	.query.terms = {
+	{.id = ecs_id(EgRaylibMode3DCreateInfo)},
+	{.id = ecs_id(EgRaylibMode3D), .oper = EcsNot},
+	}});
+
+	ecs_system_init(world,
+	&(ecs_system_desc_t){
+	.entity = ecs_entity(world, {.name = "System_EgRaylibMode3D_Draw", .add = ecs_ids(ecs_dependson(EcsOnStore))}),
+	.callback = System_EgRaylibMode3D_Draw,
+	.query.terms = {
+	{.id = ecs_id(EgRaylibMode3D)},
+	}});
+}

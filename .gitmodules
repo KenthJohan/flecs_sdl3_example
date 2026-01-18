@@ -1,0 +1,3 @@
+[submodule "vendor/eg"]
+	path = vendor/eg
+	url = https://github.com/KenthJohan/eg
