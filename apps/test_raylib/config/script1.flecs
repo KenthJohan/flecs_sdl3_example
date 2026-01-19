@@ -27,14 +27,24 @@ Camera1 {
 	eg.spatials.Velocity3 : {0, 0, 0}
 }
 
+mesh_cube {
+	eg.shapes.Box : {5,5,10,0}
+}
+
 cube1 : transform {
 	(flecs.core.DependsOn, Camera1)
+	(flecs.core.DependsOn, mesh_cube)
 	eg.spatials.Position3 : {0,0,0}
-	eg.shapes.Box : {1,1,1,0}
 }
 
 cube2 : transform {
 	(flecs.core.DependsOn, Camera1)
-	eg.spatials.Position3 : {2,0,0}
-	eg.shapes.Box : {1,1,3,0}
+	(flecs.core.DependsOn, mesh_cube)
+	eg.spatials.Position3 : {20,0,0}
+}
+
+cube3 : transform {
+	(flecs.core.DependsOn, Camera1)
+	(flecs.core.DependsOn, mesh_cube)
+	eg.spatials.Position3 : {20,10,0}
 }
