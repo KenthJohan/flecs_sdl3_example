@@ -26,6 +26,7 @@
 #include <EgBase.h>
 #include <EgKeyboards.h>
 #include <EgCamcontrols.h>
+#include <EgWindows.h>
 #include <ecsx.h>
 
 #endif

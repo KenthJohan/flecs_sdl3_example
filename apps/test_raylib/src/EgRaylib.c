@@ -4,8 +4,12 @@
 #include <EgSpatials.h>
 #include <EgShapes.h>
 #include <EgKeyboards.h>
+#include <EgCamcontrols.h>
+#include <EgSpatials.h>
+#include <EgWindows.h>
 
 #include <raylib.h>
+#include <raymath.h>
 
 #define RLIGHTS_IMPLEMENTATION
 #include "rlights.h"
@@ -72,7 +76,6 @@ static void draw(ecs_world_t *world, ecs_query_t *query)
 	while (ecs_query_next(&it)) {
 		EgRaylibMesh const *mesh = ecs_field(&it, EgRaylibMesh, 0);           // shared, in
 		Transformation const *transforms = ecs_field(&it, Transformation, 1); // self, in
-		// EcsTransform3 *m = ecs_field(&it, EcsTransform3, 1);
 		DrawMeshInstancedColumnMajor(mesh->mesh, matInstances, transforms, it.count);
 	}
 }
@@ -80,23 +83,39 @@ static void draw(ecs_world_t *world, ecs_query_t *query)
 static void System_EgRaylibMode3D_Draw(ecs_iter_t *it)
 {
 	EgRaylibMode3D *raylib3d = ecs_field(it, EgRaylibMode3D, 0);
+	EgCamerasState *cam = ecs_field(it, EgCamerasState, 1);
+	Position3 *campos = ecs_field(it, Position3, 2);
+
 	UpdateCamera(&camera, CAMERA_FREE);
 	// Update the light shader with the camera view position
 	float cameraPos[3] = {camera.position.x, camera.position.y, camera.position.z};
 	SetShaderValue(shader, shader.locs[SHADER_LOC_VECTOR_VIEW], cameraPos, SHADER_UNIFORM_VEC3);
 	BeginDrawing();
 	ClearBackground(RAYWHITE);
-	for (int i = 0; i < it->count; ++i) {
+	for (int i = 0; i < it->count; ++i, ++cam, ++campos, ++raylib3d) {
 		ecs_entity_t e = it->entities[i];
 		// Print entity name
-		printf("Entity %08jX: %s\n", (uintmax_t)e, ecs_get_name(it->world, e));
-		BeginMode3D(camera);
+		// printf("Entity %08jX: %s\n", (uintmax_t)e, ecs_get_name(it->world, e));
+		Camera3D cam3d = {0};
+		Vector3 forward = { cam->view.c2[0], cam->view.c2[1], cam->view.c2[2] };
+		Vector3 up = { cam->view.c1[0], cam->view.c1[1], cam->view.c1[2] };
+		cam3d.position = (Vector3){campos->x, campos->y, campos->z};
+		cam3d.target = Vector3Subtract(cam3d.position, forward);
+		cam3d.up = up;
+		cam3d.fovy = cam->fov;
+		cam3d.projection = CAMERA_PERSPECTIVE;
+		BeginMode3D(cam3d);
 		DrawMesh(dummy_cube, matDefault, MatrixTranslate(-10.0f, 0.0f, 0.0f));
 		draw(it->world, raylib3d[i].query);
 		DrawMesh(dummy_cube, matDefault, MatrixTranslate(10.0f, 0.0f, 0.0f));
 		EndMode3D();
 	}
 	DrawFPS(10, 10);
+
+	char *tmp = (char *)TextFormat("%f %f %f", camera.position.x, camera.position.y, camera.position.z);
+	int width = MeasureText(tmp, 20);
+	DrawText(tmp, GetScreenWidth() - 20 - width, 10, 20, DARKGREEN);
+
 	EndDrawing();
 }
 
@@ -121,12 +140,25 @@ static void System_EgRaylibMode3D_EgKeyboardsState(ecs_iter_t *it)
 	return;
 }
 
+static void System_Window(ecs_iter_t *it)
+{
+	EgWindowsWindow *window = ecs_field(it, EgWindowsWindow, 0);
+	EgShapesRectangle *rectangle = ecs_field(it, EgShapesRectangle, 1);
+	for (int i = 0; i < it->count; ++i) {
+		rectangle[i].w = GetScreenWidth();  // Get current screen width
+		rectangle[i].h = GetScreenHeight(); // Get current screen height
+	}
+	return;
+}
+
 void EgRaylibImport(ecs_world_t *world)
 {
 	ECS_MODULE(world, EgRaylib);
 	ECS_IMPORT(world, EgSpatials);
 	ECS_IMPORT(world, EgCameras);
 	ECS_IMPORT(world, EgKeyboards);
+	ECS_IMPORT(world, EgCamcontrols);
+	ECS_IMPORT(world, EgWindows);
 	ecs_set_name_prefix(world, "EgRaylib");
 	ECS_COMPONENT_DEFINE(world, EgRaylibMode3D);
 	ECS_COMPONENT_DEFINE(world, EgRaylibMode3DCreateInfo);
@@ -206,5 +238,16 @@ void EgRaylibImport(ecs_world_t *world)
 	.callback = System_EgRaylibMode3D_Draw,
 	.query.terms = {
 	{.id = ecs_id(EgRaylibMode3D)},
+	{.id = ecs_id(EgCamerasState)},
+	{.id = ecs_id(Position3)},
+	}});
+
+	ecs_system_init(world,
+	&(ecs_system_desc_t){
+	.entity = ecs_entity(world, {.name = "System_Window", .add = ecs_ids(ecs_dependson(EcsOnStore))}),
+	.callback = System_Window,
+	.query.terms = {
+	{.id = ecs_id(EgWindowsWindow)},
+	{.id = ecs_id(EgShapesRectangle)},
 	}});
 }

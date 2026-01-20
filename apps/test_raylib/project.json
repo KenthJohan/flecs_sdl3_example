@@ -13,6 +13,7 @@
 			"EgBase",
 			"EgKeyboards",
 			"EgCamcontrols",
+			"EgWindows",
 			"ecsx"
 		]
 	},
@@ -25,6 +26,7 @@
 		"lib": [
 			"flecs",
 			"raylib",
+			"EgWindows",
 			"EgCamcontrols",
 			"EgKeyboards",
 			"EgCameras",

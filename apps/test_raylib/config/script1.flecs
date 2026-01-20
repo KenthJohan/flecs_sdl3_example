@@ -118,10 +118,27 @@ const   KEY_VOLUME_DOWN     : 25        // Key: Android volume down button
 
 
 
-cam1 {
+prefab transform {
+	eg.spatials.EgRotateOrder1
+	eg.spatials.Transformation
+	eg.spatials.Position3World
+	eg.spatials.Orientation
+	eg.spatials.OrientationWorld
+	eg.spatials.Scale3 : {x: 1, y: 1, z: 1}
+	eg.spatials.Position3 : {x: 0, y: 0, z: 0}
+}
+
+window0 {
+	eg.windows.Window
+	eg.shapes.Rectangle
+}
+
+draw3d {
+	(flecs.core.DependsOn, window0)
+	eg.raylib.Mode3DCreateInfo : {dummy: 0}
 	eg.cameras.State
 	// Set the order of the operands, changes how {Orientation} rotates
-	eg.spatials.EgRotateOrder2
+	eg.spatials.EgRotateOrder1
 	eg.spatials.Position3 : {3, -4, 4}
 	eg.spatials.Orientation : {-0.4, -0.1, -0.2, 0.8}
 	eg.spatials.Rotate3 : {0, 0, 0}
@@ -145,39 +162,34 @@ cam1 {
 	}
 }
 
-prefab transform {
-	eg.spatials.EgRotateOrder1
-	eg.spatials.Transformation
-	eg.spatials.Position3World
-	eg.spatials.Orientation
-	eg.spatials.OrientationWorld
-	eg.spatials.Scale3 : {x: 1, y: 1, z: 1}
-	eg.spatials.Position3 : {x: 0, y: 0, z: 0}
-}
-
-rlib {
-	eg.raylib.Mode3DCreateInfo : {dummy: 0}
-}
-
 
 mesh_cube {
 	eg.shapes.Box : {5,5,10,0}
 }
 
+
 cube1 : transform {
-	(flecs.core.DependsOn, cam1)
 	(flecs.core.DependsOn, mesh_cube)
 	eg.spatials.Position3 : {0,0,0}
 }
 
 cube2 : transform {
-	(flecs.core.DependsOn, cam1)
 	(flecs.core.DependsOn, mesh_cube)
 	eg.spatials.Position3 : {20,0,0}
 }
 
 cube3 : transform {
-	(flecs.core.DependsOn, cam1)
 	(flecs.core.DependsOn, mesh_cube)
 	eg.spatials.Position3 : {20,10,0}
 }
+
+cube4 : transform {
+	(flecs.core.DependsOn, mesh_cube)
+	eg.spatials.Position3 : {0,-10,0}
+}
+
+cube5 : transform {
+	(flecs.core.DependsOn, mesh_cube)
+	eg.spatials.Position3 : {0,-20,0}
+}
+
