@@ -11,6 +11,8 @@
 			"EgMeshes",
 			"EgSpatials",
 			"EgBase",
+			"EgKeyboards",
+			"EgCamcontrols",
 			"ecsx"
 		]
 	},
@@ -23,6 +25,8 @@
 		"lib": [
 			"flecs",
 			"raylib",
+			"EgCamcontrols",
+			"EgKeyboards",
 			"EgCameras",
 			"EgShapes",
 			"EgMeshes",

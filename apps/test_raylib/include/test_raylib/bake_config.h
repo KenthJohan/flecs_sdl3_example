@@ -24,6 +24,8 @@
 #include <EgMeshes.h>
 #include <EgSpatials.h>
 #include <EgBase.h>
+#include <EgKeyboards.h>
+#include <EgCamcontrols.h>
 #include <ecsx.h>
 
 #endif

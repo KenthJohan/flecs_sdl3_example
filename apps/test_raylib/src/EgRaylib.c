@@ -3,6 +3,7 @@
 #include <EgCameras.h>
 #include <EgSpatials.h>
 #include <EgShapes.h>
+#include <EgKeyboards.h>
 
 #include <raylib.h>
 
@@ -99,15 +100,39 @@ static void System_EgRaylibMode3D_Draw(ecs_iter_t *it)
 	EndDrawing();
 }
 
+static void System_EgRaylibMode3D_EgKeyboardsState(ecs_iter_t *it)
+{
+	EgKeyboardsState *keyboard = ecs_field(it, EgKeyboardsState, 0); // singleton
+	for (int i = 0; i < EG_KEYBOARDS_KEYS_MAX; ++i) {
+		keyboard->state[i] = 0;
+		if (IsKeyReleased(i)) {
+			keyboard->state[i] |= EG_KEYBOARDS_STATE_RELEASED;
+		}
+		if (IsKeyPressed(i)) {
+			keyboard->state[i] |= EG_KEYBOARDS_STATE_PRESSED;
+		}
+		if (IsKeyDown(i)) {
+			keyboard->state[i] |= EG_KEYBOARDS_STATE_DOWN;
+		}
+		if (IsKeyUp(i)) {
+			keyboard->state[i] |= EG_KEYBOARDS_STATE_UP;
+		}
+	}
+	return;
+}
+
 void EgRaylibImport(ecs_world_t *world)
 {
 	ECS_MODULE(world, EgRaylib);
 	ECS_IMPORT(world, EgSpatials);
 	ECS_IMPORT(world, EgCameras);
+	ECS_IMPORT(world, EgKeyboards);
 	ecs_set_name_prefix(world, "EgRaylib");
 	ECS_COMPONENT_DEFINE(world, EgRaylibMode3D);
 	ECS_COMPONENT_DEFINE(world, EgRaylibMode3DCreateInfo);
 	ECS_COMPONENT_DEFINE(world, EgRaylibMesh);
+
+	ecs_singleton_add(world, EgKeyboardsState);
 
 	ecs_struct_init(world,
 	&(ecs_struct_desc_t){
@@ -123,6 +148,8 @@ void EgRaylibImport(ecs_world_t *world)
 	camera.up = (Vector3){0.0f, 1.0f, 0.0f};               // Camera up vector (rotation towards target)
 	camera.fovy = 45.0f;                                   // Camera field-of-view Y
 	camera.projection = CAMERA_PERSPECTIVE;                // Camera projection type
+
+	IsKeyDown(KEY_W);
 
 	// Load lighting shader
 	shader = LoadShader(TextFormat("config/glsl%i/lighting_instancing.vs", GLSL_VERSION),
@@ -143,6 +170,15 @@ void EgRaylibImport(ecs_world_t *world)
 	matInstances.maps[MATERIAL_MAP_DIFFUSE].color = RED;
 	matDefault = LoadMaterialDefault();
 	matDefault.maps[MATERIAL_MAP_DIFFUSE].color = BLUE;
+
+	ecs_system_init(world,
+	&(ecs_system_desc_t){
+	.entity = ecs_entity(world, {.name = "System_EgRaylibMode3D_EgKeyboardsState", .add = ecs_ids(ecs_dependson(EcsOnLoad))}),
+	.callback = System_EgRaylibMode3D_EgKeyboardsState,
+	.immediate = true,
+	.query.terms = {
+	{.id = ecs_id(EgKeyboardsState), .src.id = ecs_id(EgKeyboardsState)},
+	}});
 
 	ecs_system_init(world,
 	&(ecs_system_desc_t){
