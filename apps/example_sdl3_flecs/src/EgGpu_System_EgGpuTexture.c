@@ -28,6 +28,21 @@ void System_EgGpuTexture_Create(ecs_iter_t *it)
 	for (int i = 0; i < it->count; ++i, ++c_create) {
 		ecs_entity_t e = it->entities[i];
 		ecs_trace("Entity: '%s'", ecs_get_name(world, e));
+
+		if (c_rect->w <= 0) {
+			ecs_err("EgShapesRectangle width is zero or negative");
+			ecs_add(world, e, EgBaseError);
+			ecs_enable(world, e, false);
+			continue;
+		}
+
+		if (c_rect->h <= 0) {
+			ecs_err("EgShapesRectangle height is zero or negative");
+			ecs_add(world, e, EgBaseError);
+			ecs_enable(world, e, false);
+			continue;
+		}
+
 		ecs_log_push_(0);
 		{
 			SDL_GPUTextureCreateInfo createinfo = {0};
@@ -43,6 +58,10 @@ void System_EgGpuTexture_Create(ecs_iter_t *it)
 			SDL_GPUTexture *tex = SDL_CreateGPUTexture(c_gpu->device, &createinfo);
 			if (tex) {
 				ecs_set(world, e, EgGpuTexture, {.object = tex});
+			} else {
+				ecs_err("Failed to create texture: %s", SDL_GetError());
+				ecs_add(world, e, EgBaseError);
+				ecs_enable(world, e, false);
 			}
 			ecs_trace("w: '%f', h: '%f'", c_rect->w, c_rect->h);
 		}
@@ -52,6 +71,7 @@ void System_EgGpuTexture_Create(ecs_iter_t *it)
 	ecs_log_pop_(0);
 	ecs_log_set_level(0);
 }
+
 
 
 

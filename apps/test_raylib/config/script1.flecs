@@ -191,5 +191,20 @@ cube4 : transform {
 cube5 : transform {
 	(flecs.core.DependsOn, mesh_cube)
 	eg.spatials.Position3 : {0,-20,0}
+	cube1 : transform {
+		(flecs.core.DependsOn, mesh_cube)
+		eg.spatials.Position3 : {0,5,0}
+		eg.spatials.Scale3 : {x: 0.1, y: 0.1, z: 1}
+	}
+	cube2 : transform {
+		(flecs.core.DependsOn, mesh_cube)
+		eg.spatials.Position3 : {10,0,0}
+		eg.spatials.Scale3 : {x: 0.1, y: 0.1, z: 1}
+		cube1 : transform {
+			(flecs.core.DependsOn, mesh_cube)
+			eg.spatials.Position3 : {10,0,0}
+			eg.spatials.Scale3 : {x: 0.1, y: 0.1, z: 1}
+		}
+	}
 }
 

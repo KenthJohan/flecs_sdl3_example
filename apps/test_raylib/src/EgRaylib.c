@@ -86,9 +86,9 @@ static void System_EgRaylibMode3D_Draw(ecs_iter_t *it)
 	EgCamerasState *cam = ecs_field(it, EgCamerasState, 1);
 	Position3 *campos = ecs_field(it, Position3, 2);
 
-	UpdateCamera(&camera, CAMERA_FREE);
+
 	// Update the light shader with the camera view position
-	float cameraPos[3] = {camera.position.x, camera.position.y, camera.position.z};
+	float cameraPos[3] = {campos->x, campos->y, campos->z};
 	SetShaderValue(shader, shader.locs[SHADER_LOC_VECTOR_VIEW], cameraPos, SHADER_UNIFORM_VEC3);
 	BeginDrawing();
 	ClearBackground(RAYWHITE);
@@ -109,12 +109,14 @@ static void System_EgRaylibMode3D_Draw(ecs_iter_t *it)
 		draw(it->world, raylib3d[i].query);
 		DrawMesh(dummy_cube, matDefault, MatrixTranslate(10.0f, 0.0f, 0.0f));
 		EndMode3D();
+
+		char *tmp = (char *)TextFormat("%f %f %f", campos->x, campos->y, campos->z);
+		int width = MeasureText(tmp, 20);
+		DrawText(tmp, GetScreenWidth() - 20 - width, 10, 20, DARKGREEN);
 	}
 	DrawFPS(10, 10);
 
-	char *tmp = (char *)TextFormat("%f %f %f", camera.position.x, camera.position.y, camera.position.z);
-	int width = MeasureText(tmp, 20);
-	DrawText(tmp, GetScreenWidth() - 20 - width, 10, 20, DARKGREEN);
+
 
 	EndDrawing();
 }

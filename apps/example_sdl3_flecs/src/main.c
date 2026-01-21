@@ -26,6 +26,8 @@
 #include "EgGpu.h"
 #include "EgMeshes.h"
 #include "EgRenderers.h"
+#include "PlatformSdlWindows.h"
+#include "PlatformSdlKeyboards.h"
 
 // include header for getcwd
 #include <unistd.h>
@@ -186,6 +188,8 @@ int main(int argc, char *argv[])
 	ECS_IMPORT(world, EgCamcontrols);
 	ECS_IMPORT(world, EgRenderers);
 	ECS_IMPORT(world, EgGlslang);
+	ECS_IMPORT(world, PlatformSdlWindows);
+	ECS_IMPORT(world, PlatformSdlKeyboards);
 
 	ecs_set(world, EcsWorld, EcsRest, {.port = 0});
 	printf("Remote: %s\n", "https://www.flecs.dev/explorer/?remote=true");
@@ -249,9 +253,9 @@ int main(int argc, char *argv[])
 	EgKeyboardsState const *board = ecs_singleton_get(world, EgKeyboardsState);
 
 	while (1) {
-		if (board->scancode[SDL_SCANCODE_ESCAPE]) {
-			break;
-		}
+		//if (board->scancode[SDL_SCANCODE_ESCAPE]) {
+			//break;
+		//}
 		ecs_progress(world, 0.0f);
 	}
 
